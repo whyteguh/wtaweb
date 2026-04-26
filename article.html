@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - Wahyu Teguh Arifianto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Load Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .article-container {
+            max-width: 800px;
+            margin: 120px auto 80px;
+            padding: 0 24px;
+            min-height: 50vh;
+        }
+        
+        .article-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .article-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 16px;
+        }
+
+        .markdown-body {
+            font-family: 'Lora', serif;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            font-family: 'DM Sans', sans-serif;
+            margin-top: 2em;
+            margin-bottom: 0.5em;
+        }
+
+        .markdown-body p {
+            margin-bottom: 1.5em;
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid var(--accent);
+            margin: 2em 0;
+            padding-left: 1.5em;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 60px;
+            font-family: 'DM Sans', sans-serif;
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav style="background: var(--bg-light);">
+        <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+        <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#expertise">Expertise</a></li>
+            <li><a href="/#writing">Writing</a></li>
+            <li><a href="/#contact">Contact</a></li>
+        </ul>
+        </nav>
+
+    <!-- ARTICLE CONTENT -->
+    <main class="article-container fade-in">
+        <div id="article-content" class="markdown-body">
+            <p style="text-align: center;">Loading article...</p>
+        </div>
+        
+        <a href="/#writing" class="back-link">← Back to Home</a>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="footer-name">Wahyu Teguh Arifianto</p>
+        <p>© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+        </footer>
+
+    <!-- SHARED SCRIPT -->
+    <script src="script.js" defer></script>
+    
+    <!-- ARTICLE FETCH LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('id');
+            const contentDiv = document.getElementById('article-content');
+
+            if (!articleId) {
+                contentDiv.innerHTML = '<h1>Article Not Found</h1><p>No article ID provided.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/posts/${articleId}.md`);
+                if (!response.ok) {
+                    throw new Error('Article not found');
+                }
+                const markdownText = await response.text();
+                
+                // Parse markdown to HTML
+                contentDiv.innerHTML = marked.parse(markdownText);
+                
+                // Update title based on the first h1 if it exists
+                const h1 = contentDiv.querySelector('h1');
+                if (h1) {
+                    document.title = h1.textContent + " - Wahyu Teguh Arifianto";
+                }
+                
+                // Fade in effect
+                contentDiv.parentElement.classList.add('visible');
+            } catch (error) {
+                contentDiv.innerHTML = '<h1>Oops!</h1><p>Sorry, we could not load the article. It might have been moved or deleted.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

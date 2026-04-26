@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404: Not Found - Wahyu Teguh Arifianto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .error-container {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 24px;
+        }
+
+        .error-code {
+            font-family: 'Lora', serif;
+            font-size: 6rem;
+            color: var(--accent);
+            margin-bottom: 0;
+            line-height: 1;
+        }
+
+        .error-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            margin-top: 16px;
+            margin-bottom: 24px;
+        }
+
+        .error-desc {
+            max-width: 400px;
+            color: var(--stone);
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .btn-home {
+            display: inline-block;
+            background: var(--charcoal);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-home:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(196, 168, 130, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav style="background: var(--bg-light);">
+        <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+        </nav>
+
+    <main class="error-container fade-in">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Wandering off the map?</h2>
+        <p class="error-desc">
+            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable. Let's get you back to familiar territory.
+        </p>
+        <a href="/" class="btn-home">Return Home</a>
+        </main>
+
+    <script src="/script.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelector('.error-container').classList.add('visible');
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>

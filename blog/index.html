@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Wahyu Teguh Arifianto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav style="background: var(--bg-light);">
+        <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+        <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#expertise">Expertise</a></li>
+            <li><a href="/#writing">Writing</a></li>
+            <li><a href="/#contact">Contact</a></li>
+        </ul>
+        </nav>
+
+    <section class="writing" id="writing" style="padding-top: 120px;">
+        <div class="section-inner">
+            <span class="section-label">All Writing</span>
+            <h2 class="section-title">Ideas worth <em>sharing</em></h2>
+            <div class="divider"></div>
+
+            <div class="posts-grid fade-in" id="all-posts-container">
+                <p style="text-align: center; grid-column: 1/-1;">Loading posts...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="footer-name">Wahyu Teguh Arifianto</p>
+        <p>© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+        </footer>
+
+    <script src="/script.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('all-posts-container');
+            
+            try {
+                const response = await fetch('/posts/posts.json');
+                if (!response.ok) throw new Error('Failed to load posts catalog');
+                
+                const posts = await response.json();
+
+                if (posts && posts.length > 0) {
+                    container.innerHTML = '';
+                    
+                    const gradients = [
+                        '', // Default CSS gradient
+                        'linear-gradient(135deg, #e8d5c0, #c4a882)',
+                        'linear-gradient(135deg, #d5e8d5, #8fb88f)'
+                    ];
+
+                    posts.forEach((post, index) => {
+                        const gradient = gradients[index % gradients.length];
+                        const gradientStyle = gradient ? `style="background: ${gradient};"` : '';
+                        const cat = post.category || 'Blog';
+                        
+                        const cardHTML = `
+                            <a href="/article.html?id=${post.id}" class="post-card fade-in visible">
+                                <div class="post-thumb">
+                                    <div class="post-thumb-gradient" ${gradientStyle}></div>
+                                    <span class="post-thumb-icon">On ${cat.toLowerCase()}</span>
+                                </div>
+                                <div class="post-body">
+                                    <span class="post-cat">${cat}</span>
+                                    <h3>${post.title}</h3>
+                                    <p>${post.description || ''}</p>
+                                    <div class="post-meta">
+                                        <span>${post.date || ''}</span>
+                                        <span>Read Article</span>
+                                        </div>
+                                </div>
+                            </a>
+                        `;
+                        container.innerHTML += cardHTML;
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">No posts found.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching static posts:', error);
+                container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: red;">Failed to load posts.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+- [LinkedIn](https://linkedin.com/in/wahyu-teguh)
+- [Instagram](https://instagram.com/wahyuteguh)
+- [Email](mailto:hello@wahyuteguh.com)
+- [Medium](https://medium.com/@wahyuteguh)

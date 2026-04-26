@@ -907,26 +907,7 @@
             transform: translateY(0);
         }
 
-        /* ── LANGUAGE TOGGLE ── */
-        [data-lang="id"] {
-            display: none;
-        }
 
-        body.lang-id [data-lang="en"] {
-            display: none;
-        }
-
-        body.lang-id [data-lang="id"] {
-            display: block;
-        }
-
-        body.lang-id span[data-lang="id"] {
-            display: inline;
-        }
-
-        body.lang-id span[data-lang="en"] {
-            display: none;
-        }
 
         /* ── RESPONSIVE ── */
         @media (max-width: 768px) {

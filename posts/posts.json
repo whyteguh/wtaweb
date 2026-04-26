@@ -1,0 +1,16 @@
+[
+  {
+    "id": "hello-world",
+    "title": "Why Good Systems Feel Like Magic",
+    "description": "An exploration into how carefully designed processes can reduce human friction and feel effortless.",
+    "category": "Systems",
+    "date": "2026-04-26"
+  },
+  {
+    "id": "the-crm-trap",
+    "title": "The CRM Trap: Measuring Instead of Listening",
+    "description": "Most companies use CRMs to quantify their customers, rather than actually understanding their needs.",
+    "category": "CRM",
+    "date": "2026-04-15"
+  }
+]

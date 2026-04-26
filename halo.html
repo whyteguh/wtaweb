@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halo - Wahyu Teguh Arifianto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .halo-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .halo-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border: 4px solid white;
+        }
+
+        .halo-name {
+            font-family: 'Lora', serif;
+            font-size: 1.8rem;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+        }
+
+        .halo-name em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .halo-desc {
+            color: var(--stone);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .link-grid {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .halo-link {
+            display: block;
+            background: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--charcoal);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: 1.05rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .halo-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            border-color: rgba(196, 168, 130, 0.3); /* Accent color transparent */
+            color: var(--accent);
+        }
+
+        .halo-link .subtitle {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--stone);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .halo-social {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+        }
+
+        .halo-social a {
+            color: var(--stone);
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .halo-social a:hover {
+            color: var(--accent);
+        }
+
+        .halo-home-btn {
+            margin-top: 40px;
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .halo-home-btn:hover {
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+
+<body style="background: var(--bg-light);">
+
+    <main class="halo-container fade-in">
+        <!-- Photo -->
+        <img src="photo-normal.jpg" alt="Wahyu Teguh Arifianto" class="halo-photo">
+        
+        <!-- Name & Bio -->
+        <h1 class="halo-name">Wahyu Teguh <em>Arifianto</em></h1>
+        <p class="halo-desc">
+            Working at the intersection of CRM, strategy, and human behavior. Trying to understand how systems can truly serve people.
+        </p>
+
+        <!-- Links -->
+        <div class="link-grid">
+            <a href="https://wahyuteguh.com/blog" class="halo-link">
+                Latest Writing
+                <span class="subtitle">Read my frameworks and essays</span>
+            </a>
+            
+            <a href="https://wahyuteguh.com/#expertise" class="halo-link">
+                Expertise & Services
+                <span class="subtitle">How I can help your business</span>
+            </a>
+            
+            <a href="mailto:hello@wahyuteguh.com" class="halo-link">
+                Let's Talk (Email)
+                <span class="subtitle">hello@wahyuteguh.com</span>
+            </a>
+            
+            <a href="https://linkedin.com/in/wahyu-teguh" target="_blank" class="halo-link">
+                LinkedIn Profile
+                <span class="subtitle">Professional network and career updates</span>
+            </a>
+        </div>
+
+        <!-- Social Icons / Simple Links -->
+        <div class="halo-social" id="dynamic-social-halo">
+            <!-- Loaded dynamically from socials.md -->
+        </div>
+
+        <!-- Back to website -->
+        <a href="https://wahyuteguh.com/" class="halo-home-btn">← Return to Main Website</a>
+    </main>
+
+    <script src="script.js" defer></script>
+    <!-- Script for fade-in effect -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelector('.halo-container').classList.add('visible');
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>

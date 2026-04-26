@@ -1,0 +1,6 @@
+# Mengarahkan error 404 ke halaman khusus
+ErrorDocument 404 /404.html
+
+# Mengarahkan error lainnya (opsional)
+ErrorDocument 403 /404.html
+ErrorDocument 500 /404.html

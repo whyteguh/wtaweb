@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeblocking Tool - Wahyu Teguh Arifianto</title>
+    <link rel="stylesheet" href="../style.css">
+    
+    <!-- LOAD REACT via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- LOAD BABEL to compile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 120px auto;
+            padding: 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .block-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .block-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .block-time {
+            width: 120px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        button.add-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body style="background: var(--bg-light);">
+
+    <nav style="background: white;">
+        <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+    </nav>
+
+    <!-- Mount point for React -->
+    <div id="react-root"></div>
+
+    <!-- Your React Code -->
+    <script type="text/babel">
+        function Timeblocker() {
+            const [blocks, setBlocks] = React.useState([
+                { id: 1, time: '08:00 AM', task: 'Deep Work Session' },
+                { id: 2, time: '10:00 AM', task: 'Check Emails' },
+                { id: 3, time: '11:00 AM', task: '' }
+            ]);
+
+            const addTask = () => {
+                setBlocks([...blocks, { id: Date.now(), time: '12:00 PM', task: '' }]);
+            };
+
+            const updateTask = (id, value) => {
+                setBlocks(blocks.map(b => b.id === id ? { ...b, task: value } : b));
+            };
+
+            return (
+                <div className="tool-container fade-in visible">
+                    <h2>Daily Timeblock Planner</h2>
+                    <p style={{color: '#666', marginBottom: '24px'}}>This is a React component running purely via CDN.</p>
+                    
+                    {blocks.map(block => (
+                        <div key={block.id} className="block-row">
+                            <div className="block-time">{block.time}</div>
+                            <input 
+                                type="text" 
+                                className="block-input" 
+                                value={block.task}
+                                onChange={(e) => updateTask(block.id, e.target.value)}
+                                placeholder="What will you focus on?"
+                            />
+                        </div>
+                    ))}
+                    
+                    <button className="add-btn" onClick={addTask}>+ Add Time Block</button>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('react-root'));
+        root.render(<Timeblocker />);
+    </script>
+</body>
+</html>
