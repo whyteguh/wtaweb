@@ -1,6 +1,13 @@
-# Mengarahkan error 404 ke halaman khusus
-ErrorDocument 404 /404.html
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
 
-# Mengarahkan error lainnya (opsional)
+ErrorDocument 404 /404.html
 ErrorDocument 403 /404.html
 ErrorDocument 500 /404.html
+
+# Pastikan file statis bisa dibaca server
+AddType text/plain .md
+AddType application/json .json
