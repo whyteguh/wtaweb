@@ -93,50 +93,7 @@
             }
         }
 
-                        // Inject into Contact section (index.html)
-                const contactContainer = document.getElementById('dynamic-social-contact');
-                if (contactContainer) {
-                    contactContainer.innerHTML = links.map(link => {
-                        let icon = '🔗';
-                        const n = link.name.toLowerCase();
-                        if(n.includes('email') || n.includes('mail')) icon = '✉';
-                        if(n.includes('linkedin')) icon = 'in';
-                        if(n.includes('instagram') || n.includes('ig')) icon = 'ig';
-                        if(n.includes('twitter') || n.includes('x')) icon = 'x';
-                        if(n.includes('medium')) icon = 'M';
-                        
-                        return `<a href="${link.url}" class="contact-link" target="_blank">
-                                    <span class="contact-icon">${icon}</span>
-                                    ${link.name}
-                                </a>`;
-                    }).join('');
-                }
-
-                // Inject into Halo page
-                const haloContainer = document.getElementById('dynamic-social-halo');
-                if (haloContainer) {
-                    haloContainer.innerHTML = links.map(link => {
-                        let icon = '🔗';
-                        const n = link.name.toLowerCase();
-                        if(n.includes('email') || n.includes('mail')) icon = '✉';
-                        if(n.includes('linkedin')) icon = 'in';
-                        if(n.includes('instagram') || n.includes('ig')) icon = 'ig';
-                        if(n.includes('twitter') || n.includes('x')) icon = 'x';
-                        if(n.includes('medium')) icon = 'M';
-
-                        return `<a href="${link.url}" target="_blank" style="display:flex; align-items:center; gap:6px;">
-                                    <span class="contact-icon" style="width:28px; height:28px; font-size:0.75rem;">${icon}</span>
-                                    ${link.name}
-                                </a>`;
-                    }).join('');
-                }
-
-            } catch (error) {
-                console.error("Failed to load socials:", error);
-            }
-        }
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchLatestPosts();
-            
         });

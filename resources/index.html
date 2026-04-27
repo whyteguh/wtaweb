@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools - Wahyu Teguh Arifianto</title>
+    <title>Resources - Wahyu Teguh Arifianto</title>
     <link rel="stylesheet" href="../style.css">
     <style>
         .tools-page {
@@ -80,18 +80,21 @@
 <body>
     <nav>
         <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+        
         <ul class="nav-links">
             <li><a href="/#about">About</a></li>
             <li><a href="/#expertise">Expertise</a></li>
             <li><a href="/#writing">Writing</a></li>
-            <li><a href="/tools" style="color: var(--accent);">Tools</a></li>
+            <li><a href="/resources" style="color: var(--accent);">Resources</a></li>
+            <li><a href="/#contact">Contact</a></li>
         </ul>
+
     </nav>
 
     <main class="tools-page">
         <div class="section-inner">
             <span class="section-label">Digital Resources</span>
-            <h1 class="section-title">My <em>Tools</em></h1>
+            <h1 class="section-title">My <em>Resources</em></h1>
             <div class="divider"></div>
             <p style="margin-bottom: 3.5rem; color: var(--charcoal-mid); max-width: 500px; font-size: 0.95rem; line-height: 1.8;">
                 A collection of micro-tools, planners, and utilities I've built to solve my own problems. Feel free to use them.
@@ -113,7 +116,7 @@
             const container = document.getElementById('tools-container');
             
             try {
-                const response = await fetch('tools.json');
+                const response = await fetch('resources.json');
                 if (!response.ok) throw new Error('Failed to load tools catalog');
                 
                 const tools = await response.json();
