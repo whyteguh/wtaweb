@@ -245,59 +245,100 @@
             background: #fffdfa;
         }
 
-        /* Status & Controls Overlay */
-        .cell-controls {
-            position: sticky;
-            top: 140px; 
-            float: right;
-            margin: 6px;
-            display: none; /* Hidden by default, shown when moved to a wrapper */
-            flex-direction: column;
-            gap: 6px;
-            z-index: 20;
+        /* Persistent Global Toolbar */
+        #persistent-toolbar {
+            position: fixed;
+            bottom: 30px;
+            right: 100px; /* Offset from the floating scroll button */
             background: white;
-            padding: 8px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 12px 24px;
+            border-radius: 100px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: none; 
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
             border: 1px solid var(--tracker-border);
-            pointer-events: auto;
+            animation: slideUp 0.3s ease;
         }
 
-        /* Container for controls to allow sticky to work properly */
-        .controls-wrapper {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 50px;
-            pointer-events: none; 
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        /* Show only when the wrapper is part of a hovered or focused-within cell */
-        .cell-plan:hover .cell-controls, .cell-plan:focus-within .cell-controls {
+        .toolbar-info {
             display: flex;
+            flex-direction: column;
+            padding-right: 16px;
+            border-right: 1px solid #eee;
         }
 
-        .color-picker {
+        .toolbar-info span:first-child {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--stone);
+            font-weight: 700;
+        }
+
+        .toolbar-info span:last-child {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--charcoal);
+        }
+
+        .toolbar-actions {
             display: flex;
-            gap: 4px;
-            margin-top: 4px;
-            padding-top: 4px;
-            border-top: 1px solid #eee;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toolbar-colors {
+            display: flex;
+            gap: 6px;
+            padding-left: 16px;
+            border-left: 1px solid #eee;
         }
 
         .color-dot {
-            width: 12px;
-            height: 12px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px #ddd;
+            transition: transform 0.2s;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .cell-plan.is-active {
+            box-shadow: inset 0 0 0 2px var(--accent) !important;
+            z-index: 5;
+        }
+
+        @media (max-width: 768px) {
+            #persistent-toolbar {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                padding: 10px 16px;
+                gap: 12px;
+                border-radius: 16px;
+            }
+            .toolbar-info { display: none; }
         }
 
         .btn-circle {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
+...
+        .cell-plan:hover, .cell-plan:focus-within {
+            background-color: #fffdf5;
+        }
             border: 1px solid var(--tracker-border);
             background: white;
             display: flex;
@@ -503,6 +544,31 @@
         </div>
     </div>
 
+    <!-- Persistent Toolbar -->
+    <div id="persistent-toolbar">
+        <div class="toolbar-info">
+            <span id="txt-toolbar-label">Editing Block</span>
+            <span id="active-block-time">00:00</span>
+        </div>
+        <div class="toolbar-actions">
+            <button class="btn-circle" id="tb-check" title="Toggle Complete">
+                <i data-lucide="check" size="16"></i>
+            </button>
+            <button class="btn-circle" id="tb-up" title="Shrink Duration">
+                <i data-lucide="chevron-up" size="16"></i>
+            </button>
+            <button class="btn-circle" id="tb-down" title="Extend Duration">
+                <i data-lucide="chevron-down" size="16"></i>
+            </button>
+            <button class="btn-circle" id="tb-del" title="Delete Block">
+                <i data-lucide="x" size="16"></i>
+            </button>
+        </div>
+        <div class="toolbar-colors" id="tb-colors">
+            <!-- Colors injected by JS -->
+        </div>
+    </div>
+
     <!-- Floating Nav -->
     <div class="floating-nav">
         <button class="btn-float" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
@@ -575,7 +641,8 @@
                 planLabel: "Nama Tugas",
                 colorLabel: "Warna Blok",
                 now: "Sekarang",
-                done: "Selesai"
+                done: "Selesai",
+                editingLabel: "Mengedit Blok"
             },
             en: {
                 title: "15-Min Time Tracker",
@@ -598,7 +665,8 @@
                 planLabel: "Task Name",
                 colorLabel: "Block Color",
                 now: "Now",
-                done: "Done"
+                done: "Done",
+                editingLabel: "Editing Block"
             }
         };
 
@@ -619,12 +687,20 @@
         function init() {
             renderWakeUpOptions();
             renderLanguage();
-            createGlobalControls();
+            setupToolbar();
             renderGrid();
             updateSummary();
             updateClock();
             setInterval(updateClock, 1000);
             lucide.createIcons();
+
+            // Hide toolbar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.cell-plan') && !e.target.closest('#persistent-toolbar')) {
+                    hideToolbar();
+                    activeTime = null;
+                }
+            });
         }
 
         function renderLanguage() {
@@ -667,16 +743,11 @@
             container.innerHTML = '';
             
             const t = dict[lang];
-            // Injeksi Header
-            const hTime = document.createElement('div');
-            hTime.className = 'grid-header-cell'; hTime.innerText = t.time;
-            container.appendChild(hTime);
-            const hPlan = document.createElement('div');
-            hPlan.className = 'grid-header-cell'; hPlan.innerText = t.planned;
-            container.appendChild(hPlan);
-            const hActual = document.createElement('div');
-            hActual.className = 'grid-header-cell'; hActual.innerText = t.actual;
-            container.appendChild(hActual);
+            container.innerHTML = `
+                <div class="grid-header-cell">${t.time}</div>
+                <div class="grid-header-cell">${t.planned}</div>
+                <div class="grid-header-cell">${t.actual}</div>
+            `;
 
             const visibleBlocks = allTimeBlocks.filter(t => t >= wakeUpTime);
             let coveredUntil = 0;
@@ -702,8 +773,9 @@
                 if (index >= coveredUntil) {
                     coveredUntil = index + planSpan;
                     const planCell = document.createElement('div');
-                    planCell.className = `cell-plan bg-${rowData.planColor || 'white'}`;
+                    planCell.className = `cell-plan bg-${rowData.planColor || 'white'} ${activeTime === time ? 'is-active' : ''}`;
                     planCell.style.gridRow = `span ${planSpan}`;
+                    planCell.dataset.time = time;
                     
                     const planText = document.createElement('textarea');
                     planText.className = `cell-textarea ${rowData.completed ? 'is-done' : ''}`;
@@ -711,24 +783,18 @@
                     planText.value = rowData.plan || '';
                     planText.oninput = (e) => updateData(time, 'plan', e.target.value);
                     
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'controls-wrapper';
-                    wrapper.id = `wrapper-${time}`;
-                    
-                    // Attach listeners to move the global controls
-                    const showControls = () => moveControls(time, wrapper);
-                    planText.onfocus = showControls;
-                    planCell.onmouseenter = showControls;
+                    // Selection listeners
+                    const onSelect = () => selectBlock(time);
+                    planText.onfocus = onSelect;
+                    planCell.onclick = onSelect;
 
                     planCell.appendChild(planText);
-                    planCell.appendChild(wrapper);
                     container.appendChild(planCell);
                 }
 
                 // 3. Actual Cell
                 const actualCell = document.createElement('div');
                 actualCell.className = 'cell-actual';
-                
                 const actualText = document.createElement('textarea');
                 actualText.className = 'cell-textarea';
                 actualText.placeholder = dict[lang].placeholderAct;
@@ -738,89 +804,77 @@
                 container.appendChild(actualCell);
             });
 
-            // Re-attach global controls to activeTime if grid re-rendered
+            // Ensure toolbar stays relevant if re-rendered
             if (activeTime) {
-                const activeWrapper = document.getElementById(`wrapper-${activeTime}`);
-                if (activeWrapper) moveControls(activeTime, activeWrapper);
+                selectBlock(activeTime);
             }
 
             lucide.createIcons();
             updateSummary();
         }
 
-        let globalControls = null;
         let activeTime = null;
 
-        function createGlobalControls() {
-            const controls = document.createElement('div');
-            controls.className = 'cell-controls';
-            controls.id = 'global-controls';
+        function setupToolbar() {
+            const toolbar = document.getElementById('persistent-toolbar');
             
-            const checkBtn = document.createElement('button');
-            checkBtn.className = 'btn-circle';
-            checkBtn.id = 'gc-check';
-            checkBtn.innerHTML = '<i data-lucide="check" size="14"></i>';
-            controls.appendChild(checkBtn);
+            document.getElementById('tb-check').onclick = () => {
+                if (!activeTime) return;
+                updateData(activeTime, 'completed', !data[activeTime]?.completed);
+                renderGrid();
+            };
+            document.getElementById('tb-up').onclick = () => updateSpan(activeTime, -1);
+            document.getElementById('tb-down').onclick = () => updateSpan(activeTime, 1);
+            document.getElementById('tb-del').onclick = () => {
+                if (!activeTime) return;
+                if (confirm(dict[lang].reset)) {
+                    delete data[activeTime];
+                    activeTime = null;
+                    save();
+                    renderGrid();
+                    hideToolbar();
+                }
+            };
 
-            const spanUp = document.createElement('button');
-            spanUp.className = 'btn-circle';
-            spanUp.innerHTML = '<i data-lucide="chevron-up" size="14"></i>';
-            spanUp.id = 'gc-span-up';
-            controls.appendChild(spanUp);
-
-            const spanDown = document.createElement('button');
-            spanDown.className = 'btn-circle';
-            spanDown.innerHTML = '<i data-lucide="chevron-down" size="14"></i>';
-            spanDown.id = 'gc-span-down';
-            controls.appendChild(spanDown);
-
-            const delBtn = document.createElement('button');
-            delBtn.className = 'btn-circle';
-            delBtn.innerHTML = '<i data-lucide="x" size="14"></i>';
-            delBtn.id = 'gc-del';
-            controls.appendChild(delBtn);
-
-            const picker = document.createElement('div');
-            picker.className = 'color-picker';
+            const colorContainer = document.getElementById('tb-colors');
+            colorContainer.innerHTML = '';
             ['blue', 'green', 'yellow', 'red', 'purple', 'default'].forEach(c => {
                 const dot = document.createElement('div');
                 dot.className = `color-dot bg-${c}`;
-                dot.onclick = (e) => {
-                    e.stopPropagation();
-                    const time = controls.dataset.time;
-                    updateData(time, 'planColor', c);
+                dot.onclick = () => {
+                    if (!activeTime) return;
+                    updateData(activeTime, 'planColor', c);
                     renderGrid();
                 };
-                picker.appendChild(dot);
+                colorContainer.appendChild(dot);
             });
-            controls.appendChild(picker);
-
-            globalControls = controls;
-            document.body.appendChild(globalControls);
             lucide.createIcons();
         }
 
-        function moveControls(time, wrapper) {
-            if (!globalControls) createGlobalControls();
-            
+        function selectBlock(time) {
             activeTime = time;
-            globalControls.dataset.time = time;
-            const rowData = data[time] || {};
+            const toolbar = document.getElementById('persistent-toolbar');
+            const timeLabel = document.getElementById('active-block-time');
+            const editLabel = document.getElementById('txt-toolbar-label');
             
-            const checkBtn = document.getElementById('gc-check');
+            timeLabel.innerText = time;
+            editLabel.innerText = dict[lang].editingLabel;
+            toolbar.style.display = 'flex';
+            
+            document.querySelectorAll('.cell-plan').forEach(el => el.classList.remove('is-active'));
+            const activeEl = document.querySelector(`[data-time="${time}"]`);
+            if (activeEl) activeEl.classList.add('is-active');
+
+            const checkBtn = document.getElementById('tb-check');
+            const rowData = data[time] || {};
             checkBtn.className = `btn-circle ${rowData.completed ? 'active' : ''}`;
-            checkBtn.onclick = (e) => {
-                e.stopPropagation();
-                updateData(time, 'completed', !rowData.completed);
-                renderGrid();
-            };
-
-            document.getElementById('gc-span-up').onclick = (e) => { e.stopPropagation(); updateSpan(time, -1); };
-            document.getElementById('gc-span-down').onclick = (e) => { e.stopPropagation(); updateSpan(time, 1); };
-            document.getElementById('gc-del').onclick = (e) => { e.stopPropagation(); delete data[time]; activeTime = null; save(); renderGrid(); };
-
-            wrapper.appendChild(globalControls);
         }
+
+        function hideToolbar() {
+            document.getElementById('persistent-toolbar').style.display = 'none';
+            document.querySelectorAll('.cell-plan').forEach(el => el.classList.remove('is-active'));
+        }
+
 
         function updateSpan(time, delta) {
             const visible = allTimeBlocks.filter(t => t >= wakeUpTime);
