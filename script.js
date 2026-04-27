@@ -41,7 +41,7 @@
 
             try {
                 // Fetch our static catalog of markdown posts
-                const response = await fetch('/posts/posts.json');
+                const response = await fetch('posts/posts.json');
                 if (!response.ok) throw new Error('Failed to load posts catalog');
                 
                 const posts = await response.json();
@@ -99,7 +99,7 @@
             if (!container) return;
 
             try {
-                const response = await fetch('/resources/resources.json');
+                const response = await fetch('resources/resources.json');
                 if (!response.ok) throw new Error('Failed to load resources catalog');
                 
                 const resources = await response.json();
