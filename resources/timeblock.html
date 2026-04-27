@@ -29,6 +29,14 @@
             padding: 0 24px;
         }
 
+        .date-display {
+            font-family: 'Lora', serif;
+            font-size: 1.1rem;
+            color: var(--stone);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
         /* Header & Controls */
         .tracker-header {
             display: flex;
@@ -240,13 +248,35 @@
         /* Status & Controls Overlay */
         .cell-controls {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 6px;
+            right: 6px;
             display: flex;
+            flex-direction: column;
             gap: 6px;
             opacity: 0;
             transition: opacity 0.2s;
-            z-index: 5;
+            z-index: 20;
+            background: white;
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--tracker-border);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px solid #eee;
+        }
+
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.1);
         }
 
         .cell-plan:hover .cell-controls {
@@ -405,6 +435,7 @@
     </nav>
 
     <div class="tracker-wrapper">
+        <div class="date-display" id="current-datetime"></div>
         <header class="tracker-header">
             <div class="header-left">
                 <h1 id="txt-title">15-Min Time Tracker</h1>
@@ -579,6 +610,8 @@
             renderLanguage();
             renderGrid();
             updateSummary();
+            updateClock();
+            setInterval(updateClock, 1000);
             lucide.createIcons();
         }
 
@@ -646,14 +679,14 @@
                 const planSpan = rowData.planSpan || 1;
                 const isNow = time === currentTimeStr;
 
-                // 1. Time Cell (Selalu muncul setiap 15 menit)
+                // 1. Time Cell
                 const timeCell = document.createElement('div');
                 timeCell.className = `cell-time ${isNow ? 'current' : ''}`;
                 timeCell.id = `row-${time}`;
                 timeCell.innerHTML = `<span>${time}</span>${isNow ? `<span class="time-now">${dict[lang].now}</span>` : ''}`;
                 container.appendChild(timeCell);
 
-                // 2. Plan Cell (Hanya muncul jika tidak tertutup span sebelumnya)
+                // 2. Plan Cell
                 if (index >= coveredUntil) {
                     coveredUntil = index + planSpan;
                     const planCell = document.createElement('div');
@@ -679,6 +712,19 @@
                     };
                     controls.appendChild(checkBtn);
 
+                    // Span controls
+                    const spanUp = document.createElement('button');
+                    spanUp.className = 'btn-circle';
+                    spanUp.innerHTML = '<i data-lucide="chevron-up" size="14"></i>';
+                    spanUp.onclick = () => updateSpan(time, -1);
+                    controls.appendChild(spanUp);
+
+                    const spanDown = document.createElement('button');
+                    spanDown.className = 'btn-circle';
+                    spanDown.innerHTML = '<i data-lucide="chevron-down" size="14"></i>';
+                    spanDown.onclick = () => updateSpan(time, 1);
+                    controls.appendChild(spanDown);
+
                     const delBtn = document.createElement('button');
                     delBtn.className = 'btn-circle';
                     delBtn.innerHTML = '<i data-lucide="x" size="14"></i>';
@@ -689,11 +735,24 @@
                     };
                     controls.appendChild(delBtn);
 
+                    const picker = document.createElement('div');
+                    picker.className = 'color-picker';
+                    ['blue', 'green', 'yellow', 'red', 'purple', 'default'].forEach(c => {
+                        const dot = document.createElement('div');
+                        dot.className = `color-dot bg-${c}`;
+                        dot.onclick = () => {
+                            updateData(time, 'planColor', c);
+                            renderGrid();
+                        };
+                        picker.appendChild(dot);
+                    });
+                    controls.appendChild(picker);
+
                     planCell.appendChild(controls);
                     container.appendChild(planCell);
                 }
 
-                // 3. Actual Cell (Selalu muncul setiap 15 menit)
+                // 3. Actual Cell
                 const actualCell = document.createElement('div');
                 actualCell.className = 'cell-actual';
                 
@@ -710,11 +769,39 @@
             updateSummary();
         }
 
+        function updateSpan(time, delta) {
+            const visible = allTimeBlocks.filter(t => t >= wakeUpTime);
+            const index = visible.indexOf(time);
+            if (!data[time]) data[time] = { planSpan: 1, planColor: 'default' };
+            
+            const currentSpan = data[time].planSpan || 1;
+            const newSpan = Math.max(1, currentSpan + delta);
+            
+            if (index + newSpan > visible.length) return;
+
+            data[time].planSpan = newSpan;
+            if (delta > 0) {
+                for (let i = index + 1; i < index + newSpan; i++) {
+                    delete data[visible[i]];
+                }
+            }
+            save();
+            renderGrid();
+        }
+
         function updateData(time, field, value) {
             if (!data[time]) data[time] = { planSpan: 1, planColor: 'default' };
             data[time][field] = value;
             save();
             updateSummary();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', options);
+            const timeStr = now.toLocaleTimeString(lang === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('current-datetime').innerText = `${dateStr} | ${timeStr}`;
         }
 
         function save() {
