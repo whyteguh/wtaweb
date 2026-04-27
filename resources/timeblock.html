@@ -248,14 +248,12 @@
         /* Status & Controls Overlay */
         .cell-controls {
             position: sticky;
-            top: 140px; /* Agar tetap terlihat di bawah nav saat scroll */
+            top: 140px; 
             float: right;
             margin: 6px;
-            display: flex;
+            display: none; /* Hidden by default, shown when moved to a wrapper */
             flex-direction: column;
             gap: 6px;
-            opacity: 0;
-            transition: opacity 0.2s;
             z-index: 20;
             background: white;
             padding: 8px;
@@ -271,11 +269,13 @@
             top: 0;
             right: 0;
             height: 100%;
-            pointer-events: none; /* Agar tidak menghalangi klik ke textarea */
+            width: 50px;
+            pointer-events: none; 
         }
 
+        /* Show only when the wrapper is part of a hovered or focused-within cell */
         .cell-plan:hover .cell-controls, .cell-plan:focus-within .cell-controls {
-            opacity: 1;
+            display: flex;
         }
 
         .color-picker {
@@ -619,6 +619,7 @@
         function init() {
             renderWakeUpOptions();
             renderLanguage();
+            createGlobalControls();
             renderGrid();
             updateSummary();
             updateClock();
@@ -709,60 +710,16 @@
                     planText.placeholder = dict[lang].placeholderPlan;
                     planText.value = rowData.plan || '';
                     planText.oninput = (e) => updateData(time, 'plan', e.target.value);
-                    planCell.appendChild(planText);
-
+                    
                     const wrapper = document.createElement('div');
                     wrapper.className = 'controls-wrapper';
                     
-                    const controls = document.createElement('div');
-                    controls.className = 'cell-controls';
-                    
-                    const checkBtn = document.createElement('button');
-                    checkBtn.className = `btn-circle ${rowData.completed ? 'active' : ''}`;
-                    checkBtn.innerHTML = '<i data-lucide="check" size="14"></i>';
-                    checkBtn.onclick = () => {
-                        updateData(time, 'completed', !rowData.completed);
-                        renderGrid();
-                    };
-                    controls.appendChild(checkBtn);
+                    // Attach listeners to move the global controls
+                    const showControls = () => moveControls(time, wrapper);
+                    planText.onfocus = showControls;
+                    planCell.onmouseenter = showControls;
 
-                    // Span controls
-                    const spanUp = document.createElement('button');
-                    spanUp.className = 'btn-circle';
-                    spanUp.innerHTML = '<i data-lucide="chevron-up" size="14"></i>';
-                    spanUp.onclick = () => updateSpan(time, -1);
-                    controls.appendChild(spanUp);
-
-                    const spanDown = document.createElement('button');
-                    spanDown.className = 'btn-circle';
-                    spanDown.innerHTML = '<i data-lucide="chevron-down" size="14"></i>';
-                    spanDown.onclick = () => updateSpan(time, 1);
-                    controls.appendChild(spanDown);
-
-                    const delBtn = document.createElement('button');
-                    delBtn.className = 'btn-circle';
-                    delBtn.innerHTML = '<i data-lucide="x" size="14"></i>';
-                    delBtn.onclick = () => {
-                        delete data[time];
-                        save();
-                        renderGrid();
-                    };
-                    controls.appendChild(delBtn);
-
-                    const picker = document.createElement('div');
-                    picker.className = 'color-picker';
-                    ['blue', 'green', 'yellow', 'red', 'purple', 'default'].forEach(c => {
-                        const dot = document.createElement('div');
-                        dot.className = `color-dot bg-${c}`;
-                        dot.onclick = () => {
-                            updateData(time, 'planColor', c);
-                            renderGrid();
-                        };
-                        picker.appendChild(dot);
-                    });
-                    controls.appendChild(picker);
-
-                    wrapper.appendChild(controls);
+                    planCell.appendChild(planText);
                     planCell.appendChild(wrapper);
                     container.appendChild(planCell);
                 }
@@ -782,6 +739,82 @@
 
             lucide.createIcons();
             updateSummary();
+        }
+
+        let globalControls = null;
+
+        function createGlobalControls() {
+            const controls = document.createElement('div');
+            controls.className = 'cell-controls';
+            controls.id = 'global-controls';
+            
+            // Re-render internally when actions happen
+            const refresh = () => renderGrid();
+
+            const checkBtn = document.createElement('button');
+            checkBtn.className = 'btn-circle';
+            checkBtn.id = 'gc-check';
+            checkBtn.innerHTML = '<i data-lucide="check" size="14"></i>';
+            controls.appendChild(checkBtn);
+
+            const spanUp = document.createElement('button');
+            spanUp.className = 'btn-circle';
+            spanUp.innerHTML = '<i data-lucide="chevron-up" size="14"></i>';
+            spanUp.id = 'gc-span-up';
+            controls.appendChild(spanUp);
+
+            const spanDown = document.createElement('button');
+            spanDown.className = 'btn-circle';
+            spanDown.innerHTML = '<i data-lucide="chevron-down" size="14"></i>';
+            spanDown.id = 'gc-span-down';
+            controls.appendChild(spanDown);
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-circle';
+            delBtn.innerHTML = '<i data-lucide="x" size="14"></i>';
+            delBtn.id = 'gc-del';
+            controls.appendChild(delBtn);
+
+            const picker = document.createElement('div');
+            picker.className = 'color-picker';
+            ['blue', 'green', 'yellow', 'red', 'purple', 'default'].forEach(c => {
+                const dot = document.createElement('div');
+                dot.className = `color-dot bg-${c}`;
+                dot.onclick = () => {
+                    const time = controls.dataset.time;
+                    updateData(time, 'planColor', c);
+                    renderGrid();
+                };
+                picker.appendChild(dot);
+            });
+            controls.appendChild(picker);
+
+            globalControls = controls;
+            document.body.appendChild(globalControls); // Start detached or attached to body
+            lucide.createIcons({ props: { size: 14 } });
+        }
+
+        function moveControls(time, wrapper) {
+            if (!globalControls) createGlobalControls();
+            
+            globalControls.dataset.time = time;
+            const rowData = data[time] || {};
+            
+            // Update button states
+            const checkBtn = document.getElementById('gc-check');
+            checkBtn.className = `btn-circle ${rowData.completed ? 'active' : ''}`;
+            checkBtn.onclick = (e) => {
+                e.stopPropagation();
+                updateData(time, 'completed', !rowData.completed);
+                renderGrid();
+            };
+
+            document.getElementById('gc-span-up').onclick = (e) => { e.stopPropagation(); updateSpan(time, -1); };
+            document.getElementById('gc-span-down').onclick = (e) => { e.stopPropagation(); updateSpan(time, 1); };
+            document.getElementById('gc-del').onclick = (e) => { e.stopPropagation(); delete data[time]; save(); renderGrid(); };
+
+            wrapper.appendChild(globalControls);
+            lucide.createIcons(); // Ensure icons are visible
         }
 
         function updateSpan(time, delta) {
