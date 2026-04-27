@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Personality Quiz - Wahyu Teguh Arifianto</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        :root {
+            --quiz-accent: #c4a882;
+            --quiz-bg: #f9f7f2;
+        }
+
+        body {
+            background-color: var(--quiz-bg);
+            color: var(--charcoal);
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .quiz-container {
+            max-width: 700px;
+            margin: 120px auto;
+            padding: 40px 24px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #eee;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--quiz-accent);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .quiz-screen {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .quiz-screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-meta {
+            font-size: 0.85rem;
+            color: var(--stone);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-family: 'Lora', serif;
+            font-size: 1.6rem;
+            line-height: 1.4;
+            color: var(--charcoal);
+            margin-bottom: 32px;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: var(--white);
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover {
+            border-color: var(--quiz-accent);
+            background: #fffcf8;
+            transform: translateX(4px);
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: var(--charcoal);
+            color: var(--white);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+        }
+
+        /* Result Styles */
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--quiz-accent);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .personality-name {
+            font-family: 'Lora', serif;
+            font-size: 2.5rem;
+            margin: 0 0 16px 0;
+        }
+
+        .personality-label {
+            font-size: 1.2rem;
+            color: var(--stone);
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .result-card {
+            background: #fdfdfd;
+            border: 1px solid #f0f0f0;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .result-card h4 {
+            margin-top: 0;
+            color: var(--quiz-accent);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .chart-container {
+            margin: 40px 0;
+        }
+
+        .chart-bar-wrap {
+            margin-bottom: 12px;
+        }
+
+        .chart-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .chart-bg {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: var(--quiz-accent);
+            width: 0%;
+            transition: width 1s ease-out;
+        }
+
+        .intro-screen {
+            text-align: center;
+        }
+
+        .intro-screen h1 {
+            font-family: 'Lora', serif;
+            font-size: 2.2rem;
+            margin-bottom: 16px;
+        }
+
+        .intro-screen p {
+            color: var(--stone);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-container {
+                margin: 40px 16px;
+                padding: 32px 20px;
+            }
+            .question-text {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav style="background: white;">
+        <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+        <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#writing">Writing</a></li>
+            <li><a href="/resources" style="color: var(--accent);">Resources</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="quiz-container">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <!-- Intro Screen -->
+            <div class="quiz-screen active" id="screen-intro">
+                <div class="intro-screen">
+                    <span class="section-label">Self-Discovery Tool</span>
+                    <h1>Play Personality Analysis</h1>
+                    <p>Temukan tipe bermain alami kamu berdasarkan penelitian Dr. Stuart Brown. <br>Bermain bukan cuma buat anak kecil — ini adalah cara kita memulihkan energi dan kreativitas.</p>
+                    <button class="btn-primary" onclick="startQuiz()">Mulai Kuis →</button>
+                </div>
+            </div>
+
+            <!-- Question Screen -->
+            <div class="quiz-screen" id="screen-question">
+                <div class="question-meta" id="questionMeta">Question 1 of 16</div>
+                <div class="question-text" id="questionText">Loading question...</div>
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options injected here -->
+                </div>
+            </div>
+
+            <!-- Result Screen -->
+            <div class="quiz-screen" id="screen-result">
+                <div class="result-header">
+                    <span class="result-badge">Hasil Analisis Kamu</span>
+                    <h1 class="personality-name" id="resName">Personality Name</h1>
+                    <span class="personality-label" id="resLabel">Label</span>
+                </div>
+
+                <div class="result-card">
+                    <h4>Tentang Tipe Ini</h4>
+                    <p id="resDesc">Description goes here.</p>
+                </div>
+
+                <div class="result-card">
+                    <h4>Insight Dunia Kerja</h4>
+                    <p id="resInsight">Insight goes here.</p>
+                </div>
+
+                <div class="chart-container" id="chartContainer">
+                    <!-- Bars injected here -->
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="btn-primary" onclick="location.reload()">Ulangi Kuis</button>
+                    <a href="/resources" style="display: block; margin-top: 20px; color: var(--stone); text-decoration: none; font-size: 0.9rem;">← Kembali ke Resources</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // QUIZ DATA FROM XML REFERENCE
+        const personalities = {
+            joker: {
+                name: "Joker",
+                label: "Si Pelawak",
+                description: "Kamu menemukan kebahagiaan lewat tawa dan humor. Buat kamu, hidup terasa lebih ringan kalau ada gelak tawa di dalamnya. Kamu punya kemampuan alami bikin orang lain nyaman dan merasa diterima.",
+                work_insight: "Kamu bersinar di lingkungan kerja yang santai dan kolaboratif. Coba masukkan humor ke presentasi, atau jadikan dirimu jembatan energi positif di tim."
+            },
+            explorer: {
+                name: "Explorer",
+                label: "Si Penjelajah",
+                description: "Kamu hidup untuk menemukan hal baru — tempat, ide, pengalaman, atau perasaan. Rasa ingin tahu adalah bahan bakar utamamu dan kamu mudah bosan dengan rutinitas yang itu-itu saja.",
+                work_insight: "Kamu butuh variasi dan tantangan baru secara berkala. Cari project lintas divisi, rotasi tugas, atau eksplorasi skill baru agar semangat tetap menyala."
+            },
+            kinesthete: {
+                name: "Kinesthete",
+                label: "Si Penggerak",
+                description: "Tubuhmu adalah alat bermainmu. Kamu berpikir lebih jernih saat bergerak, dan energimu paling optimal ketika ada aktivitas fisik dalam rutinitas harianmu.",
+                work_insight: "Jangan terlalu lama duduk. Walking meeting, standing desk, atau olahraga di sela kerja bukan gaya-gayaan — itu kebutuhanmu agar otak tetap tajam."
+            },
+            artist: {
+                name: "Artist/Creator",
+                label: "Si Pencipta",
+                description: "Kamu merasa paling hidup ketika sedang membuat sesuatu — entah itu tulisan, desain, musik, masakan, atau solusi kreatif dari masalah yang rumit.",
+                work_insight: "Kamu butuh ruang untuk bereksperimen. Monoton adalah musuhmu. Coba cari creative project kecil di dalam pekerjaanmu, bahkan kalau itu cuma redesain slide presentasi."
+            },
+            collector: {
+                name: "Collector",
+                label: "Si Pengumpul",
+                description: "Kamu menemukan kesenangan dalam mengumpulkan dan mengkurasi — bisa benda fisik, pengalaman, pengetahuan, atau koneksi. Ada kepuasan tersendiri saat koleksimu lengkap.",
+                work_insight: "Manfaatkan ini! Jadilah knowledge curator di tim. Kumpulkan referensi, tool, atau insight terbaik. Kamu akan thriving saat punya perpustakaan pribadi."
+            },
+            storyteller: {
+                name: "Storyteller",
+                label: "Si Pendongeng",
+                description: "Kamu melihat dunia lewat narasi. Kamu mudah terhanyut dalam cerita — film, novel, podcast, atau kisah nyata orang lain. Kamu juga punya naluri kuat untuk bercerita.",
+                work_insight: "Gunakan kekuatan narasimu di tempat kerja: presentasi yang engaging, menulis konten, atau jadi orang yang bisa menjual ide dengan cerita yang kuat."
+            },
+            director: {
+                name: "Director",
+                label: "Si Sutradara",
+                description: "Kamu senang mengorganisasi, merencanakan, dan mengarahkan. Buat kamu, melihat semua elemen bergerak sesuai rencana adalah hiburan tersendiri.",
+                work_insight: "Kamu natural leader and project manager. Beri dirimu kesempatan memimpin inisiatif, bahkan yang kecil sekalipun. Kamu thriving saat punya kontrol atas alur."
+            },
+            competitor: {
+                name: "Competitor",
+                label: "Si Petarung",
+                description: "Tantangan dan kompetisi adalah bahan bakarmu. Kamu terdorong untuk jadi yang terbaik — bukan selalu mengalahkan orang lain, tapi melampaui versi dirimu sebelumnya.",
+                work_insight: "Buat personal scoreboard. Track record pribadimu: response time, kualitas output, atau skill yang berkembang. Kompetisi terbaik adalah lawan dirimu sendiri."
+            }
+        };
+
+        const questions = [
+            {
+                text: "Waktu kecil, kamu paling sering melakukan apa sampai lupa waktu?",
+                options: [
+                    { text: "Bikin lelucon dan ngelawak sama teman", weights: { joker: 3 } },
+                    { text: "Jelajah tempat baru atau coba hal yang belum pernah dikerjain", weights: { explorer: 3 } },
+                    { text: "Main lari-larian, olahraga, atau aktivitas fisik", weights: { kinesthete: 3 } },
+                    { text: "Gambar, bikin kerajinan, atau ciptain sesuatu", weights: { artist: 3 } }
+                ]
+            },
+            {
+                text: "Kalau kamu punya waktu bebas seharian tanpa tanggung jawab, kamu paling mungkin...",
+                options: [
+                    { text: "Nonton film atau baca buku yang bikin baper", weights: { storyteller: 3 } },
+                    { text: "Ngumpulin, nyortir, atau ngerapiin koleksi sesuatu", weights: { collector: 3 } },
+                    { text: "Ngeplan aktivitas dan ngajak orang-orang ikutan", weights: { director: 3 } },
+                    { text: "Ikut lomba atau challenge yang bisa dimenangkan", weights: { competitor: 3 } }
+                ]
+            },
+            {
+                text: "Di tempat kerja, momen yang paling bikin kamu excited adalah...",
+                options: [
+                    { text: "Ketika timnya ketawa bareng dan suasana cair", weights: { joker: 2, storyteller: 1 } },
+                    { text: "Ketika dapat tugas atau project yang belum pernah dikerjain sebelumnya", weights: { explorer: 2, artist: 1 } },
+                    { text: "Ketika bisa gerak-gerak, presentasi, atau kerja lapangan", weights: { kinesthete: 2, director: 1 } },
+                    { text: "Ketika ada target jelas yang bisa dicapai dan diukur", weights: { competitor: 2, collector: 1 } }
+                ]
+            },
+            {
+                text: "Kalau lagi stres berat, kamu paling sering lari ke...",
+                options: [
+                    { text: "Nonton komedi atau nyari konten yang bikin ketawa", weights: { joker: 3, storyteller: 1 } },
+                    { text: "Jalan-jalan atau eksplorasi tempat baru", weights: { explorer: 3, kinesthete: 1 } },
+                    { text: "Olahraga, yoga, atau aktivitas fisik apa pun", weights: { kinesthete: 3 } },
+                    { text: "Nonton film atau baca novel untuk kabur ke dunia lain", weights: { storyteller: 3 } }
+                ]
+            },
+            {
+                text: "Teman-temanmu paling sering mendeskripsikan kamu sebagai...",
+                options: [
+                    { text: "Lucu dan bisa bikin suasana cair", weights: { joker: 3 } },
+                    { text: "Penasaran dan suka coba hal baru", weights: { explorer: 3 } },
+                    { text: "Aktif dan penuh energi", weights: { kinesthete: 3 } },
+                    { text: "Kreatif dan imajinatif", weights: { artist: 3 } }
+                ]
+            },
+            {
+                text: "Dari pilihan berikut, mana yang paling mendekati bermain versimu?",
+                options: [
+                    { text: "Ngobrol santai sambil saling nge-roast teman", weights: { joker: 3 } },
+                    { text: "Discover tempat makan baru atau nonton genre film baru", weights: { explorer: 2, storyteller: 1 } },
+                    { text: "Rapi-rapiin dan nyortir koleksi — buku, playlist, file", weights: { collector: 3 } },
+                    { text: "Ngerencanain acara atau trip bareng teman", weights: { director: 3 } }
+                ]
+            },
+            {
+                text: "Ketika menonton film atau membaca buku, kamu paling terhanyut saat...",
+                options: [
+                    { text: "Ada humor atau momen kocak yang bikin ngakak", weights: { joker: 2, storyteller: 1 } },
+                    { text: "Dunianya sangat detail dan bisa dijelajahi", weights: { explorer: 2, storyteller: 1 } },
+                    { text: "Ada karakter yang berjuang dan akhirnya menang", weights: { competitor: 2, storyteller: 1 } },
+                    { text: "Ceritanya punya twist yang bikin mikir", weights: { storyteller: 3 } }
+                ]
+            },
+            {
+                text: "Di sebuah pesta atau gathering, kamu paling sering jadi...",
+                options: [
+                    { text: "Orang yang bikin semua orang tertawa", weights: { joker: 3 } },
+                    { text: "Kenalan sama orang baru dan ngobrol soal hal-hal unik", weights: { explorer: 2, storyteller: 1 } },
+                    { text: "Orang yang diam-diam ngatur supaya acara lancar", weights: { director: 3 } },
+                    { text: "Orang yang asyik dengerin cerita orang lain", weights: { storyteller: 2, collector: 1 } }
+                ]
+            },
+            {
+                text: "Kalau kamu harus pilih satu proyek sampingan, kamu paling tertarik dengan...",
+                options: [
+                    { text: "Bikin konten lucu atau stand-up comedy", weights: { joker: 3 } },
+                    { text: "Travel blog atau dokumentasi eksplorasi tempat baru", weights: { explorer: 3 } },
+                    { text: "Nulis cerita, bikin podcast, atau vlog storytelling", weights: { storyteller: 3 } },
+                    { text: "Ikut kompetisi — hackathon, lomba desain, marathon", weights: { competitor: 3 } }
+                ]
+            },
+            {
+                text: "Dari semua ini, yang paling bikin kamu merasa hidup adalah...",
+                options: [
+                    { text: "Lagi ketawa bareng sampai perut sakit", weights: { joker: 3 } },
+                    { text: "Lagi discover sesuatu yang belum pernah tahu sebelumnya", weights: { explorer: 3 } },
+                    { text: "Lagi di tengah-tengah aktivitas fisik yang intens", weights: { kinesthete: 3 } },
+                    { text: "Lagi bikin sesuatu dari nol sampai jadi", weights: { artist: 3 } }
+                ]
+            },
+            {
+                text: "Hal apa yang paling cepat bikin kamu bosan di tempat kerja?",
+                options: [
+                    { text: "Suasana yang terlalu serius dan kaku", weights: { joker: 2, explorer: 1 } },
+                    { text: "Tugas yang itu-itu saja tanpa variasi", weights: { explorer: 2, kinesthete: 1 } },
+                    { text: "Tidak ada ruang untuk berkreasi atau berinovasi", weights: { artist: 2, director: 1 } },
+                    { text: "Tidak ada target atau milestone yang jelas", weights: { competitor: 2, collector: 1 } }
+                ]
+            },
+            {
+                text: "Kamu paling produktif ketika...",
+                options: [
+                    { text: "Suasana kerja santai dan ada momen bercanda", weights: { joker: 2, kinesthete: 1 } },
+                    { text: "Kamu sedang mengeksplorasi solusi yang belum pernah dicoba", weights: { explorer: 3 } },
+                    { text: "Ada orang yang bisa kamu bantu atau arahkan", weights: { director: 2, storyteller: 1 } },
+                    { text: "Ada deadline atau kompetisi yang jadi motivasi", weights: { competitor: 3 } }
+                ]
+            },
+            {
+                text: "Mainan atau permainan favoritmu waktu kecil adalah...",
+                options: [
+                    { text: "Permainan prank atau joke — menipu teman dengan cara lucu", weights: { joker: 3 } },
+                    { text: "Lego, puzzle, atau bikin-bikinan dari bahan seadanya", weights: { artist: 2, explorer: 1 } },
+                    { text: "Petak umpet, kejar-kejaran, atau olahraga tim", weights: { kinesthete: 2, competitor: 1 } },
+                    { text: "Koleksi — kartu, stiker, atau barang-barang tertentu", weights: { collector: 3 } }
+                ]
+            },
+            {
+                text: "Dalam sebuah tim, kamu paling nyaman berperan sebagai...",
+                options: [
+                    { text: "Pencair suasana yang bikin semua orang betah", weights: { joker: 3 } },
+                    { text: "Orang yang bawa ide segar dari luar", weights: { explorer: 2, artist: 1 } },
+                    { text: "Koordinator yang pastiin semua berjalan sesuai rencana", weights: { director: 3 } },
+                    { text: "Orang yang push tim untuk capai target terbaik", weights: { competitor: 2, director: 1 } }
+                ]
+            },
+            {
+                text: "Kepuasan terbesar dalam hidupmu biasanya datang dari...",
+                options: [
+                    { text: "Bikin orang lain tertawa atau merasa lebih baik", weights: { joker: 3 } },
+                    { text: "Berhasil menyelesaikan sesuatu yang challenging", weights: { competitor: 2, artist: 1 } },
+                    { text: "Menciptakan sesuatu yang belum ada sebelumnya", weights: { artist: 3 } },
+                    { text: "Melihat rencana yang kamu buat berhasil dieksekusi", weights: { director: 3 } }
+                ]
+            },
+            {
+                text: "Terakhir — kalau ada game yang menggambarkan hidupmu, itu adalah...",
+                options: [
+                    { text: "Improv comedy show — spontan, lucu, dan tak terduga", weights: { joker: 3 } },
+                    { text: "Open world RPG — bebas jelajah ke mana saja", weights: { explorer: 3 } },
+                    { text: "Sports game — kompetisi yang adil dengan aturan jelas", weights: { kinesthete: 2, competitor: 2 } },
+                    { text: "City builder atau strategy game — plan, build, execute", weights: { director: 2, collector: 1, artist: 1 } }
+                ]
+            }
+        ];
+
+        // QUIZ STATE
+        let currentQuestion = 0;
+        let scores = {
+            joker: 0, explorer: 0, kinesthete: 0, artist: 0,
+            collector: 0, storyteller: 0, director: 0, competitor: 0
+        };
+
+        function startQuiz() {
+            document.getElementById('screen-intro').classList.remove('active');
+            document.getElementById('screen-question').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionMeta').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('questionText').innerText = q.text;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(opt.weights);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Update Progress Bar
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        function selectOption(weights) {
+            // Accumulate weights
+            for (let p in weights) {
+                scores[p] += weights[p];
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('screen-question').classList.remove('active');
+            document.getElementById('screen-result').classList.add('active');
+            document.getElementById('progressBar').style.width = `100%`;
+
+            // Sort personalities by score
+            const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            const primaryId = sorted[0][0];
+            const primary = personalities[primaryId];
+            const maxScore = sorted[0][1];
+
+            // Update DOM
+            document.getElementById('resName').innerText = primary.name;
+            document.getElementById('resLabel').innerText = primary.label;
+            document.getElementById('resDesc').innerText = primary.description;
+            document.getElementById('resInsight').innerText = primary.work_insight;
+
+            // Render Chart
+            const chartContainer = document.getElementById('chartContainer');
+            chartContainer.innerHTML = '<h4>Distribution Skor Kamu</h4>';
+            
+            sorted.forEach(([id, score]) => {
+                const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
+                const pData = personalities[id];
+                
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar-wrap';
+                bar.innerHTML = `
+                    <div class="chart-label">
+                        <span>${pData.name} (${pData.label})</span>
+                        <span>${score} pts</span>
+                    </div>
+                    <div class="chart-bg">
+                        <div class="chart-fill" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                chartContainer.appendChild(bar);
+            });
+        }
+    </script>
+</body>
+</html>

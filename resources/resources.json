@@ -7,5 +7,14 @@
     "url": "/resources/timeblock.html",
     "icon": "⏱️",
     "pinned": true
+  },
+  {
+    "id": "play-quiz",
+    "title": "Play Personality Quiz",
+    "description": "Temukan tipe bermain alami kamu berdasarkan riset Dr. Stuart Brown untuk memulihkan kreativitas.",
+    "category": "Self-Discovery",
+    "url": "/resources/play-personality-quiz.html",
+    "icon": "🎭",
+    "pinned": true
   }
 ]
