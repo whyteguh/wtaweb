@@ -93,22 +93,7 @@
             }
         }
 
-        // ── DYNAMIC SOCIAL LINKS FROM socials.md ──
-        async function loadSocialLinks() {
-            try {
-                const response = await fetch('/socials.md');
-                if (!response.ok) return; // Silent fail if file doesn't exist
-                const text = await response.text();
-                
-                // Parse markdown links: - [Name](url)
-                const regex = /-\s+\[(.*?)\]\((.*?)\)/g;
-                let links = [];
-                let match;
-                while ((match = regex.exec(text)) !== null) {
-                    links.push({ name: match[1], url: match[2] });
-                }
-
-                // Inject into Contact section (index.html)
+                        // Inject into Contact section (index.html)
                 const contactContainer = document.getElementById('dynamic-social-contact');
                 if (contactContainer) {
                     contactContainer.innerHTML = links.map(link => {
@@ -153,5 +138,5 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchLatestPosts();
-            loadSocialLinks();
+            
         });

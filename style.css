@@ -308,6 +308,7 @@
         }
 
         .easter-egg .letter {
+            white-space: nowrap;
             display: inline-block;
             overflow: hidden;
             vertical-align: bottom;
@@ -332,17 +333,17 @@
         }
 
         /* Hovered State */
-        .easter-egg:hover .a {
+        .easter-egg:hover .a, .easter-egg.hovered .a {
             max-width: 0;
             opacity: 0;
             transition: max-width 0.3s ease 0s, opacity 0.3s ease 0s;
         }
-        .easter-egg:hover .u {
+        .easter-egg:hover .u, .easter-egg.hovered .u {
             max-width: 0;
             opacity: 0;
             transition: max-width 0.3s ease 0.2s, opacity 0.3s ease 0.2s;
         }
-        .easter-egg:hover .question {
+        .easter-egg:hover .question, .easter-egg.hovered .question {
             max-width: 1em;
             opacity: 1;
             transition: max-width 0.3s ease 0.4s, opacity 0.3s ease 0.4s;
