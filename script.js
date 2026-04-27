@@ -93,7 +93,49 @@
             }
         }
 
+        // ── FETCH PINNED RESOURCES FROM RESOURCES.JSON ──
+        async function fetchPinnedResources() {
+            const container = document.getElementById('pinned-resources-container');
+            if (!container) return;
+
+            try {
+                const response = await fetch('/resources/resources.json');
+                if (!response.ok) throw new Error('Failed to load resources catalog');
+                
+                const resources = await response.json();
+                const pinnedResources = resources.filter(r => r.pinned).slice(0, 3);
+
+                if (pinnedResources.length > 0) {
+                    container.innerHTML = '';
+                    pinnedResources.forEach(res => {
+                        const cardHTML = `
+                            <a href="${res.url}" class="post-card fade-in visible">
+                                <div class="post-thumb">
+                                    <div class="post-thumb-gradient" style="background: var(--cream-dark); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                                        ${res.icon || '🔧'}
+                                    </div>
+                                    <span class="post-thumb-icon">${res.category}</span>
+                                </div>
+                                <div class="post-body">
+                                    <span class="post-cat">${res.category}</span>
+                                    <h3>${res.title}</h3>
+                                    <p>${res.description}</p>
+                                    <div class="post-meta">
+                                        <span>Access Tool</span>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                        container.innerHTML += cardHTML;
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching pinned resources:', error);
+            }
+        }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchLatestPosts();
+            fetchPinnedResources();
         });

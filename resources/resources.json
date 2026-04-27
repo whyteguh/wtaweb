@@ -5,6 +5,7 @@
     "description": "A clean, dynamic daily timeblock planner to help you focus on deep work and organize your schedule.",
     "category": "Productivity",
     "url": "/resources/timeblock.html",
-    "icon": "⏱️"
+    "icon": "⏱️",
+    "pinned": true
   }
 ]
