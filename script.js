@@ -161,7 +161,7 @@
                     else if (icon.includes('medium')) icon = 'M';
                     else icon = name;
 
-                    linksHTML += `<a href="${url}" target="_blank" style="color: var(--charcoal-mid); font-size: 1.1rem; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; margin: 0 0.75rem;">${icon}</a>`;
+                    linksHTML += `<a href="${url}" target="_blank" style="color: var(--charcoal-mid); font-size: 1.1rem; text-decoration: none; opacity: 0.7; transition: opacity 0.2s;">${icon}</a>`;
                 }
                 
                 containers.forEach(container => {
