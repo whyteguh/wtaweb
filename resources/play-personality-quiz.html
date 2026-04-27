@@ -257,7 +257,10 @@
 
             <!-- Question Screen -->
             <div class="quiz-screen" id="screen-question">
-                <div class="question-meta" id="questionMeta">Question 1 of 16</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="question-meta" id="questionMeta">Question 1 of 16</div>
+                    <button id="backBtn" onclick="goBack()" style="background: none; border: none; color: var(--stone); cursor: pointer; font-size: 0.85rem; display: none;">← Kembali</button>
+                </div>
                 <div class="question-text" id="questionText">Loading question...</div>
                 <div class="options-container" id="optionsContainer">
                     <!-- Options injected here -->
@@ -496,6 +499,7 @@
 
         // QUIZ STATE
         let currentQuestion = 0;
+        let history = [];
         let scores = {
             joker: 0, explorer: 0, kinesthete: 0, artist: 0,
             collector: 0, storyteller: 0, director: 0, competitor: 0
@@ -512,6 +516,9 @@
             document.getElementById('questionMeta').innerText = `Question ${currentQuestion + 1} of ${questions.length}`;
             document.getElementById('questionText').innerText = q.text;
             
+            // Show/Hide Back Button
+            document.getElementById('backBtn').style.display = currentQuestion > 0 ? 'block' : 'none';
+
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
             
@@ -529,6 +536,12 @@
         }
 
         function selectOption(weights) {
+            // Save to history
+            history.push({
+                questionIndex: currentQuestion,
+                weights: JSON.parse(JSON.stringify(weights)) // Deep copy
+            });
+
             // Accumulate weights
             for (let p in weights) {
                 scores[p] += weights[p];
@@ -540,6 +553,20 @@
                 showQuestion();
             } else {
                 showResult();
+            }
+        }
+
+        function goBack() {
+            if (currentQuestion > 0) {
+                const lastMove = history.pop();
+                
+                // Subtract weights
+                for (let p in lastMove.weights) {
+                    scores[p] -= lastMove.weights[p];
+                }
+
+                currentQuestion--;
+                showQuestion();
             }
         }
 

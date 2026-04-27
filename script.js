@@ -134,8 +134,47 @@
             }
         }
 
+        // ── LOAD SOCIAL LINKS FROM SOCIALS.MD ──
+        async function loadSocialLinks() {
+            const containers = document.querySelectorAll('.dynamic-socials');
+            if (containers.length === 0) return;
+
+            try {
+                // Gunakan path relatif yang lebih aman untuk local/server
+                const response = await fetch('/socials.md');
+                if (!response.ok) throw new Error('Failed to load socials');
+                const text = await response.text();
+                
+                const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+                let linksHTML = '';
+                let match;
+                
+                while ((match = linkRegex.exec(text)) !== null) {
+                    const name = match[1];
+                    const url = match[2];
+                    let icon = name.toLowerCase();
+                    
+                    // Simple icon mapping
+                    if (icon.includes('email')) icon = '✉';
+                    else if (icon.includes('linkedin')) icon = 'in';
+                    else if (icon.includes('instagram')) icon = 'ig';
+                    else if (icon.includes('medium')) icon = 'M';
+                    else icon = name;
+
+                    linksHTML += `<a href="${url}" target="_blank" style="color: var(--charcoal-mid); font-size: 1.1rem; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; margin: 0 0.75rem;">${icon}</a>`;
+                }
+                
+                containers.forEach(container => {
+                    container.innerHTML = linksHTML;
+                });
+            } catch (error) {
+                console.error('Error loading social links:', error);
+            }
+        }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchLatestPosts();
             fetchPinnedResources();
+            loadSocialLinks();
         });

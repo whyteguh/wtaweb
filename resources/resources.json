@@ -6,7 +6,7 @@
     "category": "Productivity",
     "url": "/resources/timeblock.html",
     "icon": "⏱️",
-    "pinned": true
+    "pinned": false
   },
   {
     "id": "play-quiz",
