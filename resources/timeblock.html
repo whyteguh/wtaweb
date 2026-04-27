@@ -3,105 +3,886 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeblocking Tool - Wahyu Teguh Arifianto</title>
+    <title>15-Min Time Tracker - Wahyu Teguh Arifianto</title>
     <link rel="stylesheet" href="../style.css">
-    
-    <!-- LOAD REACT via CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- LOAD BABEL to compile JSX in the browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        .tool-container {
-            max-width: 800px;
-            margin: 120px auto;
-            padding: 24px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        :root {
+            --tracker-bg: #f9f7f2;
+            --tracker-card: #ffffff;
+            --tracker-accent: #c4a882;
+            --tracker-border: #e0e0e0;
         }
-        .block-row {
+
+        body {
+            background-color: var(--tracker-bg);
+            color: var(--charcoal);
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tracker-wrapper {
+            max-width: 1000px;
+            margin: 120px auto 60px;
+            padding: 0 24px;
+        }
+
+        /* Header & Controls */
+        .tracker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-left h1 {
+            font-family: 'Lora', serif;
+            font-size: 2rem;
+            margin: 0 0 8px 0;
+        }
+
+        .header-left p {
+            color: var(--stone);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .header-actions {
             display: flex;
             gap: 12px;
-            margin-bottom: 12px;
             align-items: center;
         }
-        .block-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-family: 'DM Sans', sans-serif;
-        }
-        .block-time {
-            width: 120px;
+
+        .btn-tool {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: 500;
-            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border: 1px solid var(--tracker-border);
+            background: white;
+            color: var(--charcoal);
         }
-        button.add-btn {
-            background: var(--accent);
+
+        .btn-tool:hover {
+            border-color: var(--tracker-accent);
+            background: #fffcf8;
+        }
+
+        .btn-primary {
+            background: var(--charcoal);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: white;
+            border: 1px solid var(--tracker-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .summary-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .summary-icon {
+            width: 48px;
+            height: 48px;
+            background: #f0ede6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tracker-accent);
+        }
+
+        .summary-text h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--charcoal);
+        }
+
+        .summary-text p {
+            margin: 4px 0 0 0;
+            font-size: 0.85rem;
+            color: var(--stone);
+        }
+
+        .accuracy-gauge {
+            flex: 1;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gauge-bar-bg {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .gauge-bar-fill {
+            height: 100%;
+            background: var(--tracker-accent);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .gauge-val {
+            font-weight: 700;
+            font-size: 0.9rem;
+            min-width: 40px;
+        }
+
+        /* Grid Table */
+        .tracker-grid {
+            background: white;
+            border: 1px solid var(--tracker-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .grid-header {
+            display: grid;
+            grid-template-cols: 100px 1fr 1fr;
+            background: #fcfbf8;
+            border-bottom: 1px solid var(--tracker-border);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--stone);
+        }
+
+        .grid-header > div {
+            padding: 16px 20px;
+            border-right: 1px solid var(--tracker-border);
+        }
+
+        .grid-header > div:last-child {
+            border-right: none;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-cols: 100px 1fr 1fr;
+            border-bottom: 1px solid var(--tracker-border);
+            min-height: 60px;
+        }
+
+        .grid-row:last-child {
+            border-bottom: none;
+        }
+
+        .cell-time {
+            padding: 16px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--stone);
+            background: #fdfdfc;
+            border-right: 1px solid var(--tracker-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cell-time.current {
+            color: var(--accent);
+            font-weight: 700;
+            background: #fffcf0;
+        }
+
+        .time-now {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .cell-plan, .cell-actual {
+            position: relative;
+            padding: 0;
+            border-right: 1px solid var(--tracker-border);
+        }
+
+        .cell-actual {
+            border-right: none;
+        }
+
+        .cell-textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 12px 16px;
+            resize: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: transparent;
+            outline: none;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        .cell-textarea:focus {
+            background: #fffdfa;
+        }
+
+        /* Status & Controls Overlay */
+        .cell-controls {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 5;
+        }
+
+        .cell-plan:hover .cell-controls {
+            opacity: 1;
+        }
+
+        .btn-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--tracker-border);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            margin-top: 20px;
+            color: var(--stone);
+            transition: all 0.2s;
+        }
+
+        .btn-circle:hover {
+            border-color: var(--tracker-accent);
+            color: var(--charcoal);
+        }
+
+        .btn-circle.active {
+            background: #50b3a2;
+            border-color: #50b3a2;
+            color: white;
+        }
+
+        /* Colors for spans */
+        .bg-blue { background-color: #e8f0ff !important; }
+        .bg-green { background-color: #e8f5e9 !important; }
+        .bg-yellow { background-color: #fff9c4 !important; }
+        .bg-red { background-color: #ffebee !important; }
+        .bg-purple { background-color: #f3e5f5 !important; }
+
+        .is-done {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+
+        .modal-content h2 {
+            font-family: 'Lora', serif;
+            margin: 0 0 24px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--stone);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--tracker-border);
+            border-radius: 8px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        /* Floating Nav */
+        .floating-nav {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .btn-float {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--charcoal);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+
+        .btn-float:hover {
+            transform: scale(1.1);
+            background: var(--accent);
+        }
+
+        @media (max-width: 600px) {
+            .tracker-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .grid-header, .grid-row {
+                grid-template-cols: 70px 1fr 1fr;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
-<body style="background: var(--bg-light);">
+<body>
 
     <nav style="background: white;">
         <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+        <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#writing">Writing</a></li>
+            <li><a href="/resources" style="color: var(--accent);">Resources</a></li>
+        </ul>
     </nav>
 
-    <!-- Mount point for React -->
-    <div id="react-root"></div>
-
-    <!-- Your React Code -->
-    <script type="text/babel">
-        function Timeblocker() {
-            const [blocks, setBlocks] = React.useState([
-                { id: 1, time: '08:00 AM', task: 'Deep Work Session' },
-                { id: 2, time: '10:00 AM', task: 'Check Emails' },
-                { id: 3, time: '11:00 AM', task: '' }
-            ]);
-
-            const addTask = () => {
-                setBlocks([...blocks, { id: Date.now(), time: '12:00 PM', task: '' }]);
-            };
-
-            const updateTask = (id, value) => {
-                setBlocks(blocks.map(b => b.id === id ? { ...b, task: value } : b));
-            };
-
-            return (
-                <div className="tool-container fade-in visible">
-                    <h2>Daily Timeblock Planner</h2>
-                    <p style={{color: '#666', marginBottom: '24px'}}>This is a React component running purely via CDN.</p>
-                    
-                    {blocks.map(block => (
-                        <div key={block.id} className="block-row">
-                            <div className="block-time">{block.time}</div>
-                            <input 
-                                type="text" 
-                                className="block-input" 
-                                value={block.task}
-                                onChange={(e) => updateTask(block.id, e.target.value)}
-                                placeholder="What will you focus on?"
-                            />
-                        </div>
-                    ))}
-                    
-                    <button className="add-btn" onClick={addTask}>+ Add Time Block</button>
+    <div class="tracker-wrapper">
+        <header class="tracker-header">
+            <div class="header-left">
+                <h1 id="txt-title">15-Min Time Tracker</h1>
+                <p id="txt-subtitle">Alex Hormozi's Productivity Audit</p>
+            </div>
+            <div class="header-actions">
+                <div class="btn-tool" id="lang-toggle">
+                    <i data-lucide="globe" size="16"></i>
+                    <span id="current-lang">EN</span>
                 </div>
-            );
+                <div class="btn-tool" style="padding: 0;">
+                    <select id="wake-up-select" style="border: none; background: transparent; padding: 10px 15px; outline: none; cursor: pointer;">
+                        <!-- Options injected by JS -->
+                    </select>
+                </div>
+                <button class="btn-tool btn-primary" onclick="openModal()">
+                    <i data-lucide="plus" size="16"></i>
+                    <span id="txt-addPlan">Add Plan</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="summary-card">
+            <div class="summary-info">
+                <div class="summary-icon">
+                    <i data-lucide="activity" size="24"></i>
+                </div>
+                <div class="summary-text">
+                    <h3 id="txt-summary">Daily Summary</h3>
+                    <p id="txt-blocks-info">Completed Blocks: 0 / Planned: 0</p>
+                </div>
+            </div>
+            <div class="accuracy-gauge">
+                <div class="gauge-bar-bg">
+                    <div class="gauge-bar-fill" id="accuracy-fill"></div>
+                </div>
+                <div class="gauge-val" id="accuracy-val">0%</div>
+            </div>
+        </div>
+
+        <div class="tracker-grid">
+            <div class="grid-header">
+                <div id="txt-time">Time</div>
+                <div id="txt-planned">Time Block</div>
+                <div id="txt-actual">Time Audit</div>
+            </div>
+            <div id="grid-body">
+                <!-- Rows injected by JS -->
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+            <button class="btn-tool" onclick="handleExport()">
+                <i data-lucide="download" size="16"></i>
+                <span id="txt-export">Export Notes</span>
+            </button>
+            <button class="btn-tool" onclick="handleReset()">
+                <i data-lucide="refresh-ccw" size="16"></i>
+                <span id="txt-reset">Clear Data</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Nav -->
+    <div class="floating-nav">
+        <button class="btn-float" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <i data-lucide="arrow-up" size="20"></i>
+        </button>
+        <button class="btn-float" onclick="scrollToCurrent()">
+            <i data-lucide="target" size="20"></i>
+        </button>
+        <button class="btn-float" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">
+            <i data-lucide="arrow-down" size="20"></i>
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <h2 id="txt-modal-title">Add Plan</h2>
+            <div class="form-group">
+                <label id="txt-modal-plan-label">Task Name</label>
+                <textarea id="modal-plan-text" rows="3" placeholder="What are you going to do?"></textarea>
+            </div>
+            <div style="display: grid; grid-template-cols: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label id="txt-modal-start-label">Start Time</label>
+                    <select id="modal-start-time"></select>
+                </div>
+                <div class="form-group">
+                    <label id="txt-modal-end-label">End Time</label>
+                    <select id="modal-end-time"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label id="txt-modal-color-label">Block Color</label>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-circle bg-blue" onclick="setModalColor('blue')" id="col-blue"></button>
+                    <button class="btn-circle bg-green" onclick="setModalColor('green')" id="col-green"></button>
+                    <button class="btn-circle bg-yellow" onclick="setModalColor('yellow')" id="col-yellow"></button>
+                    <button class="btn-circle bg-red" onclick="setModalColor('red')" id="col-red"></button>
+                    <button class="btn-circle bg-purple" onclick="setModalColor('purple')" id="col-purple"></button>
+                    <button class="btn-circle" onclick="setModalColor('default')" id="col-default" style="border: 2px solid #333;"></button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-tool" onclick="closeModal()" id="txt-modal-cancel">Cancel</button>
+                <button class="btn-tool btn-primary" onclick="submitPlan()" id="txt-modal-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dict = {
+            id: {
+                title: "Pelacak Waktu 15-Menit",
+                subtitle: "Audit Produktivitas ala Alex Hormozi",
+                time: "Waktu",
+                planned: "Blok Rencana",
+                actual: "Blok Audit",
+                placeholderPlan: "Rencana (mis: Deep Work)...",
+                placeholderAct: "Aktual...",
+                reset: "Kosongkan Data",
+                addPlan: "Tambah Rencana",
+                export: "Ekspor Catatan",
+                save: "Simpan",
+                cancel: "Batal",
+                startTime: "Mulai",
+                endTime: "Selesai",
+                summary: "Ringkasan Harian",
+                blocksInfo: "Blok Selesai: {done} / Terencana: {total}",
+                modalTitle: "Tambah Rencana",
+                planLabel: "Nama Tugas",
+                colorLabel: "Warna Blok",
+                now: "Sekarang",
+                done: "Selesai"
+            },
+            en: {
+                title: "15-Min Time Tracker",
+                subtitle: "Alex Hormozi's Productivity Audit",
+                time: "Time",
+                planned: "Time Block",
+                actual: "Time Audit",
+                placeholderPlan: "Plan (e.g., Deep Work)...",
+                placeholderAct: "Actual...",
+                reset: "Clear Data",
+                addPlan: "Add Plan",
+                export: "Export Notes",
+                save: "Save",
+                cancel: "Cancel",
+                startTime: "Start",
+                endTime: "End",
+                summary: "Daily Summary",
+                blocksInfo: "Completed Blocks: {done} / Planned: {total}",
+                modalTitle: "Add Plan",
+                planLabel: "Task Name",
+                colorLabel: "Block Color",
+                now: "Now",
+                done: "Done"
+            }
+        };
+
+        let lang = localStorage.getItem('hormoziLang') || 'en';
+        let wakeUpTime = localStorage.getItem('hormoziWakeUp') || '05:00';
+        let data = JSON.parse(localStorage.getItem('hormoziData') || '{}');
+        let modalColor = 'default';
+
+        const allTimeBlocks = [];
+        for (let h = 0; h < 24; h++) {
+            for (let m = 0; m < 60; m += 15) {
+                const hour = h.toString().padStart(2, '0');
+                const min = m.toString().padStart(2, '0');
+                allTimeBlocks.push(`${hour}:${min}`);
+            }
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('react-root'));
-        root.render(<Timeblocker />);
+        function init() {
+            renderWakeUpOptions();
+            renderLanguage();
+            renderGrid();
+            updateSummary();
+            lucide.createIcons();
+        }
+
+        function renderLanguage() {
+            const t = dict[lang];
+            document.getElementById('txt-title').innerText = t.title;
+            document.getElementById('txt-subtitle').innerText = t.subtitle;
+            document.getElementById('txt-time').innerText = t.time;
+            document.getElementById('txt-planned').innerText = t.planned;
+            document.getElementById('txt-actual').innerText = t.actual;
+            document.getElementById('txt-addPlan').innerText = t.addPlan;
+            document.getElementById('txt-export').innerText = t.export;
+            document.getElementById('txt-reset').innerText = t.reset;
+            document.getElementById('txt-summary').innerText = t.summary;
+            document.getElementById('txt-modal-title').innerText = t.modalTitle;
+            document.getElementById('txt-modal-plan-label').innerText = t.planLabel;
+            document.getElementById('txt-modal-start-label').innerText = t.startTime;
+            document.getElementById('txt-modal-end-label').innerText = t.endTime;
+            document.getElementById('txt-modal-color-label').innerText = t.colorLabel;
+            document.getElementById('txt-modal-cancel').innerText = t.cancel;
+            document.getElementById('txt-modal-save').innerText = t.save;
+            document.getElementById('current-lang').innerText = lang.toUpperCase();
+        }
+
+        function renderWakeUpOptions() {
+            const select = document.getElementById('wake-up-select');
+            select.innerHTML = '';
+            allTimeBlocks.forEach(time => {
+                const opt = document.createElement('option');
+                opt.value = time;
+                opt.innerText = `Wake Up: ${time}`;
+                if (time === wakeUpTime) opt.selected = true;
+                select.appendChild(opt);
+            });
+            select.onchange = (e) => {
+                wakeUpTime = e.target.value;
+                localStorage.setItem('hormoziWakeUp', wakeUpTime);
+                renderGrid();
+            };
+        }
+
+        function renderGrid() {
+            const container = document.getElementById('grid-body');
+            container.innerHTML = '';
+            
+            const visibleBlocks = allTimeBlocks.filter(t => t >= wakeUpTime);
+            let coveredUntil = 0;
+
+            visibleBlocks.forEach((time, index) => {
+                const rowData = data[time] || {};
+                const planSpan = rowData.planSpan || 1;
+                const isCovered = index < coveredUntil;
+
+                if (!isCovered) {
+                    coveredUntil = index + planSpan;
+                    
+                    const row = document.createElement('div');
+                    row.className = 'grid-row';
+                    row.id = `row-${time}`;
+
+                    const now = new Date();
+                    const currentH = now.getHours().toString().padStart(2, '0');
+                    const currentM = (Math.floor(now.getMinutes() / 15) * 15).toString().padStart(2, '0');
+                    const isNow = time === `${currentH}:${currentM}`;
+
+                    // Time Cell
+                    const timeCell = document.createElement('div');
+                    timeCell.className = `cell-time ${isNow ? 'current' : ''}`;
+                    timeCell.innerHTML = `<span>${time}</span>${isNow ? `<span class="time-now">${dict[lang].now}</span>` : ''}`;
+                    row.appendChild(timeCell);
+
+                    // Plan Cell
+                    const planCell = document.createElement('div');
+                    planCell.className = `cell-plan bg-${rowData.planColor || 'white'}`;
+                    planCell.style.gridRow = `span ${planSpan}`;
+                    
+                    const planText = document.createElement('textarea');
+                    planText.className = `cell-textarea ${rowData.completed ? 'is-done' : ''}`;
+                    planText.placeholder = dict[lang].placeholderPlan;
+                    planText.value = rowData.plan || '';
+                    planText.oninput = (e) => updateData(time, 'plan', e.target.value);
+                    planCell.appendChild(planText);
+
+                    const controls = document.createElement('div');
+                    controls.className = 'cell-controls';
+                    
+                    const checkBtn = document.createElement('button');
+                    checkBtn.className = `btn-circle ${rowData.completed ? 'active' : ''}`;
+                    checkBtn.innerHTML = '<i data-lucide="check" size="14"></i>';
+                    checkBtn.onclick = () => {
+                        updateData(time, 'completed', !rowData.completed);
+                        renderGrid();
+                    };
+                    controls.appendChild(checkBtn);
+
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'btn-circle';
+                    delBtn.innerHTML = '<i data-lucide="x" size="14"></i>';
+                    delBtn.onclick = () => {
+                        delete data[time];
+                        save();
+                        renderGrid();
+                    };
+                    controls.appendChild(delBtn);
+
+                    planCell.appendChild(controls);
+                    row.appendChild(planCell);
+
+                    // Actual Cell (Audit)
+                    const actualCell = document.createElement('div');
+                    actualCell.className = 'cell-actual';
+                    
+                    const actualText = document.createElement('textarea');
+                    actualText.className = 'cell-textarea';
+                    actualText.placeholder = dict[lang].placeholderAct;
+                    actualText.value = rowData.actual || '';
+                    actualText.oninput = (e) => updateData(time, 'actual', e.target.value);
+                    actualCell.appendChild(actualText);
+                    row.appendChild(actualCell);
+
+                    container.appendChild(row);
+                }
+            });
+            lucide.createIcons();
+            updateSummary();
+        }
+
+        function updateData(time, field, value) {
+            if (!data[time]) data[time] = { planSpan: 1, planColor: 'default' };
+            data[time][field] = value;
+            save();
+            updateSummary();
+        }
+
+        function save() {
+            localStorage.setItem('hormoziData', JSON.stringify(data));
+        }
+
+        function updateSummary() {
+            let totalPlanned = 0;
+            let totalDone = 0;
+            
+            const visibleBlocks = allTimeBlocks.filter(t => t >= wakeUpTime);
+            let cover = 0;
+            
+            visibleBlocks.forEach((time, index) => {
+                if (index >= cover) {
+                    const row = data[time];
+                    if (row && row.plan) {
+                        const span = row.planSpan || 1;
+                        totalPlanned += span;
+                        if (row.completed) totalDone += span;
+                        cover = index + span;
+                    }
+                }
+            });
+
+            const accuracy = totalPlanned > 0 ? Math.round((totalDone / totalPlanned) * 100) : 0;
+            document.getElementById('accuracy-val').innerText = `${accuracy}%`;
+            document.getElementById('accuracy-fill').style.width = `${accuracy}%`;
+            document.getElementById('txt-blocks-info').innerText = dict[lang].blocksInfo
+                .replace('{done}', totalDone)
+                .replace('{total}', totalPlanned);
+        }
+
+        // Modal Logic
+        function openModal() {
+            document.getElementById('modal').style.display = 'flex';
+            const startSelect = document.getElementById('modal-start-time');
+            const endSelect = document.getElementById('modal-end-time');
+            startSelect.innerHTML = '';
+            endSelect.innerHTML = '';
+            
+            const visible = allTimeBlocks.filter(t => t >= wakeUpTime);
+            visible.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t; opt.innerText = t;
+                startSelect.appendChild(opt);
+            });
+            
+            visible.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t; opt.innerText = t;
+                endSelect.appendChild(opt);
+            });
+            // Add midnight for end
+            const opt24 = document.createElement('option');
+            opt24.value = '24:00'; opt24.innerText = '24:00';
+            endSelect.appendChild(opt24);
+
+            setModalColor('default');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function setModalColor(c) {
+            modalColor = c;
+            ['blue', 'green', 'yellow', 'red', 'purple', 'default'].forEach(id => {
+                document.getElementById(`col-${id}`).style.border = (id === c) ? '2px solid #333' : '1px solid #ddd';
+            });
+        }
+
+        function submitPlan() {
+            const plan = document.getElementById('modal-plan-text').value;
+            const start = document.getElementById('modal-start-time').value;
+            const end = document.getElementById('modal-end-time').value;
+
+            if (!plan) return;
+
+            const visible = allTimeBlocks.filter(t => t >= wakeUpTime);
+            const startIndex = visible.indexOf(start);
+            const endIndex = end === '24:00' ? visible.length : visible.indexOf(end);
+
+            if (endIndex <= startIndex) {
+                alert("End time must be after start time");
+                return;
+            }
+
+            const span = endIndex - startIndex;
+            data[start] = {
+                plan: plan,
+                planSpan: span,
+                planColor: modalColor,
+                completed: false
+            };
+
+            // Clear intermediate blocks
+            for (let i = startIndex + 1; i < endIndex; i++) {
+                delete data[visible[i]];
+            }
+
+            save();
+            renderGrid();
+            closeModal();
+            document.getElementById('modal-plan-text').value = '';
+        }
+
+        function scrollToCurrent() {
+            const now = new Date();
+            const h = now.getHours().toString().padStart(2, '0');
+            const m = (Math.floor(now.getMinutes() / 15) * 15).toString().padStart(2, '0');
+            const el = document.getElementById(`row-${h}:${m}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function handleExport() {
+            let content = `15-Min Time Audit - ${new Date().toLocaleDateString()}\n\n`;
+            allTimeBlocks.filter(t => t >= wakeUpTime).forEach(time => {
+                const row = data[time];
+                if (row && (row.plan || row.actual)) {
+                    content += `[${time}] Plan: ${row.plan || '-'} | Actual: ${row.actual || '-'} | Status: ${row.completed ? 'Done' : 'Pending'}\n`;
+                }
+            });
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `time-audit-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+        }
+
+        function handleReset() {
+            if (confirm(lang === 'id' ? "Hapus semua data?" : "Clear all data?")) {
+                data = {};
+                save();
+                renderGrid();
+            }
+        }
+
+        document.getElementById('lang-toggle').onclick = () => {
+            lang = lang === 'en' ? 'id' : 'en';
+            localStorage.setItem('hormoziLang', lang);
+            renderLanguage();
+            renderGrid();
+        };
+
+        init();
     </script>
 </body>
 </html>
