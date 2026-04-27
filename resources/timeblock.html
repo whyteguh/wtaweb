@@ -167,38 +167,21 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            background-color: var(--tracker-border);
+            gap: 1px;
         }
 
-        .grid-header {
-            display: grid;
-            grid-template-cols: 100px 1fr 1fr;
+        .grid-header-cell {
             background: #fcfbf8;
-            border-bottom: 1px solid var(--tracker-border);
+            padding: 16px 20px;
             font-weight: 600;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--stone);
-        }
-
-        .grid-header > div {
-            padding: 16px 20px;
-            border-right: 1px solid var(--tracker-border);
-        }
-
-        .grid-header > div:last-child {
-            border-right: none;
-        }
-
-        .grid-row {
-            display: grid;
-            grid-template-cols: 100px 1fr 1fr;
-            border-bottom: 1px solid var(--tracker-border);
-            min-height: 60px;
-        }
-
-        .grid-row:last-child {
-            border-bottom: none;
+            text-align: center;
         }
 
         .cell-time {
@@ -208,7 +191,6 @@
             font-size: 0.9rem;
             color: var(--stone);
             background: #fdfdfc;
-            border-right: 1px solid var(--tracker-border);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -230,7 +212,7 @@
         .cell-plan, .cell-actual {
             position: relative;
             padding: 0;
-            border-right: 1px solid var(--tracker-border);
+            background: white;
         }
 
         .cell-actual {
@@ -463,15 +445,8 @@
             </div>
         </div>
 
-        <div class="tracker-grid">
-            <div class="grid-header">
-                <div id="txt-time">Time</div>
-                <div id="txt-planned">Time Block</div>
-                <div id="txt-actual">Time Audit</div>
-            </div>
-            <div id="grid-body">
-                <!-- Rows injected by JS -->
-            </div>
+        <div class="tracker-grid" id="tracker-grid">
+            <!-- Headers and rows injected by JS -->
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
@@ -611,9 +586,6 @@
             const t = dict[lang];
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('txt-subtitle').innerText = t.subtitle;
-            document.getElementById('txt-time').innerText = t.time;
-            document.getElementById('txt-planned').innerText = t.planned;
-            document.getElementById('txt-actual').innerText = t.actual;
             document.getElementById('txt-addPlan').innerText = t.addPlan;
             document.getElementById('txt-export').innerText = t.export;
             document.getElementById('txt-reset').innerText = t.reset;
@@ -646,36 +618,44 @@
         }
 
         function renderGrid() {
-            const container = document.getElementById('grid-body');
+            const container = document.getElementById('tracker-grid');
             container.innerHTML = '';
             
+            const t = dict[lang];
+            // Injeksi Header
+            const hTime = document.createElement('div');
+            hTime.className = 'grid-header-cell'; hTime.innerText = t.time;
+            container.appendChild(hTime);
+            const hPlan = document.createElement('div');
+            hPlan.className = 'grid-header-cell'; hPlan.innerText = t.planned;
+            container.appendChild(hPlan);
+            const hActual = document.createElement('div');
+            hActual.className = 'grid-header-cell'; hActual.innerText = t.actual;
+            container.appendChild(hActual);
+
             const visibleBlocks = allTimeBlocks.filter(t => t >= wakeUpTime);
             let coveredUntil = 0;
+
+            const now = new Date();
+            const currentH = now.getHours().toString().padStart(2, '0');
+            const currentM = (Math.floor(now.getMinutes() / 15) * 15).toString().padStart(2, '0');
+            const currentTimeStr = `${currentH}:${currentM}`;
 
             visibleBlocks.forEach((time, index) => {
                 const rowData = data[time] || {};
                 const planSpan = rowData.planSpan || 1;
-                const isCovered = index < coveredUntil;
+                const isNow = time === currentTimeStr;
 
-                if (!isCovered) {
+                // 1. Time Cell (Selalu muncul setiap 15 menit)
+                const timeCell = document.createElement('div');
+                timeCell.className = `cell-time ${isNow ? 'current' : ''}`;
+                timeCell.id = `row-${time}`;
+                timeCell.innerHTML = `<span>${time}</span>${isNow ? `<span class="time-now">${dict[lang].now}</span>` : ''}`;
+                container.appendChild(timeCell);
+
+                // 2. Plan Cell (Hanya muncul jika tidak tertutup span sebelumnya)
+                if (index >= coveredUntil) {
                     coveredUntil = index + planSpan;
-                    
-                    const row = document.createElement('div');
-                    row.className = 'grid-row';
-                    row.id = `row-${time}`;
-
-                    const now = new Date();
-                    const currentH = now.getHours().toString().padStart(2, '0');
-                    const currentM = (Math.floor(now.getMinutes() / 15) * 15).toString().padStart(2, '0');
-                    const isNow = time === `${currentH}:${currentM}`;
-
-                    // Time Cell
-                    const timeCell = document.createElement('div');
-                    timeCell.className = `cell-time ${isNow ? 'current' : ''}`;
-                    timeCell.innerHTML = `<span>${time}</span>${isNow ? `<span class="time-now">${dict[lang].now}</span>` : ''}`;
-                    row.appendChild(timeCell);
-
-                    // Plan Cell
                     const planCell = document.createElement('div');
                     planCell.className = `cell-plan bg-${rowData.planColor || 'white'}`;
                     planCell.style.gridRow = `span ${planSpan}`;
@@ -710,23 +690,22 @@
                     controls.appendChild(delBtn);
 
                     planCell.appendChild(controls);
-                    row.appendChild(planCell);
-
-                    // Actual Cell (Audit)
-                    const actualCell = document.createElement('div');
-                    actualCell.className = 'cell-actual';
-                    
-                    const actualText = document.createElement('textarea');
-                    actualText.className = 'cell-textarea';
-                    actualText.placeholder = dict[lang].placeholderAct;
-                    actualText.value = rowData.actual || '';
-                    actualText.oninput = (e) => updateData(time, 'actual', e.target.value);
-                    actualCell.appendChild(actualText);
-                    row.appendChild(actualCell);
-
-                    container.appendChild(row);
+                    container.appendChild(planCell);
                 }
+
+                // 3. Actual Cell (Selalu muncul setiap 15 menit)
+                const actualCell = document.createElement('div');
+                actualCell.className = 'cell-actual';
+                
+                const actualText = document.createElement('textarea');
+                actualText.className = 'cell-textarea';
+                actualText.placeholder = dict[lang].placeholderAct;
+                actualText.value = rowData.actual || '';
+                actualText.oninput = (e) => updateData(time, 'actual', e.target.value);
+                actualCell.appendChild(actualText);
+                container.appendChild(actualCell);
             });
+
             lucide.createIcons();
             updateSummary();
         }
