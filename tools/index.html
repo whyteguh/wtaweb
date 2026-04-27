@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools - Wahyu Teguh Arifianto</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .tools-page {
+            padding: 8rem 2rem 4rem;
+            min-height: 100vh;
+            background: var(--cream);
+        }
+        .category-section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .category-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .category-title {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            color: var(--earth-dark);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--cream-dark);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .tool-card {
+            background: var(--white);
+            border: 1px solid var(--cream-dark);
+            border-radius: 6px;
+            padding: 1.75rem;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 32px rgba(44, 40, 37, 0.08);
+            border-color: var(--earth-light);
+        }
+        .tool-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.25rem;
+        }
+        .tool-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin: 0;
+            line-height: 1.3;
+        }
+        .tool-card p {
+            font-size: 0.9rem;
+            color: var(--stone);
+            line-height: 1.6;
+            margin: 0;
+        }
+        .empty-state {
+            color: var(--stone);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
+        <ul class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#expertise">Expertise</a></li>
+            <li><a href="/#writing">Writing</a></li>
+            <li><a href="/tools" style="color: var(--accent);">Tools</a></li>
+        </ul>
+    </nav>
+
+    <main class="tools-page">
+        <div class="section-inner">
+            <span class="section-label">Digital Resources</span>
+            <h1 class="section-title">My <em>Tools</em></h1>
+            <div class="divider"></div>
+            <p style="margin-bottom: 3.5rem; color: var(--charcoal-mid); max-width: 500px; font-size: 0.95rem; line-height: 1.8;">
+                A collection of micro-tools, planners, and utilities I've built to solve my own problems. Feel free to use them.
+            </p>
+
+            <div id="tools-container">
+                <p class="empty-state">Loading tools...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--cream-dark); padding: 3rem 2rem; text-align: center;">
+        <p class="footer-name" style="font-family: var(--font-serif); font-weight: 600; font-size: 1.1rem; color: var(--charcoal); margin-bottom: 0.5rem;">Wahyu Teguh Arifianto</p>
+        <p style="font-size: 0.8rem; color: var(--stone);">© 2026 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('tools-container');
+            
+            try {
+                const response = await fetch('tools.json');
+                if (!response.ok) throw new Error('Failed to load tools catalog');
+                
+                const tools = await response.json();
+                
+                if (!tools || tools.length === 0) {
+                    container.innerHTML = '<p class="empty-state">No tools available yet.</p>';
+                    return;
+                }
+
+                // Group by category
+                const categorizedTools = tools.reduce((acc, tool) => {
+                    const cat = tool.category || 'Uncategorized';
+                    if (!acc[cat]) acc[cat] = [];
+                    acc[cat].push(tool);
+                    return acc;
+                }, {});
+
+                container.innerHTML = ''; // Clear loading state
+
+                // Render each category
+                for (const [category, items] of Object.entries(categorizedTools)) {
+                    // Create section
+                    const section = document.createElement('div');
+                    section.className = 'category-section';
+                    
+                    // Title
+                    const title = document.createElement('h2');
+                    title.className = 'category-title';
+                    title.textContent = category;
+                    section.appendChild(title);
+                    
+                    // Grid
+                    const grid = document.createElement('div');
+                    grid.className = 'tools-grid';
+                    
+                    items.forEach(tool => {
+                        grid.innerHTML += `
+                            <a href="${tool.url}" class="tool-card">
+                                <div class="tool-icon">${tool.icon || '🔧'}</div>
+                                <h3>${tool.title}</h3>
+                                <p>${tool.description}</p>
+                            </a>
+                        `;
+                    });
+                    
+                    section.appendChild(grid);
+                    container.appendChild(section);
+                }
+                
+                // Add fade-in effect
+                setTimeout(() => {
+                    document.querySelectorAll('.category-section').forEach(el => el.classList.add('visible'));
+                }, 50);
+
+            } catch (error) {
+                console.error('Error fetching tools:', error);
+                container.innerHTML = '<p class="empty-state">Failed to load tools. Please try again later.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
