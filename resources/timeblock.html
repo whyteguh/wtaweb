@@ -713,6 +713,7 @@
                     
                     const wrapper = document.createElement('div');
                     wrapper.className = 'controls-wrapper';
+                    wrapper.id = `wrapper-${time}`;
                     
                     // Attach listeners to move the global controls
                     const showControls = () => moveControls(time, wrapper);
@@ -737,20 +738,24 @@
                 container.appendChild(actualCell);
             });
 
+            // Re-attach global controls to activeTime if grid re-rendered
+            if (activeTime) {
+                const activeWrapper = document.getElementById(`wrapper-${activeTime}`);
+                if (activeWrapper) moveControls(activeTime, activeWrapper);
+            }
+
             lucide.createIcons();
             updateSummary();
         }
 
         let globalControls = null;
+        let activeTime = null;
 
         function createGlobalControls() {
             const controls = document.createElement('div');
             controls.className = 'cell-controls';
             controls.id = 'global-controls';
             
-            // Re-render internally when actions happen
-            const refresh = () => renderGrid();
-
             const checkBtn = document.createElement('button');
             checkBtn.className = 'btn-circle';
             checkBtn.id = 'gc-check';
@@ -780,7 +785,8 @@
             ['blue', 'green', 'yellow', 'red', 'purple', 'default'].forEach(c => {
                 const dot = document.createElement('div');
                 dot.className = `color-dot bg-${c}`;
-                dot.onclick = () => {
+                dot.onclick = (e) => {
+                    e.stopPropagation();
                     const time = controls.dataset.time;
                     updateData(time, 'planColor', c);
                     renderGrid();
@@ -790,17 +796,17 @@
             controls.appendChild(picker);
 
             globalControls = controls;
-            document.body.appendChild(globalControls); // Start detached or attached to body
-            lucide.createIcons({ props: { size: 14 } });
+            document.body.appendChild(globalControls);
+            lucide.createIcons();
         }
 
         function moveControls(time, wrapper) {
             if (!globalControls) createGlobalControls();
             
+            activeTime = time;
             globalControls.dataset.time = time;
             const rowData = data[time] || {};
             
-            // Update button states
             const checkBtn = document.getElementById('gc-check');
             checkBtn.className = `btn-circle ${rowData.completed ? 'active' : ''}`;
             checkBtn.onclick = (e) => {
@@ -811,10 +817,9 @@
 
             document.getElementById('gc-span-up').onclick = (e) => { e.stopPropagation(); updateSpan(time, -1); };
             document.getElementById('gc-span-down').onclick = (e) => { e.stopPropagation(); updateSpan(time, 1); };
-            document.getElementById('gc-del').onclick = (e) => { e.stopPropagation(); delete data[time]; save(); renderGrid(); };
+            document.getElementById('gc-del').onclick = (e) => { e.stopPropagation(); delete data[time]; activeTime = null; save(); renderGrid(); };
 
             wrapper.appendChild(globalControls);
-            lucide.createIcons(); // Ensure icons are visible
         }
 
         function updateSpan(time, delta) {
