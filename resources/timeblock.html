@@ -247,9 +247,10 @@
 
         /* Status & Controls Overlay */
         .cell-controls {
-            position: absolute;
-            top: 6px;
-            right: 6px;
+            position: sticky;
+            top: 140px; /* Agar tetap terlihat di bawah nav saat scroll */
+            float: right;
+            margin: 6px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -257,10 +258,24 @@
             transition: opacity 0.2s;
             z-index: 20;
             background: white;
-            padding: 6px;
+            padding: 8px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border: 1px solid var(--tracker-border);
+            pointer-events: auto;
+        }
+
+        /* Container for controls to allow sticky to work properly */
+        .controls-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            pointer-events: none; /* Agar tidak menghalangi klik ke textarea */
+        }
+
+        .cell-plan:hover .cell-controls, .cell-plan:focus-within .cell-controls {
+            opacity: 1;
         }
 
         .color-picker {
@@ -277,10 +292,6 @@
             border-radius: 50%;
             cursor: pointer;
             border: 1px solid rgba(0,0,0,0.1);
-        }
-
-        .cell-plan:hover .cell-controls {
-            opacity: 1;
         }
 
         .btn-circle {
@@ -700,6 +711,9 @@
                     planText.oninput = (e) => updateData(time, 'plan', e.target.value);
                     planCell.appendChild(planText);
 
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'controls-wrapper';
+                    
                     const controls = document.createElement('div');
                     controls.className = 'cell-controls';
                     
@@ -748,7 +762,8 @@
                     });
                     controls.appendChild(picker);
 
-                    planCell.appendChild(controls);
+                    wrapper.appendChild(controls);
+                    planCell.appendChild(wrapper);
                     container.appendChild(planCell);
                 }
 
