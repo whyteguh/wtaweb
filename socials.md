@@ -1,4 +1,5 @@
 - [LinkedIn](https://linkedin.com/in/wahyu-teguh)
 - [Instagram](https://instagram.com/wahyuteguh)
+- [Threads](https://threads.net/@wahyuteguh)
+- [Youtube](https://youtube.com/@whyteguh)
 - [Email](mailto:hello@wahyuteguh.com)
-- [Medium](https://medium.com/@wahyuteguh)
