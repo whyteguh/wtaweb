@@ -6,7 +6,8 @@
     "category": "Productivity",
     "url": "/resources/timeblock.html",
     "icon": "⏱️",
-    "pinned": true
+    "pinned": true,
+    "publish": true
   },
   {
     "id": "play-quiz",
@@ -15,6 +16,17 @@
     "category": "Self-Discovery",
     "url": "/resources/play-personality-quiz.html",
     "icon": "🎭",
-    "pinned": true
+    "pinned": true,
+    "publish": false
+  },
+  {
+    "id": "history-of-my-life",
+    "title": "History of My Life",
+    "description": "Lakukan audit hidup tahun demi tahun untuk menemukan pola berulang, siklus, dan blind spot melalui analisis AI.",
+    "category": "Self-Discovery",
+    "url": "/resources/history-of-my-life.html",
+    "icon": "📜",
+    "pinned": true,
+    "publish": true
   }
 ]

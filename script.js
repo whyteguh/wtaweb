@@ -103,7 +103,7 @@
                 if (!response.ok) throw new Error('Failed to load resources catalog');
                 
                 const resources = await response.json();
-                const pinnedResources = resources.filter(r => r.pinned).slice(0, 3);
+                const pinnedResources = resources.filter(r => r.pinned && r.publish !== false).slice(0, 3);
 
                 if (pinnedResources.length > 0) {
                     container.innerHTML = '';

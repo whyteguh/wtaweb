@@ -11,14 +11,15 @@
         href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 
 <body>
 
     <!-- NAV -->
     <nav style="background: var(--bg-light);">
-        <a href="/" class="nav-logo">Wahyu T. Arifianto</a>
-        
+        <a href="/" class="nav-logo">Wahyu Teguh A.</a>
+
         <ul class="nav-links">
             <li><a href="/#about">About</a></li>
             <li><a href="/#expertise">Expertise</a></li>
@@ -27,7 +28,7 @@
             <li><a href="/#contact">Contact</a></li>
         </ul>
 
-        </nav>
+    </nav>
 
     <section class="writing" id="writing" style="padding-top: 120px;">
         <div class="section-inner">
@@ -44,25 +45,26 @@
     <!-- FOOTER -->
     <footer>
         <p class="footer-name">Wahyu Teguh Arifianto</p>
-        
-        <div class="footer-social dynamic-socials" style="margin: 1.5rem 0; display: flex; justify-content: center; gap: 1.5rem;"></div>
-<p>© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
-        </footer>
+
+        <div class="footer-social dynamic-socials"
+            style="margin: 1.5rem 0; display: flex; justify-content: center; gap: 1.5rem;"></div>
+        <p>© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+    </footer>
 
     <script src="/script.js" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const container = document.getElementById('all-posts-container');
-            
+
             try {
                 const response = await fetch('/posts/posts.json');
                 if (!response.ok) throw new Error('Failed to load posts catalog');
-                
+
                 const posts = await response.json();
 
                 if (posts && posts.length > 0) {
                     container.innerHTML = '';
-                    
+
                     const gradients = [
                         '', // Default CSS gradient
                         'linear-gradient(135deg, #e8d5c0, #c4a882)',
@@ -73,7 +75,7 @@
                         const gradient = gradients[index % gradients.length];
                         const gradientStyle = gradient ? `style="background: ${gradient};"` : '';
                         const cat = post.category || 'Blog';
-                        
+
                         const cardHTML = `
                             <a href="/article.html?id=${post.id}" class="post-card fade-in visible">
                                 <div class="post-thumb">
