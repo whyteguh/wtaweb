@@ -11,10 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     
-    <!-- Memuat Tailwind CSS melalui CDN dengan kustomisasi tema -->
+    <!-- Memuat Tailwind CSS melalui CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
+        window.tailwind.config = {
             theme: {
                 extend: {
                     colors: {
@@ -41,7 +41,7 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Memuat Babel untuk menerjemahkan JSX di browser secara langsung -->
+    <!-- Memuat Babel untuk menerjemahkan JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -57,6 +57,8 @@
             font-family: 'DM Sans', sans-serif;
             background-color: var(--cream);
             color: var(--charcoal);
+            margin: 0;
+            padding: 0;
         }
 
         .serif { font-family: 'Lora', serif; }
@@ -73,7 +75,6 @@
             border-bottom: 1px solid rgba(139, 111, 71, 0.12);
         }
 
-        /* Footer Styles */
         footer {
             padding: 4rem 2rem;
             background-color: var(--cream);
@@ -111,20 +112,12 @@
             color: var(--stone);
             letter-spacing: 0.05em;
         }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--cream); }
-        ::-webkit-scrollbar-thumb { background: var(--cream-dark); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--stone); }
     </style>
 </head>
 
-<body class="bg-cream text-charcoal font-sans">
-
+<body>
     <div id="root"></div>
 
-    <!-- Skrip Aplikasi -->
     <script type="text/babel">
         const { useState, useEffect } = React;
 
@@ -138,7 +131,6 @@
         const X = (p) => <SVGIcon {...p} d='<path d="M18 6 6 18"/><path d="M6 6l12 12"/>' />;
         const ChevronRight = (p) => <SVGIcon {...p} d='<polyline points="9 18 15 12 9 6"/>' />;
 
-        // Data Pertanyaan dan Opsi Jawaban
         const questions = [
             {
                 question: "Bagaimana respons spontan Anda ketika menghadapi masalah besar yang tiba-tiba muncul?",
@@ -292,7 +284,6 @@
             }
         ];
 
-        // Fungsi Analisis Level
         const analyzeHawkinsLevel = (score) => {
             const levels = [
                 { threshold: 600, level: "Peace (600+)", emotion: "Kedamaian / Pencerahan", desc: "Anda berada di tingkat kedamaian yang mendalam. Dualitas (benar-salah, baik-buruk) mulai memudar. Anda merasakan kesatuan dengan segalanya.", color: "text-amber-600", bg: "bg-amber-50", borderColor: "border-amber-200" },
@@ -310,7 +301,6 @@
                 { threshold: 75, level: "Grief (75 - 99)", emotion: "Kesedihan Mendalam", desc: "Anda merasa sedih, menyesal, dan fokus pada masa lalu yang hilang. Sulit melihat masa depan yang cerah.", color: "text-slate-600", bg: "bg-slate-50", borderColor: "border-slate-200" },
                 { threshold: 0, level: "Apathy/Guilt (< 75)", emotion: "Apatis / Rasa Bersalah", desc: "Energi terendah. Anda merasa putus asa, tidak berharga, menyalahkan diri sendiri atau merasa menjadi korban mutlak dari keadaan.", color: "text-gray-600", bg: "bg-gray-50", borderColor: "border-gray-200" }
             ];
-            
             return levels.find(l => score >= l.threshold) || levels[levels.length - 1];
         };
 
@@ -324,7 +314,6 @@
             const handleAnswer = (value) => {
                 const newAnswers = [...answers, value];
                 setAnswers(newAnswers);
-
                 if (currentQuestion < questions.length - 1) {
                     setCurrentQuestion(currentQuestion + 1);
                 } else {
@@ -350,13 +339,11 @@
             };
 
             const FullMapModal = () => (
-                <div className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+                <div className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fadeIn">
                     <div className="bg-white rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-slideUp">
                         <div className="p-8 border-b border-cream-dark flex justify-between items-center bg-cream/30">
                             <h2 className="text-2xl font-bold text-charcoal serif">Peta Kesadaran (Hawkins)</h2>
-                            <button onClick={() => setShowMap(false)} className="text-stone hover:text-charcoal p-2 transition">
-                                <X size={24} />
-                            </button>
+                            <button onClick={() => setShowMap(false)} className="text-stone hover:text-charcoal p-2 transition"><X size={24} /></button>
                         </div>
                         <div className="p-8 overflow-y-auto">
                             <p className="text-sm text-stone mb-6">Skala logaritmik (1-1000) yang memetakan tingkatan energi emosional dan spiritual.</p>
@@ -393,7 +380,6 @@
 
             return (
                 <div className="min-h-screen flex flex-col bg-cream">
-                    {/* Sticky Navigation matching main site */}
                     <nav className="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
                         <a href="/" className="text-charcoal serif font-bold text-lg tracking-tight hover:text-earth transition">Wahyu Teguh A.</a>
                         <div className="flex items-center gap-4">
@@ -405,29 +391,14 @@
                         {!hasStarted ? (
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 md:p-16 max-w-3xl w-full text-center animate-fadeIn">
                                 <span className="text-[10px] font-bold text-earth uppercase tracking-[0.3em] mb-4 block">Self-Discovery Tool</span>
-                                <h1 className="text-5xl font-bold text-charcoal serif mb-8">Consciousness Map Quiz</h1>
-                                <p className="text-stone mb-12 leading-relaxed text-lg italic">
-                                    "Your level of consciousness determines your reality."
-                                </p>
-                                <p className="text-charcoal-mid mb-12 leading-relaxed max-w-xl mx-auto">
-                                    Berdasarkan riset Dr. David R. Hawkins, temukan tingkat energi dominan Anda saat ini dan bagaimana hal itu membentuk cara Anda melihat dunia.
-                                </p>
-                                
+                                <h1 className="text-5xl font-bold text-charcoal serif mb-8 leading-tight">Consciousness Map Quiz</h1>
+                                <p className="text-stone mb-12 leading-relaxed text-lg italic serif">"Your level of consciousness determines your reality."</p>
+                                <p className="text-charcoal-mid mb-12 leading-relaxed max-w-xl mx-auto">Berdasarkan riset Dr. David R. Hawkins, temukan tingkat energi dominan Anda saat ini dan bagaimana hal itu membentuk cara Anda melihat dunia.</p>
                                 <div className="bg-cream-dark/30 border border-cream-dark text-charcoal-mid rounded-[2rem] p-8 mb-12 text-sm text-left shadow-inner">
-                                    <span className="font-bold flex items-center mb-4 text-charcoal serif text-lg">
-                                        <Info className="w-6 h-6 mr-3 text-earth" />
-                                        Catatan Penting
-                                    </span>
-                                    <p className="leading-relaxed">
-                                        Peta Kesadaran bersifat dinamis. Anda bisa berada di level 400 (Rasio) dalam pekerjaan, namun turun ke level 150 (Marah) dalam hubungan asmara. Hasil skor kuis ini hanyalah refleksi dari pola dominan Anda dan bukan diagnosis psikologis mutlak.
-                                    </p>
+                                    <span className="font-bold flex items-center mb-4 text-charcoal serif text-lg"><Info className="w-6 h-6 mr-3 text-earth" /> Catatan Penting</span>
+                                    <p className="leading-relaxed">Peta Kesadaran bersifat dinamis. Anda bisa berada di level 400 (Rasio) dalam pekerjaan, namun turun ke level 150 (Marah) dalam hubungan asmara. Hasil skor kuis ini hanyalah refleksi dari pola dominan Anda.</p>
                                 </div>
-
-                                <button 
-                                    onClick={() => setHasStarted(true)}
-                                    className="bg-charcoal hover:bg-earth text-cream font-bold py-5 px-12 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 w-full sm:w-auto uppercase text-xs tracking-widest">
-                                    Mulai Kuis
-                                </button>
+                                <button onClick={() => setHasStarted(true)} className="bg-charcoal hover:bg-earth text-cream font-bold py-5 px-12 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 w-full sm:w-auto uppercase text-xs tracking-widest">Mulai Kuis</button>
                             </div>
                         ) : isFinished ? (
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 md:p-16 max-w-3xl w-full text-center animate-fadeIn">
@@ -436,7 +407,6 @@
                                     <span className="text-[10px] font-bold text-stone uppercase tracking-widest">Estimasi Skor Kesadaran</span>
                                     <div className="text-6xl font-bold text-charcoal mt-2">{Math.round(answers.reduce((a, b) => a + b, 0) / answers.length)}</div>
                                 </div>
-                                
                                 {(() => {
                                     const avg = Math.round(answers.reduce((a, b) => a + b, 0) / answers.length);
                                     const result = analyzeHawkinsLevel(avg);
@@ -448,25 +418,11 @@
                                         </div>
                                     );
                                 })()}
-
-                                <p className="text-xs text-stone italic mb-12 px-4 max-w-lg mx-auto leading-relaxed">
-                                    Ingat: Tingkat kesadaran bisa berfluktuasi. Jadikan ini sebagai alat navigasi diri untuk bertumbuh ke arah 'Daya' (Power) daripada 'Paksaan' (Force).
-                                </p>
-
+                                <p className="text-xs text-stone italic mb-12 px-4 max-w-lg mx-auto leading-relaxed">Ingat: Tingkat kesadaran bisa berfluktuasi. Jadikan ini sebagai alat navigasi diri untuk bertumbuh.</p>
                                 <div className="flex flex-col sm:flex-row justify-center gap-6">
-                                    <button 
-                                        onClick={() => setShowMap(true)}
-                                        className="bg-white border border-charcoal hover:bg-charcoal hover:text-cream text-charcoal font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest">
-                                        <Map size={18} /> Lihat Peta Full
-                                    </button>
-                                    <button 
-                                        onClick={resetQuiz}
-                                        className="bg-charcoal hover:bg-earth text-cream font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest shadow-lg">
-                                        <RotateCcw size={18} /> Ulangi Kuis
-                                    </button>
+                                    <button onClick={() => setShowMap(true)} className="bg-white border border-charcoal hover:bg-charcoal hover:text-cream text-charcoal font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest"><Map size={18} /> Lihat Peta Full</button>
+                                    <button onClick={resetQuiz} className="bg-charcoal hover:bg-earth text-cream font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest shadow-lg"><RotateCcw size={18} /> Ulangi Kuis</button>
                                 </div>
-
-                                {showMap && <FullMapModal />}
                             </div>
                         ) : (
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 md:p-16 max-w-3xl w-full animate-fadeIn">
@@ -476,29 +432,16 @@
                                             <span className="text-[10px] font-bold text-earth uppercase tracking-widest mb-2 block">Consciousness Check</span>
                                             <h2 className="text-sm font-bold text-charcoal uppercase tracking-widest">Pertanyaan {currentQuestion + 1} <span className="text-stone">/ {questions.length}</span></h2>
                                         </div>
-                                        <div className="text-xs font-bold text-stone uppercase tracking-widest">
-                                            {Math.round(((currentQuestion + 1) / questions.length) * 100)}% Complete
-                                        </div>
+                                        <div className="text-xs font-bold text-stone uppercase tracking-widest">{Math.round(((currentQuestion + 1) / questions.length) * 100)}% Complete</div>
                                     </div>
                                     <div className="w-full bg-cream-dark h-1.5 rounded-full overflow-hidden">
-                                        <div 
-                                            className="bg-earth h-full transition-all duration-700 ease-out" 
-                                            style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                                        ></div>
+                                        <div className="bg-earth h-full transition-all duration-700 ease-out" style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}></div>
                                     </div>
                                 </div>
-
-                                <h2 className="text-3xl font-bold text-charcoal serif mb-10 leading-snug">
-                                    {questions[currentQuestion].question}
-                                </h2>
-
+                                <h2 className="text-3xl font-bold text-charcoal serif mb-10 leading-snug">{questions[currentQuestion].question}</h2>
                                 <div className="space-y-4">
                                     {questions[currentQuestion].options.map((option, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => handleAnswer(option.value)}
-                                            className="w-full text-left p-6 rounded-2xl border border-cream-dark hover:border-earth hover:bg-cream transition-all duration-300 group flex items-center justify-between"
-                                        >
+                                        <button key={index} onClick={() => handleAnswer(option.value)} className="w-full text-left p-6 rounded-2xl border border-cream-dark hover:border-earth hover:bg-cream transition-all duration-300 group flex items-center justify-between">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-8 h-8 rounded-full border border-cream-dark group-hover:border-earth bg-white flex items-center justify-center flex-shrink-0 transition-colors">
                                                     <div className="w-2 h-2 rounded-full bg-earth opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -509,23 +452,15 @@
                                         </button>
                                     ))}
                                 </div>
-
                                 {currentQuestion > 0 && (
                                     <div className="mt-12 flex justify-start border-t border-cream-dark pt-8">
-                                        <button
-                                            onClick={handleBack}
-                                            className="text-stone hover:text-charcoal font-bold text-[10px] uppercase tracking-widest flex items-center transition-all group"
-                                        >
-                                            <ArrowLeft size={16} className="mr-2 transform group-hover:-translate-x-1 transition-transform" />
-                                            Kembali
-                                        </button>
+                                        <button onClick={handleBack} className="text-stone hover:text-charcoal font-bold text-[10px] uppercase tracking-widest flex items-center transition-all group"><ArrowLeft size={16} className="mr-2 transform group-hover:-translate-x-1 transition-transform" /> Kembali</button>
                                     </div>
                                 )}
                             </div>
                         )}
                     </main>
 
-                    {/* FOOTER */}
                     <footer>
                         <p className="footer-name">Wahyu Teguh Arifianto</p>
                         <ul className="footer-links">
