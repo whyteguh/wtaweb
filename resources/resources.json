@@ -17,15 +17,25 @@
     "url": "/resources/play-personality-quiz.html",
     "icon": "🎭",
     "pinned": true,
-    "publish": false
+    "publish": true
   },
   {
     "id": "history-of-my-life",
     "title": "History of My Life",
-    "description": "Lakukan audit hidup tahun demi tahun untuk menemukan pola berulang, siklus, dan blind spot melalui analisis AI.",
+    "description": "Lakukan audit hidup tahun demi tahun untuk menemukan pola berulang, siklus, dan blind spot.",
     "category": "Self-Discovery",
     "url": "/resources/history-of-my-life.html",
     "icon": "📜",
+    "pinned": true,
+    "publish": true
+  },
+  {
+    "id": "consciousness-map",
+    "title": "Consciousness Map Quiz",
+    "description": "Temukan level dominan kesadaran dan emosi Anda berdasarkan Map of Consciousness Dr. David Hawkins.",
+    "category": "Self-Discovery",
+    "url": "/resources/consciousness-map-quiz.html",
+    "icon": "🧠",
     "pinned": true,
     "publish": true
   }

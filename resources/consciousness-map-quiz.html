@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Map Quiz — Wahyu Teguh A.</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    
+    <!-- Memuat Tailwind CSS melalui CDN dengan kustomisasi tema -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF7F2',
+                        'cream-dark': '#F0EBE1',
+                        earth: '#8B6F47',
+                        'earth-light': '#C4A882',
+                        'earth-dark': '#5C4530',
+                        charcoal: '#2C2825',
+                        'charcoal-mid': '#4A4540',
+                        stone: '#9A9390',
+                        accent: '#C4622D',
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'Georgia', 'serif'],
+                        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Memuat React dan ReactDOM melalui CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Memuat Babel untuk menerjemahkan JSX di browser secara langsung -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --cream-dark: #F0EBE1;
+            --earth: #8B6F47;
+            --charcoal: #2C2825;
+            --accent: #C4622D;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--charcoal);
+        }
+
+        .serif { font-family: 'Lora', serif; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
+        .animate-slideUp { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .nav-blur {
+            background: rgba(250, 247, 242, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(139, 111, 71, 0.12);
+        }
+
+        /* Footer Styles */
+        footer {
+            padding: 4rem 2rem;
+            background-color: var(--cream);
+            border-top: 1px solid var(--cream-dark);
+            text-align: center;
+            margin-top: 4rem;
+        }
+        .footer-name {
+            font-family: 'Lora', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .footer-links a {
+            text-decoration: none;
+            color: var(--charcoal);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover { color: var(--earth); }
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--stone);
+            letter-spacing: 0.05em;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--cream); }
+        ::-webkit-scrollbar-thumb { background: var(--cream-dark); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--stone); }
+    </style>
+</head>
+
+<body class="bg-cream text-charcoal font-sans">
+
+    <div id="root"></div>
+
+    <!-- Skrip Aplikasi -->
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const SVGIcon = ({ d, size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} dangerouslySetInnerHTML={{ __html: d }} />
+        );
+        const Info = (p) => <SVGIcon {...p} d='<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/>' />;
+        const ArrowLeft = (p) => <SVGIcon {...p} d='<line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/>' />;
+        const Map = (p) => <SVGIcon {...p} d='<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" x2="8" y1="2" y2="18"/><line x1="16" x2="16" y1="6" y2="22"/>' />;
+        const RotateCcw = (p) => <SVGIcon {...p} d='<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/>' />;
+        const X = (p) => <SVGIcon {...p} d='<path d="M18 6 6 18"/><path d="M6 6l12 12"/>' />;
+        const ChevronRight = (p) => <SVGIcon {...p} d='<polyline points="9 18 15 12 9 6"/>' />;
+
+        // Data Pertanyaan dan Opsi Jawaban
+        const questions = [
+            {
+                question: "Bagaimana respons spontan Anda ketika menghadapi masalah besar yang tiba-tiba muncul?",
+                options: [
+                    { text: "Merasa kewalahan, menyalahkan keadaan/diri sendiri, dan ingin menyerah.", value: 50 },
+                    { text: "Cemas, panik, dan membayangkan skenario terburuk.", value: 100 },
+                    { text: "Merasa kesal, marah, dan mencari siapa yang bisa disalahkan/dilawan.", value: 150 },
+                    { text: "Menghadapinya secara objektif, mencari tahu akar masalah, dan merancang solusi.", value: 400 },
+                    { text: "Menerimanya dengan tenang sebagai bagian dari proses hidup yang membawa hikmah.", value: 540 }
+                ]
+            },
+            {
+                question: "Apa pandangan dominan Anda tentang kehidupan atau dunia saat ini?",
+                options: [
+                    { text: "Dunia ini menakutkan, mengecewakan, dan saya tidak berdaya.", value: 75 },
+                    { text: "Dunia ini arena persaingan, saya harus keras agar tidak kalah.", value: 150 },
+                    { text: "Dunia ini penuh tantangan namun bisa dikelola dengan usaha yang baik.", value: 310 },
+                    { text: "Dunia ini rasional, teratur, dan bisa dipahami melalui ilmu pengetahuan.", value: 400 },
+                    { text: "Dunia ini indah, sinkron, dan setiap kejadian memiliki makna ilahiah.", value: 500 }
+                ]
+            },
+            {
+                question: "Bagaimana Anda memandang diri Anda sendiri saat sedang sendirian (Self-View)?",
+                options: [
+                    { text: "Sering merasa sangat buruk, tidak berharga, atau penuh aib.", value: 20 },
+                    { text: "Sering merasa bersalah atas kesalahan di masa lalu.", value: 30 },
+                    { text: "Merasa biasa saja, fokus pada hal yang bisa saya kendalikan saat ini.", value: 250 },
+                    { text: "Merasa sebagai individu yang kompeten, cerdas, dan logis.", value: 400 },
+                    { text: "Merasa utuh, cukup, dan penuh kasih terhadap diri sendiri.", value: 500 }
+                ]
+            },
+            {
+                question: "Ketika seseorang mengkritik pekerjaan atau karakter Anda...",
+                options: [
+                    { text: "Merasa hancur dan langsung menarik diri atau merasa tidak berguna.", value: 50 },
+                    { text: "Merasa tersinggung, marah, dan langsung menyerang balik.", value: 150 },
+                    { text: "Gengsi saya terluka, tapi saya mencoba terlihat kuat di luar.", value: 175 },
+                    { text: "Mendengarkan secara objektif untuk melihat apakah kritik itu benar dan bisa diperbaiki.", value: 400 },
+                    { text: "Berterima kasih atas masukannya, tidak merasa ego saya terancam sama sekali.", value: 500 }
+                ]
+            },
+            {
+                question: "Apa yang paling sering mendominasi pikiran Anda sehari-hari?",
+                options: [
+                    { text: "Kekhawatiran tentang masa depan, keamanan finansial, atau penyakit.", value: 100 },
+                    { text: "Keinginan memiliki lebih banyak harta, pasangan, atau pengakuan.", value: 125 },
+                    { text: "Keinginan untuk selalu membuktikan bahwa pandangan/pilihan saya yang paling benar.", value: 175 },
+                    { text: "Memahami sesuatu, belajar hal baru, atau menyelesaikan sistem/masalah.", value: 400 },
+                    { text: "Bagaimana saya bisa berguna, bersyukur, dan membawa kebaikan bagi sekitar.", value: 500 }
+                ]
+            },
+            {
+                question: "Saat rencana matang Anda gagal total...",
+                options: [
+                    { text: "Menangis, menyalahkan nasib, dan merasa hidup ini tidak adil.", value: 75 },
+                    { text: "Sangat frustrasi dan mencari pihak lain yang bisa disalahkan.", value: 150 },
+                    { text: "Menerima kegagalan tersebut, santai saja, dan mencari alternatif lain.", value: 250 },
+                    { text: "Menganalisis data, mencari letak kesalahan proses, dan membuat strategi baru.", value: 400 },
+                    { text: "Melihatnya sebagai jalan semesta yang sedang mengarahkan ke sesuatu yang lebih baik.", value: 540 }
+                ]
+            },
+            {
+                question: "Dalam berhubungan dengan orang lain (teman/pasangan), Anda cenderung...",
+                options: [
+                    { text: "Bergantung pada mereka dan sangat takut ditinggalkan.", value: 100 },
+                    { text: "Posesif, menuntut banyak perhatian, atau selalu ingin divalidasi.", value: 125 },
+                    { text: "Memberi kebebasan, menghargai batasan masing-masing, dan sangat kooperatif.", value: 310 },
+                    { text: "Mencari kecocokan intelektual dan gemar berdiskusi secara logis.", value: 400 },
+                    { text: "Menerima mereka apa adanya dengan segala kekurangannya tanpa niat mengubah.", value: 500 }
+                ]
+            },
+            {
+                question: "Cara utama Anda melepas penat atau stres adalah...",
+                options: [
+                    { text: "Mengisolasi diri dan tidur panjang karena merasa tidak punya energi.", value: 50 },
+                    { text: "Melampiaskannya dengan konsumsi berlebih (belanja, makan, hiburan impulsif).", value: 125 },
+                    { text: "Menghadapinya langsung dan mencoba membereskan sumber stres secepatnya.", value: 200 },
+                    { text: "Membaca buku, merenung secara filosofis, atau mencari solusi berbasis fakta.", value: 400 },
+                    { text: "Bermeditasi, berdoa, bersyukur, atau menyatu dengan alam.", value: 600 }
+                ]
+            },
+            {
+                question: "Bagi Anda, Tuhan (atau Semesta) adalah entitas yang...",
+                options: [
+                    { text: "Suka menghukum, penuh amarah, dan harus selalu ditakuti.", value: 30 },
+                    { text: "Suka mengawasi setiap kesalahan dan memberi ancaman.", value: 100 },
+                    { text: "Menciptakan hukum alam/sebab-akibat yang sangat logis dan terstruktur.", value: 400 },
+                    { text: "Penuh cinta kasih, pengampunan, dan tanpa syarat.", value: 500 },
+                    { text: "Hadir di mana-mana (Omnipresent), menyatu dengan segalanya, dan damai.", value: 600 }
+                ]
+            },
+            {
+                question: "Bagaimana cara Anda mengambil keputusan penting?",
+                options: [
+                    { text: "Sering menunda karena takut mengambil langkah yang salah.", value: 100 },
+                    { text: "Berdasarkan gengsi, status sosial, atau apa kata orang lain.", value: 175 },
+                    { text: "Berdasarkan apa yang paling praktis dan bisa diterima (jalan tengah).", value: 350 },
+                    { text: "Mengumpulkan semua data, menganalisis probabilitas, pro dan kontra.", value: 400 },
+                    { text: "Mengikuti intuisi terdalam dan panggilan hati yang terasa damai.", value: 500 }
+                ]
+            },
+            {
+                question: "Menurut Anda, tujuan hidup ini utamanya adalah untuk...",
+                options: [
+                    { text: "Bertahan hidup dari penderitaan.", value: 75 },
+                    { text: "Mengumpulkan kekayaan, validasi, dan status setinggi mungkin.", value: 125 },
+                    { text: "Menjadi produktif, berprestasi, dan mandiri secara finansial/mental.", value: 310 },
+                    { text: "Mencapai pemahaman sejati, kebijaksanaan, dan pengetahuan luas.", value: 400 },
+                    { text: "Mencapai kesadaran murni, kedamaian batin, dan melayani sesama.", value: 600 }
+                ]
+            },
+            {
+                question: "Emosi apa yang paling sering muncul tiba-tiba saat Anda sedang diam melamun?",
+                options: [
+                    { text: "Penyesalan akan sesuatu di masa lalu.", value: 30 },
+                    { text: "Kenangan pahit yang membuat marah atau dendam.", value: 150 },
+                    { text: "Pikiran yang terus-menerus menganalisis atau merencanakan sesuatu secara detail.", value: 400 },
+                    { text: "Rasa kasih sayang terhadap orang-orang terdekat.", value: 500 },
+                    { text: "Rasa syukur, sukacita, atau kedamaian yang hening tanpa alasan logis.", value: 540 }
+                ]
+            },
+            {
+                question: "Ketika seseorang berbuat salah kepada Anda, apa reaksi terdalam Anda?",
+                options: [
+                    { text: "Merasa sangat sakit hati, menyimpan dendam, dan merasa jadi korban.", value: 75 },
+                    { text: "Menuntut permintaan maaf dan memastikan mereka menerima balasannya.", value: 150 },
+                    { text: "Merasa lebih bermoral/benar dari mereka (merendahkan mereka).", value: 175 },
+                    { text: "Memaafkan secara rasional karena menyimpan marah hanya membuang energi.", value: 400 },
+                    { text: "Memaafkan dengan kasih sayang, menyadari mereka bertindak karena ketidaktahuan.", value: 500 }
+                ]
+            },
+            {
+                question: "Bagaimana cara Anda memandang kesuksesan orang lain?",
+                options: [
+                    { text: "Merasa iri atau cemas bahwa mereka akan merebut peluang saya.", value: 100 },
+                    { text: "Terdorong secara kompetitif untuk membuktikan saya bisa mengalahkan mereka.", value: 125 },
+                    { text: "Biasa saja (netral), karena saya yakin saya memiliki jalur kesuksesan sendiri.", value: 250 },
+                    { text: "Menganalisis sistem/cara bagaimana mereka bisa sukses agar bisa saya pelajari.", value: 400 },
+                    { text: "Turut berbahagia secara tulus seolah-olah itu kesuksesan saya sendiri.", value: 540 }
+                ]
+            },
+            {
+                question: "Apa yang menjadi motivasi utama Anda dalam bekerja atau berkarya saat ini?",
+                options: [
+                    { text: "Bertahan hidup semata dan takut akan kekurangan/kegagalan.", value: 100 },
+                    { text: "Mendapatkan uang, pengakuan, status, atau mengalahkan kompetitor.", value: 125 },
+                    { text: "Mencapai target, berprestasi, dan berani mengambil peluang baru.", value: 200 },
+                    { text: "Melakukan tanggung jawab dengan baik dan menciptakan sistem yang efisien.", value: 400 },
+                    { text: "Membawa manfaat, kebahagiaan, dan pelayanan tulus bagi orang lain.", value: 500 }
+                ]
+            }
+        ];
+
+        // Fungsi Analisis Level
+        const analyzeHawkinsLevel = (score) => {
+            const levels = [
+                { threshold: 600, level: "Peace (600+)", emotion: "Kedamaian / Pencerahan", desc: "Anda berada di tingkat kedamaian yang mendalam. Dualitas (benar-salah, baik-buruk) mulai memudar. Anda merasakan kesatuan dengan segalanya.", color: "text-amber-600", bg: "bg-amber-50", borderColor: "border-amber-200" },
+                { threshold: 540, level: "Joy (540 - 599)", emotion: "Sukacita", desc: "Kegembiraan meluap dari dalam diri Anda tanpa butuh alasan eksternal. Anda sering mengalami sinkronisitas dan menyebarkan energi positif yang menyembuhkan.", color: "text-emerald-600", bg: "bg-emerald-50", borderColor: "border-emerald-200" },
+                { threshold: 500, level: "Love (500 - 539)", emotion: "Cinta Kasih", desc: "Anda didorong oleh kasih sayang tanpa syarat. Anda tidak lagi hidup memakai dominasi rasio semata, melainkan pemahaman hati. Anda memaafkan dengan mudah.", color: "text-pink-600", bg: "bg-pink-50", borderColor: "border-pink-200" },
+                { threshold: 400, level: "Reason (400 - 499)", emotion: "Logika / Rasio", desc: "Anda sangat fungsional, rasional, dan objektif. Anda melihat dunia lewat sains dan data. Tantangan di level ini adalah kecenderungan untuk terlalu menganalisis dan kehilangan kehangatan emosional.", color: "text-purple-600", bg: "bg-purple-50", borderColor: "border-purple-200" },
+                { threshold: 350, level: "Acceptance (350 - 399)", emotion: "Penerimaan", desc: "Anda menyadari bahwa Anda adalah pencipta hidup Anda sendiri. Anda tidak menyalahkan kehidupan, melainkan menerimanya dan bertransformasi dari sana.", color: "text-green-600", bg: "bg-green-50", borderColor: "border-green-200" },
+                { threshold: 310, level: "Willingness (310 - 349)", emotion: "Kemauan / Optimisme", desc: "Anda terbuka, ramah, dan bersedia melakukan pekerjaan dengan baik. Anda tidak defensif dan sangat baik untuk diajak bekerja sama.", color: "text-teal-600", bg: "bg-teal-50", borderColor: "border-teal-200" },
+                { threshold: 250, level: "Neutrality (250 - 309)", emotion: "Netralitas / Kepercayaan", desc: "Anda rileks, fleksibel, dan tidak terlalu terikat pada hasil akhir. Jika sesuatu tidak berhasil, Anda percaya akan ada jalan lain.", color: "text-cyan-600", bg: "bg-cyan-50", borderColor: "border-cyan-200" },
+                { threshold: 200, level: "Courage (200 - 249)", emotion: "Keberanian / Pemberdayaan", desc: "Ini adalah titik balik (Turning Point) dari energi negatif ke positif. Anda mulai mengambil kendali hidup dan berani menghadapi tantangan baru.", color: "text-blue-600", bg: "bg-blue-50", borderColor: "border-blue-200" },
+                { threshold: 175, level: "Pride (175 - 199)", emotion: "Kebanggaan / Mencemooh", desc: "Anda merasa baik karena pencapaian, status, atau afiliasi. Namun posisi ini rentan karena bergantung pada faktor eksternal dan ego yang sering memandang rendah orang lain.", color: "text-indigo-600", bg: "bg-indigo-50", borderColor: "border-indigo-200" },
+                { threshold: 150, level: "Anger (150 - 174)", emotion: "Kemarahan / Kebencian", desc: "Energi Anda dipenuhi rasa frustrasi, dendam, atau keinginan melawan. Meski negatif, energi marah lebih besar daripada apatis dan bisa memicu tindakan perubahan.", color: "text-red-500", bg: "bg-red-50", borderColor: "border-red-200" },
+                { threshold: 125, level: "Desire (125 - 149)", emotion: "Keinginan / Hasrat", desc: "Anda didorong oleh ambisi, haus akan materi, kekuasaan, atau perhatian. Ini adalah energi kecanduan yang tidak pernah merasa puas.", color: "text-yellow-600", bg: "bg-yellow-50", borderColor: "border-yellow-200" },
+                { threshold: 100, level: "Fear (100 - 124)", emotion: "Ketakutan / Kecemasan", desc: "Dunia terlihat menakutkan dan penuh ancaman. Anda sering membayangkan skenario terburuk dan dikendalikan oleh rasa tidak aman.", color: "text-orange-600", bg: "bg-orange-50", borderColor: "border-orange-200" },
+                { threshold: 75, level: "Grief (75 - 99)", emotion: "Kesedihan Mendalam", desc: "Anda merasa sedih, menyesal, dan fokus pada masa lalu yang hilang. Sulit melihat masa depan yang cerah.", color: "text-slate-600", bg: "bg-slate-50", borderColor: "border-slate-200" },
+                { threshold: 0, level: "Apathy/Guilt (< 75)", emotion: "Apatis / Rasa Bersalah", desc: "Energi terendah. Anda merasa putus asa, tidak berharga, menyalahkan diri sendiri atau merasa menjadi korban mutlak dari keadaan.", color: "text-gray-600", bg: "bg-gray-50", borderColor: "border-gray-200" }
+            ];
+            
+            return levels.find(l => score >= l.threshold) || levels[levels.length - 1];
+        };
+
+        const App = () => {
+            const [hasStarted, setHasStarted] = useState(false);
+            const [showMap, setShowMap] = useState(false);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [answers, setAnswers] = useState([]);
+            const [isFinished, setIsFinished] = useState(false);
+
+            const handleAnswer = (value) => {
+                const newAnswers = [...answers, value];
+                setAnswers(newAnswers);
+
+                if (currentQuestion < questions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                    setIsFinished(true);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
+
+            const handleBack = () => {
+                if (currentQuestion > 0) {
+                    setCurrentQuestion(currentQuestion - 1);
+                    setAnswers(answers.slice(0, -1));
+                }
+            };
+
+            const resetQuiz = () => {
+                setCurrentQuestion(0);
+                setAnswers([]);
+                setIsFinished(false);
+                setHasStarted(false);
+                setShowMap(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const FullMapModal = () => (
+                <div className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+                    <div className="bg-white rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-slideUp">
+                        <div className="p-8 border-b border-cream-dark flex justify-between items-center bg-cream/30">
+                            <h2 className="text-2xl font-bold text-charcoal serif">Peta Kesadaran (Hawkins)</h2>
+                            <button onClick={() => setShowMap(false)} className="text-stone hover:text-charcoal p-2 transition">
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <div className="p-8 overflow-y-auto">
+                            <p className="text-sm text-stone mb-6">Skala logaritmik (1-1000) yang memetakan tingkatan energi emosional dan spiritual.</p>
+                            <div className="space-y-3">
+                                {[
+                                    { lvl: "Enlightenment (700-1000)", cat: "Spiritual", cl: "bg-amber-50 text-amber-900 border-l-4 border-amber-500" },
+                                    { lvl: "Peace (600)", cat: "Spiritual", cl: "bg-yellow-50 text-yellow-900 border-l-4 border-yellow-500" },
+                                    { lvl: "Joy (540)", cat: "Spiritual", cl: "bg-emerald-50 text-emerald-900 border-l-4 border-emerald-500" },
+                                    { lvl: "Love (500)", cat: "Spiritual", cl: "bg-pink-50 text-pink-900 border-l-4 border-pink-500" },
+                                    { lvl: "Reason (400)", cat: "Intelek", cl: "bg-purple-50 text-purple-900 border-l-4 border-purple-500" },
+                                    { lvl: "Acceptance (350)", cat: "Daya (Power)", cl: "bg-green-50 text-green-900 border-l-4 border-green-500" },
+                                    { lvl: "Willingness (310)", cat: "Daya (Power)", cl: "bg-teal-50 text-teal-900 border-l-4 border-teal-500" },
+                                    { lvl: "Neutrality (250)", cat: "Daya (Power)", cl: "bg-cyan-50 text-cyan-900 border-l-4 border-cyan-500" },
+                                    { lvl: "Courage (200)", cat: "Daya (Power)", cl: "bg-blue-50 text-blue-900 border-l-4 border-blue-500" },
+                                    { lvl: "Pride (175)", cat: "Paksaan (Force)", cl: "bg-indigo-50 text-indigo-900 border-l-4 border-indigo-500" },
+                                    { lvl: "Anger (150)", cat: "Paksaan (Force)", cl: "bg-red-50 text-red-900 border-l-4 border-red-500" },
+                                    { lvl: "Desire (125)", cat: "Paksaan (Force)", cl: "bg-orange-50 text-orange-900 border-l-4 border-orange-500" },
+                                    { lvl: "Fear (100)", cat: "Paksaan (Force)", cl: "bg-orange-100 text-orange-900 border-l-4 border-orange-600" },
+                                    { lvl: "Grief (75)", cat: "Paksaan (Force)", cl: "bg-slate-100 text-slate-900 border-l-4 border-slate-500" },
+                                    { lvl: "Apathy (50)", cat: "Paksaan (Force)", cl: "bg-gray-100 text-gray-900 border-l-4 border-gray-500" },
+                                    { lvl: "Guilt (30)", cat: "Paksaan (Force)", cl: "bg-gray-200 text-gray-900 border-l-4 border-gray-600" },
+                                    { lvl: "Shame (20)", cat: "Paksaan (Force)", cl: "bg-gray-300 text-gray-900 border-l-4 border-gray-700" }
+                                ].map((item, idx) => (
+                                    <div key={idx} className={`flex justify-between items-center p-4 rounded-r-2xl ${item.cl} font-medium text-sm`}>
+                                        <span>{item.lvl}</span>
+                                        <span className="opacity-70 text-[10px] uppercase tracking-widest font-bold">{item.cat}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen flex flex-col bg-cream">
+                    {/* Sticky Navigation matching main site */}
+                    <nav className="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+                        <a href="/" className="text-charcoal serif font-bold text-lg tracking-tight hover:text-earth transition">Wahyu Teguh A.</a>
+                        <div className="flex items-center gap-4">
+                            <a href="/#resources" className="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal transition">Resources</a>
+                        </div>
+                    </nav>
+
+                    <main className="flex-1 flex flex-col items-center py-12 px-6">
+                        {!hasStarted ? (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 md:p-16 max-w-3xl w-full text-center animate-fadeIn">
+                                <span className="text-[10px] font-bold text-earth uppercase tracking-[0.3em] mb-4 block">Self-Discovery Tool</span>
+                                <h1 className="text-5xl font-bold text-charcoal serif mb-8">Consciousness Map Quiz</h1>
+                                <p className="text-stone mb-12 leading-relaxed text-lg italic">
+                                    "Your level of consciousness determines your reality."
+                                </p>
+                                <p className="text-charcoal-mid mb-12 leading-relaxed max-w-xl mx-auto">
+                                    Berdasarkan riset Dr. David R. Hawkins, temukan tingkat energi dominan Anda saat ini dan bagaimana hal itu membentuk cara Anda melihat dunia.
+                                </p>
+                                
+                                <div className="bg-cream-dark/30 border border-cream-dark text-charcoal-mid rounded-[2rem] p-8 mb-12 text-sm text-left shadow-inner">
+                                    <span className="font-bold flex items-center mb-4 text-charcoal serif text-lg">
+                                        <Info className="w-6 h-6 mr-3 text-earth" />
+                                        Catatan Penting
+                                    </span>
+                                    <p className="leading-relaxed">
+                                        Peta Kesadaran bersifat dinamis. Anda bisa berada di level 400 (Rasio) dalam pekerjaan, namun turun ke level 150 (Marah) dalam hubungan asmara. Hasil skor kuis ini hanyalah refleksi dari pola dominan Anda dan bukan diagnosis psikologis mutlak.
+                                    </p>
+                                </div>
+
+                                <button 
+                                    onClick={() => setHasStarted(true)}
+                                    className="bg-charcoal hover:bg-earth text-cream font-bold py-5 px-12 rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 w-full sm:w-auto uppercase text-xs tracking-widest">
+                                    Mulai Kuis
+                                </button>
+                            </div>
+                        ) : isFinished ? (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 md:p-16 max-w-3xl w-full text-center animate-fadeIn">
+                                <h2 className="text-4xl font-bold mb-4 text-charcoal serif">Hasil Analisis Anda</h2>
+                                <div className="mb-12">
+                                    <span className="text-[10px] font-bold text-stone uppercase tracking-widest">Estimasi Skor Kesadaran</span>
+                                    <div className="text-6xl font-bold text-charcoal mt-2">{Math.round(answers.reduce((a, b) => a + b, 0) / answers.length)}</div>
+                                </div>
+                                
+                                {(() => {
+                                    const avg = Math.round(answers.reduce((a, b) => a + b, 0) / answers.length);
+                                    const result = analyzeHawkinsLevel(avg);
+                                    return (
+                                        <div className={`${result.bg} rounded-[2rem] p-10 mb-12 border ${result.borderColor} animate-slideUp text-left`}>
+                                            <h3 className={`text-3xl font-bold ${result.color} serif mb-2`}>{result.level}</h3>
+                                            <h4 className="text-sm font-bold text-charcoal-mid uppercase tracking-widest mb-6 opacity-70">Emosi Dominan: {result.emotion}</h4>
+                                            <p className="text-charcoal leading-relaxed text-lg italic serif">"{result.desc}"</p>
+                                        </div>
+                                    );
+                                })()}
+
+                                <p className="text-xs text-stone italic mb-12 px-4 max-w-lg mx-auto leading-relaxed">
+                                    Ingat: Tingkat kesadaran bisa berfluktuasi. Jadikan ini sebagai alat navigasi diri untuk bertumbuh ke arah 'Daya' (Power) daripada 'Paksaan' (Force).
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row justify-center gap-6">
+                                    <button 
+                                        onClick={() => setShowMap(true)}
+                                        className="bg-white border border-charcoal hover:bg-charcoal hover:text-cream text-charcoal font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest">
+                                        <Map size={18} /> Lihat Peta Full
+                                    </button>
+                                    <button 
+                                        onClick={resetQuiz}
+                                        className="bg-charcoal hover:bg-earth text-cream font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest shadow-lg">
+                                        <RotateCcw size={18} /> Ulangi Kuis
+                                    </button>
+                                </div>
+
+                                {showMap && <FullMapModal />}
+                            </div>
+                        ) : (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 md:p-16 max-w-3xl w-full animate-fadeIn">
+                                <div className="mb-12">
+                                    <div className="flex justify-between items-end mb-6">
+                                        <div>
+                                            <span className="text-[10px] font-bold text-earth uppercase tracking-widest mb-2 block">Consciousness Check</span>
+                                            <h2 className="text-sm font-bold text-charcoal uppercase tracking-widest">Pertanyaan {currentQuestion + 1} <span className="text-stone">/ {questions.length}</span></h2>
+                                        </div>
+                                        <div className="text-xs font-bold text-stone uppercase tracking-widest">
+                                            {Math.round(((currentQuestion + 1) / questions.length) * 100)}% Complete
+                                        </div>
+                                    </div>
+                                    <div className="w-full bg-cream-dark h-1.5 rounded-full overflow-hidden">
+                                        <div 
+                                            className="bg-earth h-full transition-all duration-700 ease-out" 
+                                            style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
+
+                                <h2 className="text-3xl font-bold text-charcoal serif mb-10 leading-snug">
+                                    {questions[currentQuestion].question}
+                                </h2>
+
+                                <div className="space-y-4">
+                                    {questions[currentQuestion].options.map((option, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleAnswer(option.value)}
+                                            className="w-full text-left p-6 rounded-2xl border border-cream-dark hover:border-earth hover:bg-cream transition-all duration-300 group flex items-center justify-between"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-8 h-8 rounded-full border border-cream-dark group-hover:border-earth bg-white flex items-center justify-center flex-shrink-0 transition-colors">
+                                                    <div className="w-2 h-2 rounded-full bg-earth opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                </div>
+                                                <span className="text-charcoal-mid group-hover:text-charcoal font-medium transition-colors">{option.text}</span>
+                                            </div>
+                                            <ChevronRight size={18} className="text-stone opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {currentQuestion > 0 && (
+                                    <div className="mt-12 flex justify-start border-t border-cream-dark pt-8">
+                                        <button
+                                            onClick={handleBack}
+                                            className="text-stone hover:text-charcoal font-bold text-[10px] uppercase tracking-widest flex items-center transition-all group"
+                                        >
+                                            <ArrowLeft size={16} className="mr-2 transform group-hover:-translate-x-1 transition-transform" />
+                                            Kembali
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </main>
+
+                    {/* FOOTER */}
+                    <footer>
+                        <p className="footer-name">Wahyu Teguh Arifianto</p>
+                        <ul className="footer-links">
+                            <li><a href="/#about">About</a></li>
+                            <li><a href="/#expertise">Expertise</a></li>
+                            <li><a href="/#writing">Writing</a></li>
+                            <li><a href="/#resources">Resources</a></li>
+                            <li><a href="/#youtube">YouTube</a></li>
+                            <li><a href="/#contact">Contact</a></li>
+                        </ul>
+                        <p className="footer-copy">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
