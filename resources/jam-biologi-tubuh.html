@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jam Biologis Tubuh — Wahyu Teguh A.</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind CSS (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF7F2',
+                        'cream-dark': '#F0EBE1',
+                        earth: '#8B6F47',
+                        'earth-light': '#C4A882',
+                        'earth-dark': '#5C4530',
+                        charcoal: '#2C2825',
+                        'charcoal-mid': '#4A4540',
+                        stone: '#9A9390',
+                        accent: '#C4622D',
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'Georgia', 'serif'],
+                        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --cream-dark: #F0EBE1;
+            --earth: #8B6F47;
+            --charcoal: #2C2825;
+            --stone: #9A9390;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .serif { font-family: 'Lora', serif; }
+
+        .nav-blur {
+            background: rgba(250, 247, 242, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(139, 111, 71, 0.12);
+        }
+        
+        .dark .nav-blur {
+            background: rgba(44, 40, 37, 0.88);
+            border-bottom: 1px solid rgba(154, 147, 144, 0.2);
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .color-transition {
+            transition: all 0.5s ease;
+        }
+        
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #8B6F47; /* earth */
+            cursor: pointer;
+            margin-top: -6px;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #F0EBE1; /* cream-dark */
+            border-radius: 2px;
+        }
+        
+        .dark input[type=range]::-webkit-slider-runnable-track {
+            background: #4A4540; /* charcoal-mid */
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-cream dark:bg-charcoal text-charcoal dark:text-cream flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between transition-colors duration-300">
+        <a href="../index.html" class="text-charcoal dark:text-cream serif font-bold text-lg tracking-tight hover:text-earth dark:hover:text-earth transition">Wahyu Teguh A.</a>
+        <div class="flex items-center gap-6">
+            <a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal dark:hover:text-cream transition">Resources</a>
+            <button id="theme-toggle" class="text-stone hover:text-charcoal dark:hover:text-cream transition" aria-label="Toggle Dark Mode">
+                <!-- Sun Icon -->
+                <i class="ph ph-sun text-xl hidden dark:block"></i>
+                <!-- Moon Icon -->
+                <i class="ph ph-moon text-xl block dark:hidden"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col items-center py-12 px-4 md:px-8">
+        <div class="max-w-5xl w-full">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <span class="text-[10px] font-bold text-earth uppercase tracking-[0.3em] mb-4 block">Self-Discovery Tool</span>
+                <h1 class="text-3xl md:text-5xl font-bold text-charcoal dark:text-cream serif mb-4 flex items-center justify-center gap-3">
+                    <i class="ph ph-clock text-earth text-4xl md:text-5xl"></i>
+                    Jam Biologis Tubuh
+                </h1>
+                <p class="text-stone dark:text-stone max-w-2xl mx-auto leading-relaxed">
+                    Irama sirkadian & jam piket organ manusia selama 24 jam. Amati pola hidup Anda selaras dengan alam.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                <!-- Left Column: Clock and Simulation -->
+                <div class="lg:col-span-5 flex flex-col items-center p-8 bg-white dark:bg-charcoal-mid rounded-[2.5rem] border border-cream-dark dark:border-stone/20 shadow-sm transition-colors duration-300">
+
+                    <!-- Analog Clock -->
+                    <div class="relative w-64 h-64 md:w-80 md:h-80 bg-cream dark:bg-charcoal rounded-full border border-cream-dark dark:border-stone/30 shadow-inner flex items-center justify-center mb-8 transition-colors duration-300">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <!-- Clock Face Markers (Generated via JS) -->
+                            <g id="clock-markers"></g>
+
+                            <!-- Active Period Highlight Arc -->
+                            <circle id="active-arc" cx="50" cy="50" r="42" fill="transparent" stroke="currentColor" stroke-width="8" class="opacity-20 transition-all duration-700 color-transition" style="transform-origin: center; transform: rotate(-90deg);"></circle>
+
+                            <!-- Hour Hand -->
+                            <line id="hour-hand" x1="50" y1="50" x2="50" y2="28" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="text-charcoal dark:text-cream transition-transform duration-200" />
+                            <!-- Minute Hand -->
+                            <line id="minute-hand" x1="50" y1="50" x2="50" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-stone transition-transform duration-200" />
+                            <!-- Second Hand -->
+                            <line id="second-hand" x1="50" y1="60" x2="50" y2="12" stroke="#C4622D" stroke-width="1.5" stroke-linecap="round" class="text-accent transition-transform duration-200" />
+                            <circle cx="50" cy="50" r="2.5" fill="#C4622D" />
+                        </svg>
+
+                        <!-- Real/Simulated Badge -->
+                        <div id="sim-badge" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mt-12 bg-accent text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest animate-pulse">
+                            SIMULASI
+                        </div>
+                    </div>
+
+                    <!-- Digital Clock Readout -->
+                    <div id="digital-clock" class="text-4xl md:text-5xl font-mono font-bold tracking-wider mb-2 text-charcoal dark:text-cream">
+                        00:00:00
+                    </div>
+                    <div class="text-stone text-[10px] font-bold uppercase tracking-widest mb-8">
+                        Waktu Lokal
+                    </div>
+
+                    <!-- Time Simulator Slider -->
+                    <div class="w-full bg-cream dark:bg-charcoal p-6 rounded-2xl border border-cream-dark dark:border-stone/20 transition-colors duration-300">
+                        <label class="block text-xs font-bold text-charcoal dark:text-cream mb-4 flex justify-between items-center uppercase tracking-widest">
+                            <span>Mesin Waktu</span>
+                            <span id="sim-time-display" class="text-earth bg-earth/10 px-2 py-0.5 rounded-md">
+                                Real-time
+                            </span>
+                        </label>
+                        <input type="range" id="time-slider" min="0" max="23" class="w-full mb-6" />
+
+                        <button id="btn-reset" class="w-full py-3 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all bg-cream-dark dark:bg-stone/20 text-stone cursor-not-allowed">
+                            <i class="ph ph-arrow-counter-clockwise text-lg"></i>
+                            Kembali ke Real-time
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Information Panel -->
+                <div class="lg:col-span-7 flex flex-col h-full">
+                    <div class="relative overflow-hidden bg-white dark:bg-charcoal-mid rounded-[2.5rem] border border-cream-dark dark:border-stone/20 shadow-sm p-8 md:p-10 h-full transition-colors duration-300">
+
+                        <!-- Decorative background glow -->
+                        <div id="bg-glow" class="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-10 dark:opacity-20 transition-colors duration-1000 color-transition">
+                        </div>
+
+                        <div class="relative z-10 h-full flex flex-col">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-8 pb-8 border-b border-cream-dark dark:border-stone/20">
+                                <div class="flex items-center gap-6">
+                                    <div id="icon-container" class="p-5 rounded-2xl color-transition flex items-center justify-center">
+                                        <i id="organ-icon" class="text-4xl md:text-5xl"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-stone text-[10px] font-bold uppercase tracking-widest mb-1">
+                                            Organ Aktif Saat Ini
+                                        </h2>
+                                        <h3 id="organ-name" class="text-2xl md:text-3xl font-bold serif color-transition">
+                                            Memuat...
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="bg-cream dark:bg-charcoal px-5 py-2 rounded-xl border border-cream-dark dark:border-stone/20">
+                                    <span id="time-range" class="text-charcoal dark:text-cream font-mono font-bold text-lg">
+                                        00:00 - 00:00
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-8 flex-1">
+                                <div>
+                                    <h4 class="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-earth"></span>
+                                        Kondisi Tubuh
+                                    </h4>
+                                    <p id="organ-desc" class="text-charcoal-mid dark:text-stone leading-relaxed text-lg">
+                                        ...
+                                    </p>
+                                </div>
+
+                                <div class="bg-cream dark:bg-charcoal p-6 rounded-2xl border border-cream-dark dark:border-stone/20 border-l-4 border-l-earth transition-colors duration-300">
+                                    <h4 class="text-xs font-bold text-earth uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        Rekomendasi Aktivitas
+                                    </h4>
+                                    <p id="organ-tips" class="text-charcoal-mid dark:text-stone leading-relaxed">
+                                        ...
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Timeline Indicator Mini -->
+                            <div class="mt-8 pt-6 border-t border-cream-dark dark:border-stone/20">
+                                <p class="text-[10px] text-stone mb-4 text-center uppercase tracking-widest font-bold">
+                                    Siklus 24 Jam
+                                </p>
+                                <div id="timeline-container" class="flex w-full h-2 rounded-full bg-cream-dark dark:bg-charcoal overflow-hidden transition-colors duration-300">
+                                    <!-- Injected via JS -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-cream dark:bg-charcoal border-t border-cream-dark dark:border-stone/20 transition-colors duration-300">
+        <p class="footer-name serif font-bold text-2xl text-charcoal dark:text-cream mb-6">Wahyu Teguh Arifianto</p>
+        <ul class="footer-links flex justify-center gap-8 mb-8 flex-wrap">
+            <li><a href="../index.html#about" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">About</a></li>
+            <li><a href="../index.html#expertise" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Expertise</a></li>
+            <li><a href="../index.html#writing" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Writing</a></li>
+            <li><a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Resources</a></li>
+            <li><a href="../index.html#youtube" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">YouTube</a></li>
+            <li><a href="../index.html#contact" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Contact</a></li>
+        </ul>
+        <p class="footer-copy text-[10px] text-stone uppercase tracking-widest">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+    </footer>
+
+    <script>
+        // Dark Mode Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlDoc = document.documentElement;
+        
+        // Check local storage or system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlDoc.classList.add('dark');
+        } else {
+            htmlDoc.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlDoc.classList.contains('dark')) {
+                htmlDoc.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlDoc.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            // Trigger clock redraw to update stroke colors if needed
+            updateClock();
+        });
+
+        // Bio Clock Data
+        const bioClockData = [
+            { id: 0, start: 23, end: 1, name: "Kantung Empedu", icon: "ph-moon-stars", color: "text-indigo-500 dark:text-indigo-400", bg: "bg-indigo-100 dark:bg-indigo-900/40", bgActive: "bg-indigo-500", desc: "Tubuh memasuki fase pemulihan. Produksi melatonin sedang tinggi.", tips: "Tidur nyenyak. Hindari makan larut malam karena akan mengganggu detoksifikasi tubuh." },
+            { id: 1, start: 1, end: 3, name: "Hati (Liver)", icon: "ph-shield-check", color: "text-emerald-500 dark:text-emerald-400", bg: "bg-emerald-100 dark:bg-emerald-900/40", bgActive: "bg-emerald-500", desc: "Fase Deep Sleep (tidur paling pulas). Hati melakukan pembersihan racun darah dan pemulihan sel.", tips: "Wajib tidur pulas. Tubuh sedang melakukan maintenance jaringan secara intensif." },
+            { id: 2, start: 3, end: 5, name: "Paru-paru", icon: "ph-wind", color: "text-sky-500 dark:text-sky-400", bg: "bg-sky-100 dark:bg-sky-900/40", bgActive: "bg-sky-500", desc: "Suhu tubuh mencapai titik paling rendah harian.", tips: "Waktu untuk tidur lelap. Bagi yang terbangun, ini waktu terbaik untuk meditasi atau ibadah dengan pernapasan dalam." },
+            { id: 3, start: 5, end: 7, name: "Usus Besar", icon: "ph-drop", color: "text-blue-500 dark:text-blue-400", bg: "bg-blue-100 dark:bg-blue-900/40", bgActive: "bg-blue-500", desc: "Lonjakan tekanan darah mulai terjadi tajam. Hormon stres (kortisol) mulai meningkat.", tips: "Bangun tidur, minum segelas air putih hangat, dan buang air besar untuk mengosongkan racun di usus." },
+            { id: 4, start: 7, end: 9, name: "Lambung", icon: "ph-fork-knife", color: "text-orange-500 dark:text-orange-400", bg: "bg-orange-100 dark:bg-orange-900/40", bgActive: "bg-orange-500", desc: "Sekresi hormon tidur (melatonin) berhenti total. Tubuh mulai aktif.", tips: "Waktu terbaik untuk sarapan padat gizi. Berjemur matahari pagi untuk mereset irama sirkadian." },
+            { id: 5, start: 9, end: 11, name: "Limpa & Pankreas", icon: "ph-brain", color: "text-yellow-600 dark:text-yellow-400", bg: "bg-yellow-100 dark:bg-yellow-900/40", bgActive: "bg-yellow-500", desc: "Kewaspadaan otak berada di titik tertinggi. Gula darah dari sarapan diubah menjadi energi maksimal.", tips: "Bekerja, belajar, rapat, dan melakukan tugas berat yang membutuhkan konsentrasi atau analisis tinggi." },
+            { id: 6, start: 11, end: 13, name: "Jantung", icon: "ph-heart", color: "text-red-500 dark:text-red-400", bg: "bg-red-100 dark:bg-red-900/40", bgActive: "bg-red-500", desc: "Jantung memompa darah dengan ritme stabil ke seluruh tubuh. Energi tubuh mungkin mulai menurun perlahan.", tips: "Makan siang secukupnya. Hindari makan terlalu kenyang agar aliran darah tidak terpusat di perut yang bikin mengantuk." },
+            { id: 7, start: 13, end: 15, name: "Usus Kecil", icon: "ph-check-circle", color: "text-lime-500 dark:text-lime-400", bg: "bg-lime-100 dark:bg-lime-900/40", bgActive: "bg-lime-500", desc: "Koordinasi tubuh terbaik terjadi di rentang ini. Proses penyerapan nutrisi dari makan siang.", tips: "Menyelesaikan pekerjaan detail. Jika sangat lelah, power nap (tidur siang 15-20 menit) sangat direkomendasikan." },
+            { id: 8, start: 15, end: 17, name: "Kandung Kemih", icon: "ph-lightning", color: "text-amber-500 dark:text-amber-400", bg: "bg-amber-100 dark:bg-amber-900/40", bgActive: "bg-amber-500", desc: "Waktu reaksi tercepat bagi tubuh dan refleks saraf paling responsif.", tips: "Baik untuk belajar hal baru, berolahraga ringan, atau beraktivitas yang membutuhkan refleks dan fokus cepat." },
+            { id: 9, start: 17, end: 19, name: "Ginjal", icon: "ph-barbell", color: "text-purple-500 dark:text-purple-400", bg: "bg-purple-100 dark:bg-purple-900/40", bgActive: "bg-purple-500", desc: "Efisiensi kardiovaskular dan kekuatan otot berada di level terbesar. Tekanan darah mencapai puncaknya.", tips: "Waktu paling optimal untuk olahraga kardio atau angkat beban. Disarankan makan malam dengan porsi ringan." },
+            { id: 10, start: 19, end: 21, name: "Perikardium (Sirkulasi)", icon: "ph-coffee", color: "text-pink-500 dark:text-pink-400", bg: "bg-pink-100 dark:bg-pink-900/40", bgActive: "bg-pink-500", desc: "Suhu tubuh mencapai titik tertinggi harian. Metabolisme dan pencernaan mulai melambat.", tips: "Relaksasi diri, bersantai bersama keluarga, membaca buku santai. Hindari olahraga berat atau aktivitas pemicu stres." },
+            { id: 11, start: 21, end: 23, name: "Sistem Endokrin", icon: "ph-bed", color: "text-violet-500 dark:text-violet-400", bg: "bg-violet-100 dark:bg-violet-900/40", bgActive: "bg-violet-500", desc: "Otak mulai memproduksi hormon tidur (melatonin). Pergerakan usus ditekan secara alami.", tips: "Redupkan lampu, hentikan penggunaan gadget/TV (hindari blue light), dan bersiap-siap untuk tidur." }
+        ];
+
+        let simulatedHour = null;
+        let lastActiveId = -1;
+
+        // Inisialisasi DOM Elements
+        const markersGroup = document.getElementById('clock-markers');
+        const activeArc = document.getElementById('active-arc');
+        const hourHand = document.getElementById('hour-hand');
+        const minuteHand = document.getElementById('minute-hand');
+        const secondHand = document.getElementById('second-hand');
+        const digitalClock = document.getElementById('digital-clock');
+        const simBadge = document.getElementById('sim-badge');
+        const timeSlider = document.getElementById('time-slider');
+        const simTimeDisplay = document.getElementById('sim-time-display');
+        const btnReset = document.getElementById('btn-reset');
+
+        const iconContainer = document.getElementById('icon-container');
+        const organIcon = document.getElementById('organ-icon');
+        const organName = document.getElementById('organ-name');
+        const timeRange = document.getElementById('time-range');
+        const organDesc = document.getElementById('organ-desc');
+        const organTips = document.getElementById('organ-tips');
+        const bgGlow = document.getElementById('bg-glow');
+        const timelineContainer = document.getElementById('timeline-container');
+
+        // Buat Clock Markers (Garis putus-putus jam analog)
+        function drawMarkers() {
+            markersGroup.innerHTML = '';
+            const isDark = htmlDoc.classList.contains('dark');
+            const primaryMarkerColor = isDark ? '#9A9390' : '#8B6F47';
+            const secondaryMarkerColor = isDark ? '#4A4540' : '#D4D0CB';
+            
+            for (let i = 0; i < 12; i++) {
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute('x1', '50');
+                line.setAttribute('y1', '8');
+                line.setAttribute('x2', '50');
+                line.setAttribute('y2', i % 3 === 0 ? '14' : '11');
+                line.setAttribute('transform', `rotate(${i * 30} 50 50)`);
+                line.setAttribute('stroke', i % 3 === 0 ? primaryMarkerColor : secondaryMarkerColor);
+                line.setAttribute('stroke-width', i % 3 === 0 ? '2' : '1');
+                line.setAttribute('stroke-linecap', 'round');
+                markersGroup.appendChild(line);
+            }
+        }
+        drawMarkers(); // Initial draw
+
+        // Buat Timeline Mini
+        bioClockData.forEach(d => {
+            const div = document.createElement('div');
+            div.id = `timeline-${d.id}`;
+            div.title = `${d.name} (${String(d.start).padStart(2, '0')}:00 - ${String(d.end).padStart(2, '0')}:00)`;
+            div.className = `h-full border-r border-cream-dark dark:border-charcoal transition-all duration-500 flex-1 bg-cream-dark/50 dark:bg-stone/20 hover:bg-cream-dark dark:hover:bg-stone/40 cursor-pointer`;
+            div.onclick = () => setSimulatedHour(d.start);
+            timelineContainer.appendChild(div);
+        });
+
+        const formatNumber = (num) => String(num).padStart(2, '0');
+
+        function updateClock() {
+            // Re-draw markers if theme changed (simulated by checking if color mismatches)
+            // But to save performance, we just redraw it simply:
+            drawMarkers();
+            
+            const now = new Date();
+            const currentHour = simulatedHour !== null ? simulatedHour : now.getHours();
+            const currentMinute = simulatedHour !== null ? 0 : now.getMinutes();
+            const currentSecond = simulatedHour !== null ? 0 : now.getSeconds();
+
+            // Hitung Sudut Jarum Jam
+            const hAngle = ((currentHour % 12) * 30) + (currentMinute * 0.5);
+            const mAngle = (currentMinute * 6) + (currentSecond * 0.1);
+            const sAngle = currentSecond * 6;
+
+            hourHand.setAttribute('transform', `rotate(${hAngle} 50 50)`);
+            minuteHand.setAttribute('transform', `rotate(${mAngle} 50 50)`);
+            secondHand.setAttribute('transform', `rotate(${sAngle} 50 50)`);
+            digitalClock.textContent = `${formatNumber(currentHour)}:${formatNumber(currentMinute)}:${formatNumber(currentSecond)}`;
+
+            // Tentukan Periode Aktif
+            const activePeriod = bioClockData.find(d => {
+                if (d.start > d.end) return currentHour >= d.start || currentHour < d.end;
+                return currentHour >= d.start && currentHour < d.end;
+            });
+
+            // Update UI jika periode berubah
+            if (activePeriod.id !== lastActiveId || true) { // We force update to handle theme changes safely
+                lastActiveId = activePeriod.id;
+
+                organName.textContent = activePeriod.name;
+                organName.className = `text-2xl md:text-3xl font-bold serif color-transition ${activePeriod.color}`;
+
+                organIcon.className = `ph-fill ${activePeriod.icon} text-4xl md:text-5xl`;
+                iconContainer.className = `p-4 rounded-2xl color-transition ${activePeriod.bg} ${activePeriod.color}`;
+
+                timeRange.textContent = `${formatNumber(activePeriod.start)}:00 - ${formatNumber(activePeriod.end)}:00`;
+                organDesc.textContent = activePeriod.desc;
+                organTips.textContent = activePeriod.tips;
+                bgGlow.className = `absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-10 dark:opacity-20 transition-colors duration-1000 color-transition ${activePeriod.bg.split(' ')[0]}`; // Mengambil base color pertama
+
+                // Arc pada jam analog
+                const radius = 42;
+                const circumference = 2 * Math.PI * radius;
+                activeArc.setAttribute('stroke-dasharray', `${(2 / 12) * circumference} ${circumference}`);
+                activeArc.setAttribute('stroke-dashoffset', -((activePeriod.start % 12) / 12) * circumference + (circumference / 2));
+
+                activeArc.className.baseVal = `opacity-20 dark:opacity-40 transition-all duration-700 color-transition ${activePeriod.color}`;
+
+                // Update Timeline Mini classes
+                bioClockData.forEach(d => {
+                    const el = document.getElementById(`timeline-${d.id}`);
+                    if (d.id === activePeriod.id) {
+                        el.className = `h-full border-r border-cream-dark dark:border-charcoal transition-all duration-500 flex-1 ${d.bgActive}`;
+                    } else {
+                        el.className = `h-full border-r border-cream-dark dark:border-charcoal transition-all duration-500 flex-1 bg-cream-dark/50 dark:bg-stone/20 hover:bg-cream-dark dark:hover:bg-stone/40 cursor-pointer`;
+                    }
+                });
+            }
+
+            // Sync Slider dengan real-time jika tidak di mode simulasi
+            if (simulatedHour === null) {
+                timeSlider.value = currentHour;
+            }
+        }
+
+        // Event Listeners Controller
+        function setSimulatedHour(val) {
+            simulatedHour = val;
+            timeSlider.value = val;
+            simBadge.classList.remove('hidden');
+            simTimeDisplay.textContent = `${formatNumber(val)}:00`;
+
+            btnReset.className = "w-full py-3 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all bg-charcoal dark:bg-earth text-cream shadow-lg hover:bg-earth dark:hover:bg-earth-light";
+            btnReset.disabled = false;
+
+            updateClock();
+        }
+
+        timeSlider.addEventListener('input', (e) => {
+            setSimulatedHour(parseInt(e.target.value));
+        });
+
+        btnReset.addEventListener('click', () => {
+            simulatedHour = null;
+            simBadge.classList.add('hidden');
+            simTimeDisplay.textContent = 'Real-time';
+
+            btnReset.className = "w-full py-3 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all bg-cream-dark dark:bg-stone/20 text-stone cursor-not-allowed";
+            btnReset.disabled = true;
+
+            updateClock();
+        });
+
+        // Loop jam berdetak setiap 1 detik
+        setInterval(updateClock, 1000);
+        updateClock(); // Panggilan pertama kali saat load
+    </script>
+</body>
+
+</html>

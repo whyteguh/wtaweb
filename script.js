@@ -180,8 +180,9 @@
         async function loadSocialLinks() {
             const mainContainer = document.getElementById('main-socials');
             const footerContainer = document.getElementById('footer-socials');
+            const bioContainer = document.getElementById('bio-socials');
             
-            if (!mainContainer && !footerContainer) return;
+            if (!mainContainer && !footerContainer && !bioContainer) return;
 
             try {
                 const response = await fetch('/socials.md');
@@ -230,6 +231,12 @@
                         else if (icon.includes('medium')) icon = 'M';
                         
                         return `<a href="${s.url}" target="_blank" class="footer-social-icon">${icon}</a>`;
+                    }).join('');
+                }
+
+                if (bioContainer) {
+                    bioContainer.innerHTML = socials.map(s => {
+                        return `<a href="${s.url}" target="_blank" rel="noopener noreferrer">${s.name}</a>`;
                     }).join('');
                 }
             } catch (error) {

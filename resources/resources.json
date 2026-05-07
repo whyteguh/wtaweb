@@ -6,7 +6,7 @@
     "category": "Productivity",
     "url": "/resources/timeblock.html",
     "icon": "⏱️",
-    "pinned": true,
+    "pinned": false,
     "publish": true
   },
   {
@@ -26,7 +26,7 @@
     "category": "Self-Discovery",
     "url": "/resources/history-of-my-life.html",
     "icon": "📜",
-    "pinned": true,
+    "pinned": false,
     "publish": true
   },
   {
@@ -37,6 +37,46 @@
     "url": "/resources/consciousness-map-quiz.html",
     "icon": "🧠",
     "pinned": true,
+    "publish": true
+  },
+  {
+    "id": "rsvp-speedreading",
+    "title": "RSVP Speed Reader",
+    "description": "Increase your reading speed using Rapid Serial Visual Presentation (RSVP) technique.",
+    "category": "Productivity",
+    "url": "/resources/rsvp-speedreading.html",
+    "icon": "📖",
+    "pinned": true,
+    "publish": true
+  },
+  {
+    "id": "jam-biologi-tubuh",
+    "title": "Jam Biologis Tubuh",
+    "description": "Irama sirkadian & jam piket organ manusia selama 24 jam. Amati pola hidup Anda selaras dengan alam.",
+    "category": "Self-Discovery",
+    "url": "/resources/jam-biologi-tubuh.html",
+    "icon": "⏰",
+    "pinned": false,
+    "publish": true
+  },
+  {
+    "id": "odyssey-plan",
+    "title": "Odyssey Plan Creator",
+    "description": "Map out three alternative 5-year scenarios to prototype your future based on the Designing Your Life framework.",
+    "category": "Self-Discovery",
+    "url": "/resources/odyssey-plan.html",
+    "icon": "🧭",
+    "pinned": false,
+    "publish": true
+  },
+  {
+    "id": "moslem-productivity-rhythm",
+    "title": "Moslem Productivity Rhythm",
+    "description": "Your daily timeline starts at Maghrib. Combining Ultradian Cycles with Sunnah Time Management.",
+    "category": "Productivity",
+    "url": "/resources/moslem-productivity-rhythm.html",
+    "icon": "🌙",
+    "pinned": false,
     "publish": true
   }
 ]

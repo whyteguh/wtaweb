@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odyssey Plan Creator — Wahyu Teguh A.</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF7F2',
+                        'cream-dark': '#F0EBE1',
+                        earth: '#8B6F47',
+                        'earth-light': '#C4A882',
+                        'earth-dark': '#5C4530',
+                        charcoal: '#2C2825',
+                        'charcoal-mid': '#4A4540',
+                        stone: '#9A9390',
+                        accent: '#C4622D',
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'Georgia', 'serif'],
+                        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome & Phosphor Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- React & ReactDOM via CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel for translating JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --cream-dark: #F0EBE1;
+            --earth: #8B6F47;
+            --charcoal: #2C2825;
+            --stone: #9A9390;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .serif { font-family: 'Lora', serif; }
+
+        /* Hide scrollbar for tabs */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .nav-blur {
+            background: rgba(250, 247, 242, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(139, 111, 71, 0.12);
+        }
+        
+        .dark .nav-blur {
+            background: rgba(44, 40, 37, 0.88);
+            border-bottom: 1px solid rgba(154, 147, 144, 0.2);
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body class="bg-cream dark:bg-charcoal font-sans text-charcoal dark:text-cream min-h-screen flex flex-col transition-colors duration-300">
+    
+    <!-- Navigation -->
+    <nav class="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between transition-colors duration-300 print:hidden">
+        <a href="../index.html" class="text-charcoal dark:text-cream serif font-bold text-lg tracking-tight hover:text-earth dark:hover:text-earth transition">Wahyu Teguh A.</a>
+        <div class="flex items-center gap-6">
+            <a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal dark:hover:text-cream transition">Resources</a>
+            <button id="theme-toggle" class="text-stone hover:text-charcoal dark:hover:text-cream transition" aria-label="Toggle Dark Mode">
+                <!-- Sun Icon -->
+                <i class="ph ph-sun text-xl hidden dark:block"></i>
+                <!-- Moon Icon -->
+                <i class="ph ph-moon text-xl block dark:hidden"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- React will attach the app to this div -->
+    <main id="root" class="flex-1"></main>
+
+    <!-- Footer -->
+    <footer class="bg-cream dark:bg-charcoal border-t border-cream-dark dark:border-stone/20 transition-colors duration-300 print:hidden">
+        <p class="footer-name serif font-bold text-2xl text-charcoal dark:text-cream mb-6">Wahyu Teguh Arifianto</p>
+        <ul class="footer-links flex justify-center gap-8 mb-8 flex-wrap">
+            <li><a href="../index.html#about" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">About</a></li>
+            <li><a href="../index.html#expertise" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Expertise</a></li>
+            <li><a href="../index.html#writing" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Writing</a></li>
+            <li><a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Resources</a></li>
+            <li><a href="../index.html#youtube" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">YouTube</a></li>
+            <li><a href="../index.html#contact" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Contact</a></li>
+        </ul>
+        <p class="footer-copy text-[10px] text-stone uppercase tracking-widest">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+    </footer>
+
+    <!-- Dark Mode Logic -->
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlDoc = document.documentElement;
+        
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlDoc.classList.add('dark');
+        } else {
+            htmlDoc.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlDoc.classList.contains('dark')) {
+                htmlDoc.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlDoc.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            // Trigger a custom event so React can optionally re-render if it depends on theme
+            window.dispatchEvent(new Event('theme-changed'));
+        });
+    </script>
+
+    <!-- The actual React App Code -->
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+          const [activeTab, setActiveTab] = useState(0);
+          const [copiedPrompt, setCopiedPrompt] = useState(false);
+          const [showInfoModal, setShowInfoModal] = useState(false);
+          // Just to force re-render on theme change if needed
+          const [isDark, setIsDark] = useState(document.documentElement.classList.contains('dark'));
+          const currentYear = new Date().getFullYear();
+
+          useEffect(() => {
+            const handleThemeChange = () => setIsDark(document.documentElement.classList.contains('dark'));
+            window.addEventListener('theme-changed', handleThemeChange);
+            return () => window.removeEventListener('theme-changed', handleThemeChange);
+          }, []);
+          
+          const [plans, setPlans] = useState([
+            {
+              title: "",
+              years: ["", "", "", "", ""],
+              questions: ["", "", ""],
+              gauges: { resources: 50, likability: 50, confidence: 50, coherence: 50 }
+            },
+            {
+              title: "",
+              years: ["", "", "", "", ""],
+              questions: ["", "", ""],
+              gauges: { resources: 50, likability: 50, confidence: 50, coherence: 50 }
+            },
+            {
+              title: "",
+              years: ["", "", "", "", ""],
+              questions: ["", "", ""],
+              gauges: { resources: 50, likability: 50, confidence: 50, coherence: 50 }
+            }
+          ]);
+
+          const tabs = [
+            { iconClass: "fas fa-map", title: "1. Current Path", desc: "The thing you are doing right now" },
+            { iconClass: "fas fa-compass", title: "2. Alternative", desc: "If Path 1 suddenly disappeared" },
+            { iconClass: "fas fa-star", title: "3. Wildcard", desc: "If money & image were no object" },
+          ];
+
+          const placeholders = {
+            0: {
+              title: "e.g., Climbing the ladder to Senior Manager",
+              questions: [
+                "e.g., Will this path give me the work-life balance I need?",
+                "e.g., Do I have the right mentors to reach the next level?",
+                "e.g., Will I still find this industry fulfilling in 5 years?"
+              ]
+            },
+            1: {
+              title: "e.g., Transitioning to freelance graphic design",
+              questions: [
+                "e.g., Can I make a stable, reliable income doing this?",
+                "e.g., What new skills do I need to learn immediately?",
+                "e.g., Will I miss the structure and social aspect of a corporate job?"
+              ]
+            },
+            2: {
+              title: "e.g., Opening a sustainable community cafe in Bali",
+              questions: [
+                "e.g., What is the very first step to starting a business abroad?",
+                "e.g., How would my family and friends react to this radical change?",
+                "e.g., Will turning my passion into a job ruin the fun of it?"
+              ]
+            }
+          };
+
+          const updatePlan = (field, value) => {
+            const newPlans = [...plans];
+            newPlans[activeTab][field] = value;
+            setPlans(newPlans);
+          };
+
+          const updateNested = (category, index, value) => {
+            const newPlans = [...plans];
+            newPlans[activeTab][category][index] = value;
+            setPlans(newPlans);
+          };
+
+          const updateGauge = (gauge, value) => {
+            const newPlans = [...plans];
+            newPlans[activeTab].gauges[gauge] = parseInt(value, 10);
+            setPlans(newPlans);
+          };
+
+          const handleCopyPrompt = () => {
+            const p = plans[activeTab];
+            const text = `I am designing my life using the Odyssey Plan framework. Please act as a thoughtful career and life coach. Here is one of my 5-year scenarios:\n\nTitle: "${p.title || 'Untitled'}"\n\nTimeline:\nYear 1: ${p.years[0] || 'Blank'}\nYear 2: ${p.years[1] || 'Blank'}\nYear 3: ${p.years[2] || 'Blank'}\nYear 4: ${p.years[3] || 'Blank'}\nYear 5: ${p.years[4] || 'Blank'}\n\nQuestions I have:\n1. ${p.questions[0] || 'Blank'}\n2. ${p.questions[1] || 'Blank'}\n3. ${p.questions[2] || 'Blank'}\n\nMy Dashboard (0-100%):\n- Resources: ${p.gauges.resources}%\n- Likability: ${p.gauges.likability}%\n- Confidence: ${p.gauges.confidence}%\n- Coherence: ${p.gauges.coherence}%\n\nPlease give me constructive feedback. Identify potential blind spots, suggest small, low-risk ways to "prototype" or test this path in the next 30 days, and offer encouraging advice.`;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            
+            setCopiedPrompt(true);
+            setTimeout(() => setCopiedPrompt(false), 3000);
+          };
+
+          const activePlan = plans[activeTab];
+          const wordCount = activePlan.title.trim() ? activePlan.title.trim().split(/\s+/).length : 0;
+          const isOverLimit = wordCount > 6;
+
+          const Gauge = ({ iconClass, label, value, gaugeKey, colorClass, tooltip }) => {
+            let hexColor = '#10b981'; // emerald
+            let thumbColor = '[&::-webkit-slider-thumb]:bg-emerald-500 [&::-moz-range-thumb]:bg-emerald-500';
+            
+            if (gaugeKey === 'resources') {
+              hexColor = '#f59e0b'; // amber
+              thumbColor = '[&::-webkit-slider-thumb]:bg-amber-500 [&::-moz-range-thumb]:bg-amber-500';
+            } else if (gaugeKey === 'likability') {
+              hexColor = '#f43f5e'; // rose
+              thumbColor = '[&::-webkit-slider-thumb]:bg-rose-500 [&::-moz-range-thumb]:bg-rose-500';
+            } else if (gaugeKey === 'confidence') {
+              hexColor = '#3b82f6'; // blue
+              thumbColor = '[&::-webkit-slider-thumb]:bg-blue-500 [&::-moz-range-thumb]:bg-blue-500';
+            }
+
+            const trackColor = isDark ? '#4A4540' : '#e2e8f0'; // charcoal-mid or slate-200
+
+            return (
+              <div className="mb-5 group">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-5 h-5 flex items-center justify-center ${colorClass}`}>
+                      <i className={iconClass}></i>
+                    </div>
+                    <span className="font-semibold text-charcoal dark:text-cream" title={tooltip}>{label}</span>
+                  </div>
+                  <span className="text-sm font-bold text-stone w-12 text-right">{value}%</span>
+                </div>
+                <p className="text-xs text-stone mb-2">{tooltip}</p>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value={value} 
+                  onChange={(e) => updateGauge(gaugeKey, e.target.value)}
+                  className={`w-full h-2 rounded-lg appearance-none cursor-pointer outline-none
+                    [&::-webkit-slider-thumb]:appearance-none 
+                    [&::-webkit-slider-thumb]:w-4 
+                    [&::-webkit-slider-thumb]:h-4 
+                    [&::-webkit-slider-thumb]:rounded-full
+                    [&::-moz-range-thumb]:w-4 
+                    [&::-moz-range-thumb]:h-4 
+                    [&::-moz-range-thumb]:border-0 
+                    [&::-moz-range-thumb]:rounded-full
+                    ${thumbColor}
+                  `}
+                  style={{ background: `linear-gradient(to right, ${hexColor} ${value}%, ${trackColor} ${value}%)` }}
+                />
+              </div>
+            );
+          };
+
+          return (
+            <div className="p-4 md:p-8 w-full">
+              <div className="max-w-6xl mx-auto space-y-6">
+                
+                {/* Header Section */}
+                <div className="bg-white dark:bg-charcoal-mid rounded-[2.5rem] p-8 shadow-sm border border-cream-dark dark:border-stone/20 print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6 transition-colors duration-300">
+                  <div>
+                    <span className="text-[10px] font-bold text-earth uppercase tracking-[0.3em] mb-4 block">Design Thinking Tool</span>
+                    <h1 className="text-3xl font-extrabold text-charcoal dark:text-cream serif flex items-center gap-3">
+                      <i className="fas fa-map text-earth"></i> Odyssey Plan Creator
+                    </h1>
+                    <p className="text-charcoal-mid dark:text-stone mt-4 text-sm md:text-base max-w-2xl leading-relaxed">
+                      Based on the <i>"Designing Your Life"</i> framework. Map out three alternative 5-year scenarios to prototype your future. Don't censor yourself—just explore the possibilities!
+                    </p>
+                  </div>
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap items-center gap-4">
+                    <button 
+                      onClick={() => setShowInfoModal(true)} 
+                      className="flex items-center gap-2 px-5 py-3 bg-white dark:bg-charcoal text-charcoal dark:text-cream border border-cream-dark dark:border-stone/30 font-bold text-xs uppercase tracking-widest rounded-full hover:bg-cream dark:hover:bg-stone/20 transition-colors shadow-sm"
+                    >
+                      <i className="fas fa-info-circle text-earth text-lg"></i>
+                      About Framework
+                    </button>
+                    <button 
+                      onClick={() => window.print()} 
+                      className="flex items-center gap-2 px-6 py-3 bg-charcoal dark:bg-earth text-cream font-bold text-xs uppercase tracking-widest rounded-full hover:bg-earth dark:hover:bg-earth-light transition-colors shadow-lg"
+                    >
+                      <i className="fas fa-print text-lg"></i>
+                      Print / Save PDF
+                    </button>
+                  </div>
+                </div>
+
+                {/* Navigation Tabs */}
+                <div className="flex space-x-4 overflow-x-auto pb-4 print:hidden scrollbar-hide">
+                  {tabs.map((tab, idx) => {
+                    const isActive = activeTab === idx;
+                    return (
+                      <button 
+                        key={idx}
+                        onClick={() => setActiveTab(idx)}
+                        className={`flex items-center gap-4 px-6 py-5 rounded-[2rem] whitespace-nowrap transition-all border text-left min-w-[280px] flex-1 ${
+                          isActive 
+                            ? 'bg-charcoal dark:bg-earth border-charcoal dark:border-earth text-cream shadow-xl transform scale-[1.02]' 
+                            : 'bg-white dark:bg-charcoal-mid border-cream-dark dark:border-stone/20 text-charcoal-mid dark:text-cream hover:bg-cream dark:hover:bg-stone/20'
+                        }`}
+                      >
+                        <div className={`w-12 h-12 flex items-center justify-center rounded-2xl ${isActive ? 'bg-cream/20 text-cream' : 'bg-cream dark:bg-charcoal text-earth'}`}>
+                          <i className={`${tab.iconClass} text-xl`}></i>
+                        </div>
+                        <div>
+                          <div className={`font-bold uppercase tracking-widest text-xs mb-1 ${isActive ? 'text-cream' : 'text-charcoal dark:text-cream'}`}>{tab.title}</div>
+                          <div className={`text-xs ${isActive ? 'text-cream/80' : 'text-stone'}`}>{tab.desc}</div>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Active Plan Editor Workspace */}
+                <div className="bg-white dark:bg-charcoal-mid rounded-[2.5rem] shadow-sm border border-cream-dark dark:border-stone/20 p-8 md:p-12 transition-colors duration-300 print:border-none print:shadow-none print:p-0">
+                  
+                  {/* Print-only Header */}
+                  <div className="hidden print:block mb-8 border-b border-charcoal pb-4">
+                    <h2 className="text-3xl font-bold text-charcoal serif">{tabs[activeTab].title} Plan</h2>
+                    <p className="text-stone italic serif">{tabs[activeTab].desc}</p>
+                  </div>
+
+                  {/* 6-Word Title Input */}
+                  <div className="mb-10">
+                     <label className="flex items-center justify-between text-xs font-bold text-stone uppercase tracking-widest mb-3">
+                       <span>Headline for this Plan (6 Words Max)</span>
+                       <span className={`px-3 py-1 rounded-full ${isOverLimit ? 'bg-red-100 text-red-600' : 'bg-cream dark:bg-charcoal text-charcoal-mid dark:text-stone'}`}>
+                         {wordCount} / 6 words
+                       </span>
+                     </label>
+                     <input 
+                       type="text" 
+                       className={`w-full p-6 text-xl font-bold serif bg-cream dark:bg-charcoal border rounded-[2rem] outline-none transition-all text-charcoal dark:text-cream ${isOverLimit ? 'border-red-300 focus:ring-2 focus:ring-red-200' : 'border-cream-dark dark:border-stone/20 focus:ring-2 focus:ring-earth focus:border-transparent'}`}
+                       placeholder={placeholders[activeTab].title}
+                       value={activePlan.title}
+                       onChange={(e) => updatePlan('title', e.target.value)}
+                     />
+                  </div>
+
+                  {/* 5-Year Timeline Grid */}
+                  <div className="mb-12">
+                    <label className="flex items-center gap-3 text-sm font-bold text-charcoal dark:text-cream uppercase tracking-widest mb-6">
+                      <i className="fas fa-calendar-alt text-earth text-lg"></i> 
+                      5-Year Timeline
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                      {[1, 2, 3, 4, 5].map((year, idx) => (
+                        <div key={year} className="bg-cream dark:bg-charcoal border border-cream-dark dark:border-stone/20 rounded-[2rem] p-6 flex flex-col group hover:border-earth dark:hover:border-earth-light transition-colors h-full">
+                           <div className="font-bold text-charcoal dark:text-cream mb-4 flex items-center justify-between uppercase tracking-widest text-xs">
+                             <span>Year {year}</span>
+                             <span className="text-stone font-normal">{currentYear + idx}</span>
+                           </div>
+                           <textarea 
+                             className="flex-1 w-full min-h-[160px] bg-transparent resize-y overflow-y-auto outline-none text-charcoal-mid dark:text-stone text-sm leading-relaxed"
+                             placeholder={`Milestones, job, location, personal events for Year ${year}...`}
+                             value={activePlan.years[idx]}
+                             onChange={(e) => updateNested('years', idx, e.target.value)}
+                           />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                     {/* Questions Section */}
+                     <div>
+                       <label className="flex items-center gap-3 text-sm font-bold text-charcoal dark:text-cream uppercase tracking-widest mb-2">
+                         <i className="fas fa-question-circle text-earth text-lg"></i>
+                         Questions this plan addresses
+                       </label>
+                       <p className="text-xs text-stone mb-6">What do you want to test and explore in this alternative life?</p>
+                       <div className="space-y-5">
+                         {[0, 1, 2].map((idx) => (
+                           <div key={idx} className="relative">
+                             <span className="absolute left-6 top-4 font-bold text-stone">{idx + 1}.</span>
+                             <input 
+                               type="text"
+                               className="w-full p-4 pl-12 bg-cream dark:bg-charcoal border border-cream-dark dark:border-stone/20 rounded-[1.5rem] focus:ring-2 focus:ring-earth focus:border-transparent outline-none transition-all text-charcoal dark:text-cream text-sm"
+                               placeholder={placeholders[activeTab].questions[idx]}
+                               value={activePlan.questions[idx]}
+                               onChange={(e) => updateNested('questions', idx, e.target.value)}
+                             />
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+
+                     {/* Dashboard / Gauges Section */}
+                     <div>
+                       <label className="flex items-center gap-3 text-sm font-bold text-charcoal dark:text-cream uppercase tracking-widest mb-2">
+                         <i className="fas fa-battery-three-quarters text-earth text-lg"></i>
+                         Dashboard
+                       </label>
+                       <p className="text-xs text-stone mb-6">Gauge your current standing for this specific path.</p>
+                       <div className="bg-cream dark:bg-charcoal border border-cream-dark dark:border-stone/20 rounded-[2rem] p-8 shadow-inner">
+                         <Gauge 
+                           iconClass="fas fa-battery-full" 
+                           label="Resources" 
+                           value={activePlan.gauges.resources} 
+                           gaugeKey="resources"
+                           colorClass="text-amber-500"
+                           tooltip="Do you have the time, money, skill, and contacts you need?"
+                         />
+                         <Gauge 
+                           iconClass="fas fa-heart" 
+                           label="Likability" 
+                           value={activePlan.gauges.likability} 
+                           gaugeKey="likability"
+                           colorClass="text-rose-500"
+                           tooltip="How hot, warm, or cold do you feel about this plan?"
+                         />
+                         <Gauge 
+                           iconClass="fas fa-bolt" 
+                           label="Confidence" 
+                           value={activePlan.gauges.confidence} 
+                           gaugeKey="confidence"
+                           colorClass="text-blue-500"
+                           tooltip="Are you feeling full of confidence, or pretty uncertain?"
+                         />
+                         <Gauge 
+                           iconClass="fas fa-puzzle-piece" 
+                           label="Coherence" 
+                           value={activePlan.gauges.coherence} 
+                           gaugeKey="coherence"
+                           colorClass="text-emerald-500"
+                           tooltip="Is it consistent with your Workview and your Lifeview?"
+                         />
+                       </div>
+                     </div>
+                  </div>
+
+                  {/* AI Coach Button */}
+                  <div className="mt-12 pt-8 border-t border-cream-dark dark:border-stone/20 print:hidden flex justify-end">
+                     <button 
+                       onClick={handleCopyPrompt}
+                       className={`flex items-center gap-3 px-8 py-4 font-bold text-xs uppercase tracking-widest rounded-full transition-all shadow-md hover:shadow-lg ${copiedPrompt ? 'bg-emerald-500 text-white' : 'bg-charcoal dark:bg-earth text-cream hover:bg-earth dark:hover:bg-earth-light'}`}
+                     >
+                       <i className={copiedPrompt ? "fas fa-check text-lg" : "fas fa-robot text-lg"}></i>
+                       {copiedPrompt ? 'Prompt Copied! Paste into ChatGPT/Claude' : 'Ask AI Coach (Copy Prompt)'}
+                     </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* About Framework Modal */}
+              {showInfoModal && (
+                <div className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 print:hidden">
+                  <div className="bg-white dark:bg-charcoal-mid rounded-[2.5rem] max-w-xl w-full p-10 shadow-2xl relative border border-cream-dark dark:border-stone/20 animate-fadeIn transition-colors duration-300">
+                    <button 
+                      onClick={() => setShowInfoModal(false)} 
+                      className="absolute top-6 right-6 text-stone hover:text-charcoal dark:hover:text-cream w-10 h-10 flex items-center justify-center rounded-full transition-colors bg-cream dark:bg-charcoal"
+                    >
+                      <i className="fas fa-times text-xl"></i>
+                    </button>
+                    
+                    <h3 className="text-3xl font-extrabold text-charcoal dark:text-cream serif mb-8 pr-8">The Odyssey Plan</h3>
+                    
+                    <div className="space-y-6 text-charcoal-mid dark:text-stone text-sm leading-relaxed">
+                      <div>
+                        <h4 className="font-bold text-charcoal dark:text-cream text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                          <i className="fas fa-book text-earth text-lg"></i> The History
+                        </h4>
+                        <p>
+                          The Odyssey Plan was created by Stanford professors <strong>Bill Burnett and Dave Evans</strong>, founders of the Stanford Life Design Lab. They introduced it in their bestselling book, <em className="serif">"Designing Your Life."</em>
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-bold text-charcoal dark:text-cream text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                          <i className="fas fa-bullseye text-earth text-lg"></i> The Purpose
+                        </h4>
+                        <p className="mb-4">
+                          Most people get paralyzed trying to figure out their "one true passion." The Odyssey Plan shatters this pressure by forcing you to map out <strong>three completely different</strong>, yet equally viable, 5-year paths:
+                        </p>
+                        <ul className="list-disc pl-5 space-y-2 text-charcoal-mid dark:text-stone/90">
+                          <li><strong>Path 1:</strong> Your current trajectory or the thing you already have in mind.</li>
+                          <li><strong>Path 2:</strong> What you would do if Path 1 suddenly vanished tomorrow.</li>
+                          <li><strong>Path 3:</strong> Your wildcard—what you would do if money and what people thought of you didn't matter.</li>
+                        </ul>
+                      </div>
+
+                      <div className="bg-cream dark:bg-charcoal p-6 rounded-2xl border border-cream-dark dark:border-stone/20 mt-8">
+                        <p className="font-medium text-center italic serif text-lg text-charcoal dark:text-cream">
+                          "The goal isn't to lock yourself into a rigid 10-year plan. The goal is to brainstorm freely, pick the most interesting elements, and find small, low-risk ways to prototype them in the real world today."
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          );
+        }
+
+        // Render the app to the root div
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

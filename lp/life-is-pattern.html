@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life is a Pattern</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --ink: #1a1714;
+            --ink2: #4a4540;
+            --ink3: #8a837a;
+            --paper: #f5f0e8;
+            --paper2: #ede8de;
+            --paper3: #e0d9cc;
+            --accent: #c4521a;
+            --accent2: #e8a87c;
+            --line: rgba(26, 23, 20, 0.12);
+            --serif: 'Instrument Serif', Georgia, serif;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-weight: 300;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ---- NOISE TEXTURE OVERLAY ---- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.6;
+        }
+
+        /* ---- NAV ---- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 48px;
+            background: transparent;
+            transition: background .3s, border-bottom .3s;
+        }
+
+        nav.scrolled {
+            background: rgba(245, 240, 232, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav-logo {
+            font-family: var(--serif);
+            font-size: 17px;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-cta {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--paper);
+            background: var(--ink);
+            padding: 9px 22px;
+            border-radius: 2px;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: background .2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent);
+        }
+
+        /* ---- HERO ---- */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 120px 48px 80px;
+            gap: 64px;
+            position: relative;
+        }
+
+        .hero-left {
+            position: relative;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeUp .6s .1s forwards;
+        }
+
+        .hero-title {
+            font-family: var(--serif);
+            font-size: clamp(52px, 6vw, 84px);
+            line-height: 1.02;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp .7s .2s forwards;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: 17px;
+            color: var(--ink2);
+            line-height: 1.65;
+            max-width: 440px;
+            margin-bottom: 48px;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeUp .7s .35s forwards;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeUp .7s .5s forwards;
+        }
+
+        .btn-primary {
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--paper);
+            background: var(--ink);
+            padding: 15px 32px;
+            border-radius: 2px;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: background .2s, transform .15s;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            font-size: 13px;
+            color: var(--ink3);
+            text-decoration: none;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 2px;
+            transition: color .2s, border-color .2s;
+        }
+
+        .btn-ghost:hover {
+            color: var(--ink);
+            border-color: var(--ink);
+        }
+
+        /* ---- HERO RIGHT — book visual ---- */
+        .hero-right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn .9s .4s forwards;
+            position: relative;
+        }
+
+        .book-wrap {
+            position: relative;
+            width: 300px;
+            height: 400px;
+        }
+
+        .book-shadow {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(26, 23, 20, .22) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .book {
+            position: relative;
+            width: 260px;
+            height: 360px;
+            margin: 0 auto;
+            transform: perspective(900px) rotateY(-12deg) rotateX(2deg);
+            transform-style: preserve-3d;
+            animation: bookFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes bookFloat {
+
+            0%,
+            100% {
+                transform: perspective(900px) rotateY(-12deg) rotateX(2deg) translateY(0);
+            }
+
+            50% {
+                transform: perspective(900px) rotateY(-10deg) rotateX(2deg) translateY(-10px);
+            }
+        }
+
+        .book-cover {
+            position: absolute;
+            inset: 0;
+            background: var(--ink);
+            border-radius: 3px 8px 8px 3px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 36px 32px 28px;
+            overflow: hidden;
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 28px,
+                    rgba(255, 255, 255, 0.025) 28px,
+                    rgba(255, 255, 255, 0.025) 29px);
+        }
+
+        .book-pattern {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            opacity: 0.06;
+        }
+
+        .book-cover-eyebrow {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            font-family: var(--sans);
+        }
+
+        .book-cover-title {
+            font-family: var(--serif);
+            font-size: 32px;
+            line-height: 1.05;
+            color: var(--paper);
+            letter-spacing: -0.02em;
+        }
+
+        .book-cover-title em {
+            color: var(--accent2);
+            font-style: italic;
+        }
+
+        .book-cover-author {
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: .1em;
+            color: rgba(245, 240, 232, .4);
+            font-family: var(--sans);
+        }
+
+        .book-spine {
+            position: absolute;
+            left: -14px;
+            top: 0;
+            width: 14px;
+            height: 100%;
+            background: #0f0d0b;
+            border-radius: 3px 0 0 3px;
+            transform: rotateY(-90deg) translateZ(0) translateX(-7px);
+            transform-origin: right center;
+        }
+
+        /* Decorative circles behind book */
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid var(--line);
+        }
+
+        .deco-circle-1 {
+            width: 320px;
+            height: 320px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .deco-circle-2 {
+            width: 440px;
+            height: 440px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ---- DIVIDER ---- */
+        .section-divider {
+            height: 1px;
+            background: var(--line);
+            margin: 0 48px;
+        }
+
+        /* ---- LOOP SECTION ---- */
+        .loop-section {
+            padding: 100px 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 1px;
+            background: var(--ink3);
+        }
+
+        .section-title {
+            font-family: var(--serif);
+            font-size: clamp(36px, 4vw, 52px);
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .section-body {
+            font-size: 16px;
+            color: var(--ink2);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* Loop visual */
+        .loop-visual {
+            position: relative;
+            height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loop-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loop-year {
+            position: absolute;
+            font-family: var(--serif);
+            font-size: 13px;
+            font-style: italic;
+            color: var(--ink3);
+            text-align: center;
+        }
+
+        .loop-center {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .loop-center span {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: .08em;
+            color: var(--paper);
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* ---- PATTERNS SECTION ---- */
+        .patterns-section {
+            padding: 100px 48px;
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .patterns-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 64px;
+        }
+
+        .patterns-header .section-label {
+            color: var(--accent2);
+        }
+
+        .patterns-header .section-label::before {
+            background: var(--accent2);
+        }
+
+        .patterns-title {
+            font-family: var(--serif);
+            font-size: clamp(36px, 4vw, 52px);
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            color: var(--paper);
+            max-width: 480px;
+        }
+
+        .patterns-note {
+            font-size: 13px;
+            color: rgba(245, 240, 232, .4);
+            max-width: 200px;
+            text-align: right;
+            line-height: 1.6;
+        }
+
+        .patterns-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .pattern-card {
+            background: var(--ink);
+            padding: 32px 24px;
+            cursor: default;
+            transition: background .2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-card:hover {
+            background: #221e1a;
+        }
+
+        .pattern-num {
+            font-family: var(--serif);
+            font-size: 48px;
+            font-style: italic;
+            color: rgba(245, 240, 232, .06);
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .pattern-name {
+            font-family: var(--serif);
+            font-size: 18px;
+            font-style: italic;
+            color: var(--accent2);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .pattern-desc {
+            font-size: 13px;
+            color: rgba(245, 240, 232, .55);
+            line-height: 1.6;
+        }
+
+        /* ---- BUNDLE SECTION ---- */
+        .bundle-section {
+            padding: 100px 48px;
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        .bundle-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .bundle-item {
+            display: grid;
+            grid-template-columns: 52px 1fr;
+            gap: 20px;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--line);
+            align-items: start;
+        }
+
+        .bundle-item:first-child {
+            border-top: 1px solid var(--line);
+        }
+
+        .bundle-item-num {
+            font-family: var(--serif);
+            font-size: 13px;
+            font-style: italic;
+            color: var(--ink3);
+            padding-top: 4px;
+        }
+
+        .bundle-item-title {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: var(--ink);
+        }
+
+        .bundle-item-desc {
+            font-size: 14px;
+            color: var(--ink3);
+            line-height: 1.6;
+        }
+
+        /* Pricing card */
+        .price-card {
+            position: sticky;
+            top: 100px;
+            background: var(--ink);
+            color: var(--paper);
+            padding: 40px;
+            border-radius: 4px;
+        }
+
+        .price-tag {
+            font-family: var(--serif);
+            font-size: 56px;
+            letter-spacing: -0.03em;
+            margin-bottom: 4px;
+            line-height: 1;
+            color: var(--paper);
+        }
+
+        .price-note {
+            font-size: 13px;
+            color: rgba(245, 240, 232, .4);
+            margin-bottom: 32px;
+        }
+
+        .price-features {
+            list-style: none;
+            margin-bottom: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .price-features li {
+            font-size: 14px;
+            color: rgba(245, 240, 232, .7);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .price-features li::before {
+            content: '';
+            display: block;
+            width: 16px;
+            height: 1px;
+            background: var(--accent2);
+            flex-shrink: 0;
+        }
+
+        .btn-buy {
+            display: block;
+            text-align: center;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            background: var(--paper);
+            padding: 16px;
+            border-radius: 2px;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: background .2s;
+            margin-bottom: 16px;
+        }
+
+        .btn-buy:hover {
+            background: var(--accent2);
+        }
+
+        .price-guarantee {
+            font-size: 12px;
+            color: rgba(245, 240, 232, .3);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* ---- QUOTE SECTION ---- */
+        .quote-section {
+            padding: 100px 48px;
+            background: var(--paper2);
+            text-align: center;
+        }
+
+        .big-quote {
+            font-family: var(--serif);
+            font-size: clamp(28px, 4vw, 48px);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            max-width: 820px;
+            margin: 0 auto 32px;
+            color: var(--ink);
+        }
+
+        .big-quote em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .quote-attr {
+            font-size: 13px;
+            color: var(--ink3);
+            letter-spacing: .08em;
+        }
+
+        /* ---- FAQ SECTION ---- */
+        .faq-section {
+            padding: 100px 48px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--line);
+        }
+
+        .faq-q {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--ink);
+            padding: 24px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            user-select: none;
+        }
+
+        .faq-q:hover {
+            color: var(--accent);
+        }
+
+        .faq-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .faq-icon::before,
+        .faq-icon::after {
+            content: '';
+            position: absolute;
+            background: currentColor;
+            border-radius: 1px;
+            transition: transform .3s;
+        }
+
+        .faq-icon::before {
+            width: 12px;
+            height: 1px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .faq-icon::after {
+            width: 1px;
+            height: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .faq-item.open .faq-icon::after {
+            transform: translate(-50%, -50%) rotate(90deg);
+            opacity: 0;
+        }
+
+        .faq-a {
+            font-size: 15px;
+            color: var(--ink2);
+            line-height: 1.7;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height .35s ease, padding .35s;
+            padding: 0;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 300px;
+            padding-bottom: 24px;
+        }
+
+        /* ---- FOOTER ---- */
+        footer {
+            padding: 40px 48px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-family: var(--serif);
+            font-size: 15px;
+            color: var(--ink3);
+            font-style: italic;
+        }
+
+        .footer-note {
+            font-size: 12px;
+            color: var(--ink3);
+        }
+
+        /* ---- ANIMATIONS ---- */
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Rotating ring */
+        @keyframes rotateRing {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes rotateRingRev {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 900px) {
+            nav {
+                padding: 16px 24px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 100px 24px 60px;
+                gap: 48px;
+            }
+
+            .hero-right {
+                order: -1;
+            }
+
+            .loop-section,
+            .bundle-section {
+                grid-template-columns: 1fr;
+                gap: 48px;
+                padding: 64px 24px;
+            }
+
+            .patterns-section {
+                padding: 64px 24px;
+            }
+
+            .patterns-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .patterns-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .patterns-note {
+                text-align: left;
+            }
+
+            .section-divider {
+                margin: 0 24px;
+            }
+
+            .bundle-section {
+                padding: 64px 24px;
+            }
+
+            .price-card {
+                position: static;
+            }
+
+            .quote-section,
+            .faq-section {
+                padding: 64px 24px;
+            }
+
+            footer {
+                padding: 32px 24px;
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <a href="#" class="nav-logo">Life is a Pattern</a>
+        <a href="#bundle" class="nav-cta">Dapatkan bundle</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-left">
+            <p class="hero-eyebrow">Untuk kamu yang hidupnya terasa mengulang</p>
+            <h1 class="hero-title">
+                Hidupmu<br>bukan <em>stuck</em>.<br>Kamu sedang<br><em>looping</em>.
+            </h1>
+            <p class="hero-sub">
+                Kamu sudah ganti pekerjaan, ganti kota, mungkin ganti pasangan. Tapi kenapa rasanya hidup kamu tetap
+                sama? Ini bukan tentang usaha yang kurang — ini tentang pola yang belum kamu kenali.
+            </p>
+            <div class="hero-actions">
+                <a href="#bundle" class="btn-primary">Lihat bundle lengkap</a>
+                <a href="#kenapa" class="btn-ghost">Pelajari dulu</a>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="deco-circle deco-circle-2"
+                style="border-color: rgba(26,23,20,.05); animation: rotateRingRev 40s linear infinite;"></div>
+            <div class="deco-circle deco-circle-1"
+                style="border-color: rgba(26,23,20,.08); animation: rotateRing 28s linear infinite;"></div>
+            <div class="book-wrap">
+                <div class="book">
+                    <div class="book-cover">
+                        <svg class="book-pattern" viewBox="0 0 200 200" fill="none">
+                            <circle cx="100" cy="100" r="80" stroke="white" stroke-width="0.5" />
+                            <circle cx="100" cy="100" r="60" stroke="white" stroke-width="0.5" />
+                            <circle cx="100" cy="100" r="40" stroke="white" stroke-width="0.5" />
+                            <circle cx="100" cy="100" r="20" stroke="white" stroke-width="0.5" />
+                            <line x1="20" y1="100" x2="180" y2="100" stroke="white" stroke-width="0.5" />
+                            <line x1="100" y1="20" x2="100" y2="180" stroke="white" stroke-width="0.5" />
+                            <line x1="43" y1="43" x2="157" y2="157" stroke="white" stroke-width="0.5" />
+                            <line x1="157" y1="43" x2="43" y2="157" stroke="white" stroke-width="0.5" />
+                        </svg>
+                        <div>
+                            <div class="book-cover-eyebrow">E-course bundle</div>
+                        </div>
+                        <div>
+                            <div class="book-cover-title">Life is a<br><em>Pattern</em></div>
+                        </div>
+                        <div class="book-cover-author">Kenali pola — sebelum mengubahnya</div>
+                    </div>
+                </div>
+                <div class="book-shadow"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- LOOP / KENAPA SECTION -->
+    <section class="loop-section" id="kenapa">
+        <div class="reveal">
+            <p class="section-label">Kenapa ini terjadi</p>
+            <h2 class="section-title">Pola itu bukan kelemahan. Itu strategi lama yang belum diperbarui.</h2>
+            <p class="section-body">Di usia 25–35, kebanyakan dari kita menjalankan keputusan yang sama, masuk ke
+                hubungan yang sama, menghindari hal yang sama — tanpa benar-benar menyadarinya. Bukan karena bodoh atau
+                lemah. Karena polanya tidak terlihat.</p>
+            <p class="section-body">Dan yang tidak terlihat, tidak bisa diubah.</p>
+            <p class="section-body"
+                style="color: var(--accent); font-style: italic; font-family: var(--serif); font-size: 18px;">Bundle ini
+                bukan untuk mengubah hidupmu. Ini untuk membuatmu <em>melihatnya</em> dulu.</p>
+        </div>
+
+        <!-- Loop visual -->
+        <div class="loop-visual reveal">
+            <svg viewBox="0 0 380 380" width="380" height="380" style="position:absolute">
+                <defs>
+                    <marker id="arrowTip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5"
+                        orient="auto">
+                        <path d="M2 2L8 5L2 8" fill="none" stroke="#8a837a" stroke-width="1.5" stroke-linecap="round" />
+                    </marker>
+                </defs>
+                <!-- Rings -->
+                <circle cx="190" cy="190" r="150" fill="none" stroke="#e0d9cc" stroke-width="1" />
+                <circle cx="190" cy="190" r="110" fill="none" stroke="#e0d9cc" stroke-width="1" />
+                <circle cx="190" cy="190" r="70" fill="none" stroke="#e0d9cc" stroke-width="1" />
+                <!-- Curved year labels on outer ring -->
+                <path id="topArc" d="M 90,130 A 110 110 0 0 1 290,130" fill="none" />
+                <path id="botArc" d="M 80,190 A 110 110 0 0 0 300,190" fill="none" />
+                <!-- Year dots -->
+                <circle cx="40" cy="190" r="4" fill="#c4521a" opacity=".5" />
+                <circle cx="190" cy="40" r="4" fill="#c4521a" opacity=".5" />
+                <circle cx="340" cy="190" r="4" fill="#c4521a" opacity=".5" />
+                <circle cx="190" cy="340" r="4" fill="#c4521a" opacity=".5" />
+                <!-- Year labels -->
+                <text x="190" y="28" text-anchor="middle" font-family="'Instrument Serif', serif" font-style="italic"
+                    font-size="13" fill="#8a837a">2021</text>
+                <text x="354" y="195" text-anchor="start" font-family="'Instrument Serif', serif" font-style="italic"
+                    font-size="13" fill="#8a837a">2022</text>
+                <text x="190" y="360" text-anchor="middle" font-family="'Instrument Serif', serif" font-style="italic"
+                    font-size="13" fill="#8a837a">2023</text>
+                <text x="26" y="195" text-anchor="end" font-family="'Instrument Serif', serif" font-style="italic"
+                    font-size="13" fill="#8a837a">2024</text>
+                <!-- Arrows on outer ring -->
+                <path d="M 190,40 A 150 150 0 0 1 340,190" fill="none" stroke="#c4521a" stroke-width="1"
+                    stroke-opacity=".3" marker-end="url(#arrowTip)" />
+                <path d="M 340,190 A 150 150 0 0 1 190,340" fill="none" stroke="#c4521a" stroke-width="1"
+                    stroke-opacity=".3" marker-end="url(#arrowTip)" />
+                <path d="M 190,340 A 150 150 0 0 1 40,190" fill="none" stroke="#c4521a" stroke-width="1"
+                    stroke-opacity=".3" marker-end="url(#arrowTip)" />
+                <path d="M 40,190 A 150 150 0 0 1 190,40" fill="none" stroke="#c4521a" stroke-width="1"
+                    stroke-opacity=".3" marker-end="url(#arrowTip)" />
+                <!-- Inner labels -->
+                <text x="190" y="110" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11"
+                    fill="#8a837a">Keputusan sama</text>
+                <text x="190" y="160" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="11"
+                    fill="#8a837a">Pola berulang</text>
+                <!-- Center -->
+                <circle cx="190" cy="190" r="38" fill="#1a1714" />
+                <text x="190" y="186" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9"
+                    fill="#f5f0e8" letter-spacing="1">POLA</text>
+                <text x="190" y="200" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="9"
+                    fill="rgba(245,240,232,.45)" letter-spacing="1">TERSEMBUNYI</text>
+            </svg>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 5 PATTERNS -->
+    <section class="patterns-section">
+        <div class="patterns-header reveal">
+            <div>
+                <p class="section-label">5 pola yang paling umum</p>
+                <h2 class="patterns-title">Salah satunya<br>mungkin milikmu.</h2>
+            </div>
+            <p class="patterns-note">Di usia 25–35, hampir semua orang menjalankan setidaknya satu dari pola ini.</p>
+        </div>
+
+        <div class="patterns-grid reveal">
+            <div class="pattern-card">
+                <div class="pattern-num">1</div>
+                <div class="pattern-name">The Escape Artist</div>
+                <div class="pattern-desc">Selalu ganti situasi — kota, pekerjaan, pasangan — tapi tidak pernah ganti
+                    dirinya sendiri.</div>
+            </div>
+            <div class="pattern-card">
+                <div class="pattern-num">2</div>
+                <div class="pattern-name">The Invisible Ceiling</div>
+                <div class="pattern-desc">Selalu mendekati sukses, lalu mundur sendiri sebelum sampai di sana.</div>
+            </div>
+            <div class="pattern-card">
+                <div class="pattern-num">3</div>
+                <div class="pattern-name">The Familiar Stranger</div>
+                <div class="pattern-desc">Selalu tertarik ke tipe orang yang sama, meski sudah tahu bagaimana ceritanya
+                    berakhir.</div>
+            </div>
+            <div class="pattern-card">
+                <div class="pattern-num">4</div>
+                <div class="pattern-name">The Someday Trap</div>
+                <div class="pattern-desc">Hidupnya selalu menunggu kondisi yang "tepat" sebelum berani mulai.</div>
+            </div>
+            <div class="pattern-card">
+                <div class="pattern-num">5</div>
+                <div class="pattern-name">The Burned Bridge</div>
+                <div class="pattern-desc">Pola merusak hubungan atau peluang besar justru di momen yang paling krusial.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUOTE -->
+    <section class="quote-section">
+        <blockquote class="big-quote reveal">
+            "Aku tidak sedang membuat keputusan baru. Aku sedang mengulangi keputusan lama <em>dengan baju yang
+                berbeda.</em>"
+        </blockquote>
+        <p class="quote-attr">— dari ebook Life is a Pattern</p>
+    </section>
+
+    <!-- BUNDLE -->
+    <section class="bundle-section" id="bundle">
+        <div>
+            <p class="section-label reveal">Isi bundle lengkap</p>
+            <h2 class="section-title reveal" style="margin-bottom: 48px;">Tiga cara<br>untuk melihat<br>polamu.</h2>
+
+            <div class="bundle-items">
+                <div class="bundle-item reveal">
+                    <div class="bundle-item-num">01</div>
+                    <div>
+                        <div class="bundle-item-title">Ebook — Life is a Pattern</div>
+                        <div class="bundle-item-desc">Framework 3 lapisan pola, kenapa pola terbentuk, dan bahasa baru
+                            untuk memahami hidupmu. Bukan self-help biasa — ini guide untuk melihat sebelum berubah.
+                        </div>
+                    </div>
+                </div>
+                <div class="bundle-item reveal">
+                    <div class="bundle-item-num">02</div>
+                    <div>
+                        <div class="bundle-item-title">E-course — 4 Video (±40 menit)</div>
+                        <div class="bundle-item-desc">Empat video yang membangun pemahaman secara bertahap: dari momen
+                            "aha" personal, ke framework, ke 5 pola, ke akar masalahnya. Conversational, bukan kuliah.
+                        </div>
+                    </div>
+                </div>
+                <div class="bundle-item reveal">
+                    <div class="bundle-item-num">03</div>
+                    <div>
+                        <div class="bundle-item-title">Tools — Year by Year Life Audit</div>
+                        <div class="bundle-item-desc">Review 5 tahun hidupmu dalam 5 area utama. Bukan journaling — ini
+                            adalah proses deteksi pola yang terstruktur. Di akhir, kamu akan melihat benang merahnya.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRICING CARD -->
+        <div class="reveal">
+            <div class="price-card">
+                <div
+                    style="font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: rgba(245,240,232,.4); margin-bottom: 20px;">
+                    Bundle lengkap</div>
+                <div class="price-tag">Rp 149<span style="font-size: 28px; vertical-align: super;">.000</span></div>
+                <div class="price-note">Akses seumur hidup · semua format</div>
+                <ul class="price-features">
+                    <li>Ebook PDF (full content)</li>
+                    <li>4 video e-course (±40 menit)</li>
+                    <li>Year by Year Life Audit tools</li>
+                    <li>Update materi jika ada revisi</li>
+                </ul>
+                <a href="#" class="btn-buy">Dapatkan sekarang</a>
+                <p class="price-guarantee">Kalau dalam 7 hari tidak ada insight yang kamu dapat, uang kembali. Tidak
+                    perlu alasan.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <p class="section-label reveal" style="justify-content: center; margin-bottom: 48px;">Pertanyaan umum</p>
+
+        <div class="faq-item reveal">
+            <div class="faq-q">Apakah ini cocok untukku kalau aku belum tahu pola apa yang aku punya? <span
+                    class="faq-icon"></span></div>
+            <div class="faq-a">Justru ini titik awal yang tepat. Bundle ini dirancang untuk orang yang belum tahu —
+                proses ebook + audit akan membantu kamu mengidentifikasinya dari nol. Tidak perlu tahu dulu untuk
+                memulai.</div>
+        </div>
+
+        <div class="faq-item reveal">
+            <div class="faq-q">Berapa lama waktu yang dibutuhkan? <span class="faq-icon"></span></div>
+            <div class="faq-a">Video e-course sekitar 40 menit total. Ebook bisa selesai dalam 1–2 jam. Audit tools
+                dirancang untuk dikerjakan dalam satu sesi fokus 25–30 menit. Jadi total komitmen awal sekitar 3–4 jam —
+                tapi insight-nya akan terus bekerja setelahnya.</div>
+        </div>
+
+        <div class="faq-item reveal">
+            <div class="faq-q">Kenapa fokusnya hanya sampai mengenali pola — bukan solusinya? <span
+                    class="faq-icon"></span></div>
+            <div class="faq-a">Karena itu yang paling sering dilewati. Kebanyakan orang langsung loncat ke "solusi"
+                sebelum benar-benar paham pola apa yang mereka hadapi — dan akibatnya, solusinya tidak menempel. Bundle
+                ini mengerjakan bagian yang paling sering dilewati itu dengan serius.</div>
+        </div>
+
+        <div class="faq-item reveal">
+            <div class="faq-q">Apakah ada kelanjutannya? <span class="faq-icon"></span></div>
+            <div class="faq-a">Ya. Setelah kamu mengenali polamu, ada dua produk lanjutan: 7 Day Life Reset (mulai
+                bergerak keluar dari pola) dan Life Architect (bangun sistem hidup yang baru). Bundle ini adalah pintu
+                masuknya.</div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">Life is a Pattern</div>
+        <div class="footer-note">Hak cipta dilindungi · 2025</div>
+    </footer>
+
+    <script>
+        // Nav scroll
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Reveal on scroll
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('visible'), i * 60);
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => observer.observe(el));
+
+        // FAQ toggle
+        document.querySelectorAll('.faq-q').forEach(q => {
+            q.addEventListener('click', () => {
+                const item = q.parentElement;
+                const isOpen = item.classList.contains('open');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+                if (!isOpen) item.classList.add('open');
+            });
+        });
+    </script>
+</body>
+
+</html>

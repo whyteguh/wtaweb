@@ -10,7 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <link rel="icon" type="image/png" href="/favicon.png">
     <style>
         .halo-container {
@@ -125,6 +125,92 @@
         .halo-home-btn:hover {
             border-color: var(--accent);
         }
+
+        /* YouTube Videos Section */
+        .video-section {
+            width: 100%;
+            margin-bottom: 48px;
+            text-align: left;
+        }
+
+        .video-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .video-section-title {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin: 0;
+        }
+
+        .video-section-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .video-section-link:hover {
+            text-decoration: underline;
+        }
+
+        .video-carousel {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 16px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .video-carousel::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .video-card {
+            flex: 0 0 240px; /* fixed width for cards */
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            text-decoration: none;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            border-color: rgba(196, 168, 130, 0.3);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            background-color: #f0f0f0;
+        }
+
+        .video-title {
+            padding: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            font-weight: 500;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -132,7 +218,7 @@
 
     <main class="halo-container fade-in">
         <!-- Photo -->
-        <img src="photo-normal.jpg" alt="Wahyu Teguh Arifianto" class="halo-photo">
+        <img src="../photo-normal.jpg" alt="Wahyu Teguh Arifianto" class="halo-photo">
 
         <!-- Name & Bio -->
         <h1 class="halo-name">Wahyu Teguh <em>Arifianto</em></h1>
@@ -160,20 +246,57 @@
 
         </div>
 
+        <!-- Latest Videos -->
+        <div class="video-section">
+            <div class="video-section-header">
+                <h2 class="video-section-title">Latest Videos</h2>
+                <a href="https://www.youtube.com/channel/UCEjCsipUYL_KG2xeGpWfq_A" target="_blank" rel="noopener noreferrer" class="video-section-link">Visit Channel →</a>
+            </div>
+            <div class="video-carousel" id="youtube-carousel">
+                <!-- Videos will be injected here via JS -->
+            </div>
+        </div>
+
         <!-- Social Icons / Simple Links -->
-        <div class="halo-social dynamic-socials"></div>
+        <div class="halo-social" id="bio-socials"></div>
 
         <!-- Back to website -->
         <a href="https://wahyuteguh.com/" class="halo-home-btn">← Return to Main Website</a>
     </main>
 
-    <script src="script.js" defer></script>
+    <script src="../script.js" defer></script>
     <!-- Script for fade-in effect -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Fade-in effect
             setTimeout(() => {
                 document.querySelector('.halo-container').classList.add('visible');
             }, 100);
+
+            // Fetch YouTube videos
+            const channelId = 'UCEjCsipUYL_KG2xeGpWfq_A';
+            const rssUrl = encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
+            const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        const carousel = document.getElementById('youtube-carousel');
+                        const videos = data.items.slice(0, 3);
+                        let html = '';
+                        videos.forEach(video => {
+                            html += `
+                                <a href="${video.link}" target="_blank" rel="noopener noreferrer" class="video-card">
+                                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
+                                    <div class="video-title">${video.title}</div>
+                                </a>
+                            `;
+                        });
+                        carousel.innerHTML = html;
+                    }
+                })
+                .catch(error => console.error('Error fetching YouTube videos:', error));
         });
     </script>
 </body>

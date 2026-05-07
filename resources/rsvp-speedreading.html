@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP Speed Reader — Wahyu Teguh A.</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF7F2',
+                        'cream-dark': '#F0EBE1',
+                        earth: '#8B6F47',
+                        'earth-light': '#C4A882',
+                        'earth-dark': '#5C4530',
+                        charcoal: '#2C2825',
+                        'charcoal-mid': '#4A4540',
+                        stone: '#9A9390',
+                        accent: '#C4622D',
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'Georgia', 'serif'],
+                        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --cream-dark: #F0EBE1;
+            --earth: #8B6F47;
+            --charcoal: #2C2825;
+            --stone: #9A9390;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--charcoal);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .serif { font-family: 'Lora', serif; }
+
+        .nav-blur {
+            background: rgba(250, 247, 242, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(139, 111, 71, 0.12);
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            background-color: var(--cream);
+            border-top: 1px solid var(--cream-dark);
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #8B6F47; /* earth */
+            cursor: pointer;
+            margin-top: -6px;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #F0EBE1; /* cream-dark */
+            border-radius: 2px;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body class="bg-cream text-charcoal min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+    <!-- Navigation -->
+    <nav class="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <a href="../index.html" class="text-charcoal serif font-bold text-lg tracking-tight hover:text-earth transition">Wahyu Teguh A.</a>
+        <div class="flex items-center gap-4">
+            <a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal transition">Resources</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col items-center py-12 px-6">
+        <div class="max-w-3xl w-full space-y-8">
+
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <span class="text-[10px] font-bold text-earth uppercase tracking-[0.3em] mb-4 block">Productivity Tool</span>
+                <h1 class="text-4xl md:text-5xl font-bold text-charcoal serif leading-tight">RSVP Speed Reader</h1>
+            </div>
+
+            <!-- Reader Display Area -->
+            <div class="relative w-full h-48 sm:h-64 bg-white border border-cream-dark rounded-[2.5rem] shadow-sm overflow-hidden flex flex-col justify-center">
+
+                <!-- Focal Point Guides -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-6 bg-cream-dark"></div>
+                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-6 bg-cream-dark"></div>
+
+                <!-- Word Container -->
+                <div class="flex w-full items-center font-mono text-4xl sm:text-6xl tracking-wider select-none px-4">
+                    <div id="word-left" class="flex-1 text-right text-charcoal-mid"></div>
+                    <div id="word-pivot" class="text-accent font-bold relative z-10"></div>
+                    <div id="word-right" class="flex-1 text-left text-charcoal-mid"></div>
+                </div>
+
+                <!-- Word Count Indicator -->
+                <div id="word-counter" class="absolute bottom-6 right-8 text-xs text-stone font-bold uppercase tracking-widest">0 / 0</div>
+            </div>
+
+            <!-- Controls -->
+            <div class="bg-white p-8 rounded-[2.5rem] border border-cream-dark shadow-sm space-y-8">
+
+                <!-- Play/Reset Row -->
+                <div class="flex items-center justify-center gap-6">
+                    <button id="btn-reset" class="p-4 rounded-full bg-cream hover:bg-cream-dark transition-colors text-charcoal" title="Reset">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                        </svg>
+                    </button>
+
+                    <button id="btn-play-pause" class="flex items-center justify-center w-20 h-20 rounded-full bg-charcoal hover:bg-earth text-cream transition-all duration-300 transform hover:-translate-y-1 shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed">
+                        <!-- Play Icon -->
+                        <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 ml-2">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <!-- Pause Icon (Hidden initially) -->
+                        <svg id="icon-pause" class="hidden w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- WPM Controls -->
+                <div class="space-y-6 pt-4 border-t border-cream-dark">
+                    <div class="flex justify-between items-center">
+                        <label for="wpm-slider" class="text-xs font-bold uppercase tracking-widest text-stone">Reading Speed</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="wpm-input" min="50" max="1000" value="300" class="w-16 text-center px-2 py-1 rounded-md border border-cream-dark bg-cream text-charcoal text-sm focus:ring-1 focus:ring-earth outline-none font-bold" />
+                            <span class="text-xs font-bold uppercase text-stone tracking-widest">WPM</span>
+                        </div>
+                    </div>
+                    <input type="range" id="wpm-slider" min="50" max="1000" step="10" value="300" class="w-full" />
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full h-1.5 bg-cream-dark rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-earth transition-all duration-200 ease-linear" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Text Input -->
+            <div class="space-y-4">
+                <label for="article-text" class="block text-xs font-bold uppercase tracking-widest text-stone px-2">Input Article</label>
+                <textarea id="article-text" rows="8" placeholder="Paste your text here..." class="w-full p-6 rounded-[2rem] border border-cream-dark bg-white text-charcoal focus:border-earth focus:ring-1 focus:ring-earth outline-none resize-y transition-colors text-sm leading-relaxed"></textarea>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-name serif font-bold text-2xl text-charcoal mb-6">Wahyu Teguh Arifianto</p>
+        <ul class="footer-links flex justify-center gap-8 mb-8 flex-wrap">
+            <li><a href="../index.html#about" class="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">About</a></li>
+            <li><a href="../index.html#expertise" class="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Expertise</a></li>
+            <li><a href="../index.html#writing" class="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Writing</a></li>
+            <li><a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Resources</a></li>
+            <li><a href="../index.html#youtube" class="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">YouTube</a></li>
+            <li><a href="../index.html#contact" class="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Contact</a></li>
+        </ul>
+        <p class="footer-copy text-[10px] text-stone uppercase tracking-widest">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+    </footer>
+
+    <script>
+        // --- State ---
+        const DEFAULT_TEXT = `Welcome to the Rapid Serial Visual Presentation reader. This technique helps you read significantly faster by completely eliminating the time your eyes spend moving from word to word. Try adjusting the words per minute (WPM) slider below to find your optimal reading speed. Notice how the red letter is perfectly centered? This is called the Optimal Recognition Point. Keeping your eyes locked on this exact spot allows your brain to process the entire word instantly. This app also features smart pacing! It will automatically add a slight, natural pause when it encounters commas, and a slightly longer pause at the end of a sentence. Paste your own article in the text box below and give it a try!`;
+
+        let words = [];
+        let currentIndex = 0;
+        let isPlaying = false;
+        let wpm = 300;
+        let loopTimer = null;
+
+        // --- DOM Elements ---
+        const elTextarea = document.getElementById('article-text');
+        const elWordLeft = document.getElementById('word-left');
+        const elWordPivot = document.getElementById('word-pivot');
+        const elWordRight = document.getElementById('word-right');
+        const elCounter = document.getElementById('word-counter');
+        const elProgressBar = document.getElementById('progress-bar');
+
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const btnReset = document.getElementById('btn-reset');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+
+        const inputWpm = document.getElementById('wpm-input');
+        const sliderWpm = document.getElementById('wpm-slider');
+
+        // --- Core Logic ---
+
+        // Calculate the Optimal Recognition Point (ORP)
+        function getPivotParts(word) {
+            if (!word) return { left: '', pivot: '', right: '' };
+
+            const len = word.length;
+            let pivotIndex;
+
+            if (len === 1) pivotIndex = 0;
+            else if (len <= 5) pivotIndex = 1;
+            else if (len <= 9) pivotIndex = 2;
+            else if (len <= 13) pivotIndex = 3;
+            else pivotIndex = 4;
+
+            return {
+                left: word.slice(0, pivotIndex),
+                pivot: word[pivotIndex],
+                right: word.slice(pivotIndex + 1),
+            };
+        }
+
+        function parseText() {
+            const rawText = elTextarea.value.trim();
+            words = rawText.split(/\s+/).filter(word => word.length > 0);
+
+            btnPlayPause.disabled = words.length === 0;
+
+            // If text changed, reset to beginning but don't auto-play
+            if (isPlaying) {
+                stopPlaying();
+            }
+            currentIndex = 0;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            if (words.length === 0) {
+                elWordLeft.textContent = '';
+                elWordPivot.textContent = '';
+                elWordRight.textContent = '';
+                elCounter.textContent = '0 / 0';
+                elProgressBar.style.width = '0%';
+                return;
+            }
+
+            const currentWord = words[currentIndex] || '';
+            const { left, pivot, right } = getPivotParts(currentWord);
+
+            elWordLeft.textContent = left;
+            elWordPivot.textContent = pivot;
+            elWordRight.textContent = right;
+
+            elCounter.textContent = `${currentIndex + 1} / ${words.length}`;
+            const progress = (currentIndex / (words.length > 1 ? words.length - 1 : 1)) * 100;
+            elProgressBar.style.width = `${progress}%`;
+        }
+
+        function readingLoop() {
+            if (!isPlaying || words.length === 0 || currentIndex >= words.length) {
+                stopPlaying();
+                return;
+            }
+
+            updateDisplay();
+
+            const currentWord = words[currentIndex];
+            let delay = 60000 / wpm; // Base delay in ms
+
+            // Smart pacing
+            if (currentWord.endsWith('.') || currentWord.endsWith('!') || currentWord.endsWith('?')) {
+                delay *= 2;
+            } else if (currentWord.endsWith(',') || currentWord.endsWith(';') || currentWord.endsWith(':')) {
+                delay *= 1.5;
+            }
+
+            loopTimer = setTimeout(() => {
+                if (currentIndex < words.length - 1) {
+                    currentIndex++;
+                    readingLoop(); // Next word
+                } else {
+                    stopPlaying(); // Reached end
+                }
+            }, delay);
+        }
+
+        function togglePlay() {
+            if (words.length === 0) return;
+
+            if (isPlaying) {
+                stopPlaying();
+            } else {
+                // If at the end, restart from beginning
+                if (currentIndex >= words.length - 1) {
+                    currentIndex = 0;
+                }
+                startPlaying();
+            }
+        }
+
+        function startPlaying() {
+            isPlaying = true;
+            iconPlay.classList.add('hidden');
+            iconPause.classList.remove('hidden');
+            readingLoop();
+        }
+
+        function stopPlaying() {
+            isPlaying = false;
+            iconPlay.classList.remove('hidden');
+            iconPause.classList.add('hidden');
+            clearTimeout(loopTimer);
+        }
+
+        function handleReset() {
+            stopPlaying();
+            currentIndex = 0;
+            updateDisplay();
+        }
+
+        function updateWpm(val) {
+            wpm = Number(val);
+            inputWpm.value = wpm;
+            sliderWpm.value = wpm;
+        }
+
+        // --- Event Listeners ---
+        elTextarea.addEventListener('input', parseText);
+        btnPlayPause.addEventListener('click', togglePlay);
+        btnReset.addEventListener('click', handleReset);
+
+        sliderWpm.addEventListener('input', (e) => updateWpm(e.target.value));
+        inputWpm.addEventListener('input', (e) => updateWpm(e.target.value));
+
+        // --- Initialization ---
+        elTextarea.value = DEFAULT_TEXT;
+        parseText();
+
+    </script>
+</body>
+
+</html>

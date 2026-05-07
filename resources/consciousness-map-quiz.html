@@ -11,10 +11,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     
-    <!-- Memuat Tailwind CSS melalui CDN -->
+    <!-- React & ReactDOM (UMD) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind CSS (Play CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        window.tailwind.config = {
+        tailwind.config = {
             theme: {
                 extend: {
                     colors: {
@@ -36,13 +43,6 @@
             }
         }
     </script>
-    
-    <!-- Memuat React dan ReactDOM melalui CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Memuat Babel untuk menerjemahkan JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
         :root {
@@ -50,7 +50,7 @@
             --cream-dark: #F0EBE1;
             --earth: #8B6F47;
             --charcoal: #2C2825;
-            --accent: #C4622D;
+            --stone: #9A9390;
         }
 
         body {
@@ -59,6 +59,7 @@
             color: var(--charcoal);
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
         .serif { font-family: 'Lora', serif; }
@@ -82,55 +83,16 @@
             text-align: center;
             margin-top: 4rem;
         }
-        .footer-name {
-            font-family: 'Lora', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-        .footer-links a {
-            text-decoration: none;
-            color: var(--charcoal);
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: color 0.3s;
-        }
-        .footer-links a:hover { color: var(--earth); }
-        .footer-copy {
-            font-size: 0.75rem;
-            color: var(--stone);
-            letter-spacing: 0.05em;
-        }
     </style>
 </head>
 
-<body>
+<body class="bg-cream">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        const SVGIcon = ({ d, size = 24, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} dangerouslySetInnerHTML={{ __html: d }} />
-        );
-        const Info = (p) => <SVGIcon {...p} d='<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/>' />;
-        const ArrowLeft = (p) => <SVGIcon {...p} d='<line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/>' />;
-        const Map = (p) => <SVGIcon {...p} d='<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" x2="8" y1="2" y2="18"/><line x1="16" x2="16" y1="6" y2="22"/>' />;
-        const RotateCcw = (p) => <SVGIcon {...p} d='<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/>' />;
-        const X = (p) => <SVGIcon {...p} d='<path d="M18 6 6 18"/><path d="M6 6l12 12"/>' />;
-        const ChevronRight = (p) => <SVGIcon {...p} d='<polyline points="9 18 15 12 9 6"/>' />;
-
+        // --- Data ---
         const questions = [
             {
                 question: "Bagaimana respons spontan Anda ketika menghadapi masalah besar yang tiba-tiba muncul?",
@@ -304,6 +266,61 @@
             return levels.find(l => score >= l.threshold) || levels[levels.length - 1];
         };
 
+        // --- Icons ---
+        const SVGIcon = ({ d, size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <g dangerouslySetInnerHTML={{ __html: d }} />
+            </svg>
+        );
+        const Info = (p) => <SVGIcon {...p} d='<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/>' />;
+        const ArrowLeft = (p) => <SVGIcon {...p} d='<line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/>' />;
+        const MapIcon = (p) => <SVGIcon {...p} d='<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" x2="8" y1="2" y2="18"/><line x1="16" x2="16" y1="6" y2="22"/>' />;
+        const RotateCcw = (p) => <SVGIcon {...p} d='<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/>' />;
+        const XIcon = (p) => <SVGIcon {...p} d='<path d="M18 6 6 18"/><path d="M6 6l12 12"/>' />;
+        const ChevronRight = (p) => <SVGIcon {...p} d='<polyline points="9 18 15 12 9 6"/>' />;
+
+        // --- Sub-Components ---
+        const FullMapModal = ({ onClose }) => (
+            <div className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fadeIn">
+                <div className="bg-white rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-slideUp">
+                    <div className="p-8 border-b border-cream-dark flex justify-between items-center bg-cream/30">
+                        <h2 className="text-2xl font-bold text-charcoal serif">Peta Kesadaran (Hawkins)</h2>
+                        <button onClick={onClose} className="text-stone hover:text-charcoal p-2 transition"><XIcon size={24} /></button>
+                    </div>
+                    <div className="p-8 overflow-y-auto">
+                        <p className="text-sm text-stone mb-6">Skala logaritmik (1-1000) yang memetakan tingkatan energi emosional dan spiritual.</p>
+                        <div className="space-y-3">
+                            {[
+                                { lvl: "Enlightenment (700-1000)", cat: "Spiritual", cl: "bg-amber-50 text-amber-900 border-l-4 border-amber-500" },
+                                { lvl: "Peace (600)", cat: "Spiritual", cl: "bg-yellow-50 text-yellow-900 border-l-4 border-yellow-500" },
+                                { lvl: "Joy (540)", cat: "Spiritual", cl: "bg-emerald-50 text-emerald-900 border-l-4 border-emerald-500" },
+                                { lvl: "Love (500)", cat: "Spiritual", cl: "bg-pink-50 text-pink-900 border-l-4 border-pink-500" },
+                                { lvl: "Reason (400)", cat: "Intelek", cl: "bg-purple-50 text-purple-900 border-l-4 border-purple-500" },
+                                { lvl: "Acceptance (350)", cat: "Daya (Power)", cl: "bg-green-50 text-green-900 border-l-4 border-green-500" },
+                                { lvl: "Willingness (310)", cat: "Daya (Power)", cl: "bg-teal-50 text-teal-900 border-l-4 border-teal-500" },
+                                { lvl: "Neutrality (250)", cat: "Daya (Power)", cl: "bg-cyan-50 text-cyan-900 border-l-4 border-cyan-500" },
+                                { lvl: "Courage (200)", cat: "Daya (Power)", cl: "bg-blue-50 text-blue-900 border-l-4 border-blue-500" },
+                                { lvl: "Pride (175)", cat: "Paksaan (Force)", cl: "bg-indigo-50 text-indigo-900 border-l-4 border-indigo-500" },
+                                { lvl: "Anger (150)", cat: "Paksaan (Force)", cl: "bg-red-50 text-red-900 border-l-4 border-red-500" },
+                                { lvl: "Desire (125)", cat: "Paksaan (Force)", cl: "bg-orange-50 text-orange-900 border-l-4 border-orange-500" },
+                                { lvl: "Fear (100)", cat: "Paksaan (Force)", cl: "bg-orange-100 text-orange-900 border-l-4 border-orange-600" },
+                                { lvl: "Grief (75)", cat: "Paksaan (Force)", cl: "bg-slate-100 text-slate-900 border-l-4 border-slate-500" },
+                                { lvl: "Apathy (50)", cat: "Paksaan (Force)", cl: "bg-gray-100 text-gray-900 border-l-4 border-gray-500" },
+                                { lvl: "Guilt (30)", cat: "Paksaan (Force)", cl: "bg-gray-200 text-gray-900 border-l-4 border-gray-600" },
+                                { lvl: "Shame (20)", cat: "Paksaan (Force)", cl: "bg-gray-300 text-gray-900 border-l-4 border-gray-700" }
+                            ].map((item, idx) => (
+                                <div key={idx} className={`flex justify-between items-center p-4 rounded-r-2xl ${item.cl} font-medium text-sm`}>
+                                    <span>{item.lvl}</span>
+                                    <span className="opacity-70 text-[10px] uppercase tracking-widest font-bold">{item.cat}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // --- Main App ---
         const App = () => {
             const [hasStarted, setHasStarted] = useState(false);
             const [showMap, setShowMap] = useState(false);
@@ -312,8 +329,8 @@
             const [isFinished, setIsFinished] = useState(false);
 
             const handleAnswer = (value) => {
-                const newAnswers = [...answers, value];
-                setAnswers(newAnswers);
+                const nextAnswers = [...answers, value];
+                setAnswers(nextAnswers);
                 if (currentQuestion < questions.length - 1) {
                     setCurrentQuestion(currentQuestion + 1);
                 } else {
@@ -338,48 +355,9 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             };
 
-            const FullMapModal = () => (
-                <div className="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fadeIn">
-                    <div className="bg-white rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-slideUp">
-                        <div className="p-8 border-b border-cream-dark flex justify-between items-center bg-cream/30">
-                            <h2 className="text-2xl font-bold text-charcoal serif">Peta Kesadaran (Hawkins)</h2>
-                            <button onClick={() => setShowMap(false)} className="text-stone hover:text-charcoal p-2 transition"><X size={24} /></button>
-                        </div>
-                        <div className="p-8 overflow-y-auto">
-                            <p className="text-sm text-stone mb-6">Skala logaritmik (1-1000) yang memetakan tingkatan energi emosional dan spiritual.</p>
-                            <div className="space-y-3">
-                                {[
-                                    { lvl: "Enlightenment (700-1000)", cat: "Spiritual", cl: "bg-amber-50 text-amber-900 border-l-4 border-amber-500" },
-                                    { lvl: "Peace (600)", cat: "Spiritual", cl: "bg-yellow-50 text-yellow-900 border-l-4 border-yellow-500" },
-                                    { lvl: "Joy (540)", cat: "Spiritual", cl: "bg-emerald-50 text-emerald-900 border-l-4 border-emerald-500" },
-                                    { lvl: "Love (500)", cat: "Spiritual", cl: "bg-pink-50 text-pink-900 border-l-4 border-pink-500" },
-                                    { lvl: "Reason (400)", cat: "Intelek", cl: "bg-purple-50 text-purple-900 border-l-4 border-purple-500" },
-                                    { lvl: "Acceptance (350)", cat: "Daya (Power)", cl: "bg-green-50 text-green-900 border-l-4 border-green-500" },
-                                    { lvl: "Willingness (310)", cat: "Daya (Power)", cl: "bg-teal-50 text-teal-900 border-l-4 border-teal-500" },
-                                    { lvl: "Neutrality (250)", cat: "Daya (Power)", cl: "bg-cyan-50 text-cyan-900 border-l-4 border-cyan-500" },
-                                    { lvl: "Courage (200)", cat: "Daya (Power)", cl: "bg-blue-50 text-blue-900 border-l-4 border-blue-500" },
-                                    { lvl: "Pride (175)", cat: "Paksaan (Force)", cl: "bg-indigo-50 text-indigo-900 border-l-4 border-indigo-500" },
-                                    { lvl: "Anger (150)", cat: "Paksaan (Force)", cl: "bg-red-50 text-red-900 border-l-4 border-red-500" },
-                                    { lvl: "Desire (125)", cat: "Paksaan (Force)", cl: "bg-orange-50 text-orange-900 border-l-4 border-orange-500" },
-                                    { lvl: "Fear (100)", cat: "Paksaan (Force)", cl: "bg-orange-100 text-orange-900 border-l-4 border-orange-600" },
-                                    { lvl: "Grief (75)", cat: "Paksaan (Force)", cl: "bg-slate-100 text-slate-900 border-l-4 border-slate-500" },
-                                    { lvl: "Apathy (50)", cat: "Paksaan (Force)", cl: "bg-gray-100 text-gray-900 border-l-4 border-gray-500" },
-                                    { lvl: "Guilt (30)", cat: "Paksaan (Force)", cl: "bg-gray-200 text-gray-900 border-l-4 border-gray-600" },
-                                    { lvl: "Shame (20)", cat: "Paksaan (Force)", cl: "bg-gray-300 text-gray-900 border-l-4 border-gray-700" }
-                                ].map((item, idx) => (
-                                    <div key={idx} className={`flex justify-between items-center p-4 rounded-r-2xl ${item.cl} font-medium text-sm`}>
-                                        <span>{item.lvl}</span>
-                                        <span className="opacity-70 text-[10px] uppercase tracking-widest font-bold">{item.cat}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-
             return (
-                <div className="min-h-screen flex flex-col bg-cream">
+                <div className="min-h-screen flex flex-col bg-cream font-sans text-charcoal">
+                    {/* Navigation */}
                     <nav className="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
                         <a href="/" className="text-charcoal serif font-bold text-lg tracking-tight hover:text-earth transition">Wahyu Teguh A.</a>
                         <div className="flex items-center gap-4">
@@ -387,6 +365,7 @@
                         </div>
                     </nav>
 
+                    {/* Main Content */}
                     <main className="flex-1 flex flex-col items-center py-12 px-6">
                         {!hasStarted ? (
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 md:p-16 max-w-3xl w-full text-center animate-fadeIn">
@@ -420,7 +399,7 @@
                                 })()}
                                 <p className="text-xs text-stone italic mb-12 px-4 max-w-lg mx-auto leading-relaxed">Ingat: Tingkat kesadaran bisa berfluktuasi. Jadikan ini sebagai alat navigasi diri untuk bertumbuh.</p>
                                 <div className="flex flex-col sm:flex-row justify-center gap-6">
-                                    <button onClick={() => setShowMap(true)} className="bg-white border border-charcoal hover:bg-charcoal hover:text-cream text-charcoal font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest"><Map size={18} /> Lihat Peta Full</button>
+                                    <button onClick={() => setShowMap(true)} className="bg-white border border-charcoal hover:bg-charcoal hover:text-cream text-charcoal font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest"><MapIcon size={18} /> Lihat Peta Full</button>
                                     <button onClick={resetQuiz} className="bg-charcoal hover:bg-earth text-cream font-bold py-4 px-10 rounded-full transition-all duration-300 flex items-center justify-center gap-3 text-xs uppercase tracking-widest shadow-lg"><RotateCcw size={18} /> Ulangi Kuis</button>
                                 </div>
                             </div>
@@ -459,19 +438,21 @@
                                 )}
                             </div>
                         )}
+                        {showMap && <FullMapModal onClose={() => setShowMap(false)} />}
                     </main>
 
+                    {/* Footer */}
                     <footer>
-                        <p className="footer-name">Wahyu Teguh Arifianto</p>
-                        <ul className="footer-links">
-                            <li><a href="/#about">About</a></li>
-                            <li><a href="/#expertise">Expertise</a></li>
-                            <li><a href="/#writing">Writing</a></li>
-                            <li><a href="/#resources">Resources</a></li>
-                            <li><a href="/#youtube">YouTube</a></li>
-                            <li><a href="/#contact">Contact</a></li>
+                        <p className="footer-name serif font-bold text-2xl text-charcoal mb-6">Wahyu Teguh Arifianto</p>
+                        <ul className="footer-links flex justify-center gap-8 mb-8 flex-wrap">
+                            <li><a href="/#about" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">About</a></li>
+                            <li><a href="/#expertise" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Expertise</a></li>
+                            <li><a href="/#writing" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Writing</a></li>
+                            <li><a href="/#resources" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Resources</a></li>
+                            <li><a href="/#youtube" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">YouTube</a></li>
+                            <li><a href="/#contact" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Contact</a></li>
                         </ul>
-                        <p className="footer-copy">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
+                        <p className="footer-copy text-[10px] text-stone uppercase tracking-widest">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
                     </footer>
                 </div>
             );
