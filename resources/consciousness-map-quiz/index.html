@@ -84,6 +84,7 @@
             margin-top: 4rem;
         }
     </style>
+    <script src="/resources/shared-ui.js"></script>
 </head>
 
 <body class="bg-cream">
@@ -358,12 +359,7 @@
             return (
                 <div className="min-h-screen flex flex-col bg-cream font-sans text-charcoal">
                     {/* Navigation */}
-                    <nav className="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
-                        <a href="/" className="text-charcoal serif font-bold text-lg tracking-tight hover:text-earth transition">Wahyu Teguh A.</a>
-                        <div className="flex items-center gap-4">
-                            <a href="/#resources" className="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal transition">Resources</a>
-                        </div>
-                    </nav>
+                    <site-header></site-header>
 
                     {/* Main Content */}
                     <main className="flex-1 flex flex-col items-center py-12 px-6">
@@ -442,18 +438,7 @@
                     </main>
 
                     {/* Footer */}
-                    <footer>
-                        <p className="footer-name serif font-bold text-2xl text-charcoal mb-6">Wahyu Teguh Arifianto</p>
-                        <ul className="footer-links flex justify-center gap-8 mb-8 flex-wrap">
-                            <li><a href="/#about" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">About</a></li>
-                            <li><a href="/#expertise" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Expertise</a></li>
-                            <li><a href="/#writing" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Writing</a></li>
-                            <li><a href="/#resources" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Resources</a></li>
-                            <li><a href="/#youtube" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">YouTube</a></li>
-                            <li><a href="/#contact" className="text-[10px] font-bold uppercase tracking-widest text-charcoal hover:text-earth transition">Contact</a></li>
-                        </ul>
-                        <p className="footer-copy text-[10px] text-stone uppercase tracking-widest">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
-                    </footer>
+                    <site-footer></site-footer>
                 </div>
             );
         };

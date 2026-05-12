@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ikigai Brainstorm — Wahyu Teguh A.</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FAF7F2',
+                        'cream-dark': '#F0EBE1',
+                        earth: '#8B6F47',
+                        'earth-light': '#C4A882',
+                        'earth-dark': '#5C4530',
+                        charcoal: '#2C2825',
+                        'charcoal-mid': '#4A4540',
+                        stone: '#9A9390',
+                        accent: '#C4622D',
+                        ikigai: {
+                            love: 'rgba(239, 68, 68, 0.7)',
+                            good: 'rgba(234, 179, 8, 0.7)',
+                            needs: 'rgba(59, 130, 246, 0.7)',
+                            paid: 'rgba(34, 197, 94, 0.7)',
+                            center: 'rgba(168, 85, 247, 0.9)'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'Georgia', 'serif'],
+                        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --cream-dark: #F0EBE1;
+            --earth: #8B6F47;
+            --charcoal: #2C2825;
+            --stone: #9A9390;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
+            color: var(--charcoal);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .serif { font-family: 'Lora', serif; }
+
+        .nav-blur {
+            background: rgba(250, 247, 242, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(139, 111, 71, 0.12);
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            background-color: var(--cream);
+            border-top: 1px solid var(--cream-dark);
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /* Venn Diagram Styles */
+        .venn-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+        }
+
+        .venn-circle {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .venn-circle:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .circle-love { top: 0; left: 60px; background-color: var(--color-love, rgba(239, 68, 68, 0.7)); }
+        .circle-good { top: 60px; left: 0; background-color: var(--color-good, rgba(234, 179, 8, 0.7)); }
+        .circle-needs { top: 60px; left: 120px; background-color: var(--color-needs, rgba(59, 130, 246, 0.7)); }
+        .circle-paid { top: 120px; left: 60px; background-color: var(--color-paid, rgba(34, 197, 94, 0.7)); }
+
+        .ikigai-center {
+            position: absolute;
+            top: 110px;
+            left: 110px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(168, 85, 247, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            z-index: 5;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .ikigai-center:hover { transform: scale(1.1); }
+
+        .intersection-text {
+            position: absolute;
+            font-size: 0.65rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            pointer-events: none;
+            z-index: 6;
+            text-align: center;
+        }
+
+        .int-passion { top: 50px; left: 85px; width: 50px; }
+        .int-mission { top: 50px; left: 185px; width: 50px; }
+        .int-profession { top: 150px; left: 40px; width: 60px; }
+        .int-vocation { top: 150px; left: 220px; width: 60px; }
+
+        /* Animation & Form Styles */
+        .input-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .input-section.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: transparent; }
+        textarea::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+    <script src="/resources/shared-ui.js"></script>
+</head>
+
+<body class="bg-cream text-charcoal">
+
+    <!-- Navigation -->
+    <site-header></site-header>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 md:p-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto w-full items-start mt-8 relative">
+        <div class="absolute top-4 right-4 z-10 hidden lg:block">
+            <button id="lang-toggle" class="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal transition bg-cream-dark px-3 py-1 rounded-md">ID / EN</button>
+        </div>
+        
+        <div class="w-full flex justify-end lg:hidden mb-[-1rem]">
+            <button id="lang-toggle-mobile" class="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal transition bg-cream-dark px-3 py-1 rounded-md">ID / EN</button>
+        </div>
+
+        <!-- Left Side: Venn Diagram -->
+        <div class="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 bg-white rounded-[2.5rem] shadow-sm border border-cream-dark">
+            <h1 id="app-title" class="text-3xl font-bold text-charcoal serif mb-2 text-center">Ikigai Brainstorm</h1>
+            <p id="diagram-hint" class="text-sm text-stone mb-8 text-center uppercase tracking-widest font-bold">Klik lingkaran untuk mulai mengisi</p>
+
+            <div class="venn-container">
+                <!-- Main Circles -->
+                <div class="venn-circle circle-love" onclick="showInput('love')" id="circle-love-text">Yang Anda<br>CINTAI</div>
+                <div class="venn-circle circle-good" onclick="showInput('good')" id="circle-good-text">Yang Anda<br>KUASAI</div>
+                <div class="venn-circle circle-needs" onclick="showInput('needs')" id="circle-needs-text">Yang DIBUTUHKAN<br>Dunia</div>
+                <div class="venn-circle circle-paid" onclick="showInput('paid')" id="circle-paid-text">Yang BISA<br>DIBAYAR</div>
+
+                <!-- Intersections -->
+                <div class="intersection-text int-passion" id="int-passion">Gairah</div>
+                <div class="intersection-text int-mission" id="int-mission">Misi</div>
+                <div class="intersection-text int-profession" id="int-profession">Profesi</div>
+                <div class="intersection-text int-vocation" id="int-vocation">Panggilan</div>
+
+                <!-- Center -->
+                <div class="ikigai-center" onclick="showInput('ikigai')" id="ikigai-center-text">IKIGAI</div>
+            </div>
+        </div>
+
+        <!-- Right Side: Input Forms -->
+        <div class="w-full lg:w-1/2 bg-white rounded-[2.5rem] shadow-sm border border-cream-dark p-8 min-h-[450px] flex flex-col">
+
+            <!-- Default State -->
+            <div id="default-state" class="flex-grow flex flex-col items-center justify-center text-center text-stone">
+                <svg class="w-16 h-16 mb-4 opacity-30 text-earth" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path>
+                </svg>
+                <p id="default-msg" class="text-charcoal-mid max-w-xs">Pilih bagian pada diagram untuk menambahkan pikiran Anda.</p>
+            </div>
+
+            <!-- Love Section -->
+            <div id="input-love" class="input-section h-full flex flex-col">
+                <div class="flex items-center gap-3 mb-2 text-red-500">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                    <h2 class="text-2xl font-bold serif" id="title-love">Yang Anda CINTAI</h2>
+                </div>
+                <p class="text-sm text-stone mb-4 italic" id="desc-love">Tuliskan hal-hal yang membuat Anda bahagia, aktivitas yang membuat Anda lupa waktu, atau topik yang tidak pernah bosan Anda pelajari.</p>
+                <textarea id="text-love" class="w-full flex-grow p-5 bg-cream border border-cream-dark rounded-2xl focus:ring-2 focus:ring-red-400 focus:border-transparent focus:outline-none resize-none text-charcoal" placeholder="misal: Bermain gitar, membaca buku sejarah, memasak..."></textarea>
+            </div>
+
+            <!-- Good At Section -->
+            <div id="input-good" class="input-section h-full flex flex-col">
+                <div class="flex items-center gap-3 mb-2 text-yellow-500">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"></path></svg>
+                    <h2 class="text-2xl font-bold serif" id="title-good">Yang Anda KUASAI</h2>
+                </div>
+                <p class="text-sm text-stone mb-4 italic" id="desc-good">Keterampilan yang Anda miliki, bakat yang sering dipuji orang, atau tugas yang terasa mudah bagi Anda.</p>
+                <textarea id="text-good" class="w-full flex-grow p-5 bg-cream border border-cream-dark rounded-2xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent focus:outline-none resize-none text-charcoal" placeholder="misal: Berbicara di depan umum, coding, mengatur acara..."></textarea>
+            </div>
+
+            <!-- Needs Section -->
+            <div id="input-needs" class="input-section h-full flex flex-col">
+                <div class="flex items-center gap-3 mb-2 text-blue-500">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"></path></svg>
+                    <h2 class="text-2xl font-bold serif" id="title-needs">Yang DIBUTUHKAN Dunia</h2>
+                </div>
+                <p class="text-sm text-stone mb-4 italic" id="desc-needs">Masalah di komunitas atau dunia yang peduli ingin Anda selesaikan, atau hal yang kurang di lingkungan Anda.</p>
+                <textarea id="text-needs" class="w-full flex-grow p-5 bg-cream border border-cream-dark rounded-2xl focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:outline-none resize-none text-charcoal" placeholder="misal: Kesadaran lingkungan, pendidikan yang dapat diakses, dukungan kesehatan mental..."></textarea>
+            </div>
+
+            <!-- Paid For Section -->
+            <div id="input-paid" class="input-section h-full flex flex-col">
+                <div class="flex items-center gap-3 mb-2 text-green-500">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.311c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.311c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path></svg>
+                    <h2 class="text-2xl font-bold serif" id="title-paid">Yang BISA DIBAYAR</h2>
+                </div>
+                <p class="text-sm text-stone mb-4 italic" id="desc-paid">Layanan atau produk yang bersedia dibeli orang dari Anda, pekerjaan Anda saat ini, atau potensi jalur karir.</p>
+                <textarea id="text-paid" class="w-full flex-grow p-5 bg-cream border border-cream-dark rounded-2xl focus:ring-2 focus:ring-green-400 focus:border-transparent focus:outline-none resize-none text-charcoal" placeholder="misal: Freelance desain grafis, konsultasi, menjual kerajinan tangan..."></textarea>
+            </div>
+
+            <!-- Ikigai Conclusion Section -->
+            <div id="input-ikigai" class="input-section h-full flex flex-col">
+                <div class="flex items-center gap-3 mb-2 text-purple-500">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1zm-5 8.274l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L5 10.274zm10 0l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L15 10.274z" clip-rule="evenodd"></path></svg>
+                    <h2 class="text-2xl font-bold serif" id="title-ikigai">IKIGAI Anda</h2>
+                </div>
+                <p class="text-sm text-stone mb-4 italic" id="desc-ikigai">Tinjau semua yang telah Anda tulis. Apa benang merahnya? Apa yang berada di tengah keempat lingkaran tersebut?</p>
+                <textarea id="text-ikigai" class="w-full flex-grow p-5 bg-cream border border-cream-dark rounded-2xl focus:ring-2 focus:ring-purple-400 focus:border-transparent focus:outline-none resize-none font-semibold text-lg text-charcoal" placeholder="Tulis pernyataan Ikigai Anda di sini..."></textarea>
+            </div>
+
+            <!-- Save & Action Indicators -->
+            <div class="mt-8 flex flex-col gap-4">
+                <button id="btn-copy-prompt" class="w-full py-4 px-6 bg-charcoal text-cream rounded-full font-bold shadow-xl hover:bg-earth transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 uppercase text-xs tracking-widest">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <span id="text-copy-prompt">Salin Prompt Analisa AI</span>
+                </button>
+                <div class="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-stone w-full px-2">
+                    <span id="save-status">Tersimpan otomatis</span>
+                    <button onclick="clearData()" id="btn-clear" class="text-accent hover:text-charcoal transition-colors">Hapus Semua</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <site-footer></site-footer>
+
+    <script>
+        let isIndonesian = true; 
+
+        const DOM = {
+            html: document.documentElement,
+            langToggle: document.getElementById('lang-toggle'),
+            langToggleMobile: document.getElementById('lang-toggle-mobile'),
+            defaultState: document.getElementById('default-state'),
+            saveStatus: document.getElementById('save-status'),
+            textareas: document.querySelectorAll('textarea')
+        };
+
+        const sections = ['love', 'good', 'needs', 'paid', 'ikigai'];
+
+        const dict = {
+            id: {
+                appTitle: "Ikigai Brainstorm",
+                diagramHint: "Klik lingkaran untuk mulai mengisi",
+                defaultMsg: "Pilih bagian pada diagram untuk menambahkan pikiran Anda.",
+                saveStatus: "Tersimpan otomatis",
+                btnClear: "Hapus Semua",
+                btnCopyPrompt: "Salin Prompt Analisa AI",
+                circles: {
+                    love: "Yang Anda<br>CINTAI",
+                    good: "Yang Anda<br>KUASAI",
+                    needs: "Yang DIBUTUHKAN<br>Dunia",
+                    paid: "Yang BISA<br>DIBAYAR"
+                },
+                intersections: {
+                    passion: "Gairah",
+                    mission: "Misi",
+                    profession: "Profesi",
+                    vocation: "Panggilan"
+                },
+                inputs: {
+                    love: {
+                        title: "Yang Anda CINTAI",
+                        desc: "Tuliskan hal-hal yang membuat Anda bahagia, aktivitas yang membuat Anda lupa waktu, atau topik yang tidak pernah bosan Anda pelajari.",
+                        placeholder: "misal: Bermain gitar, membaca buku sejarah, memasak..."
+                    },
+                    good: {
+                        title: "Yang Anda KUASAI",
+                        desc: "Keterampilan yang Anda miliki, bakat yang sering dipuji orang, atau tugas yang terasa mudah bagi Anda.",
+                        placeholder: "misal: Berbicara di depan umum, coding, mengatur acara..."
+                    },
+                    needs: {
+                        title: "Yang DIBUTUHKAN Dunia",
+                        desc: "Masalah di komunitas atau dunia yang peduli ingin Anda selesaikan, atau hal yang kurang di lingkungan Anda.",
+                        placeholder: "misal: Kesadaran lingkungan, pendidikan yang dapat diakses, dukungan kesehatan mental..."
+                    },
+                    paid: {
+                        title: "Yang BISA DIBAYAR",
+                        desc: "Layanan atau produk yang bersedia dibeli orang dari Anda, pekerjaan Anda saat ini, atau potensi jalur karir.",
+                        placeholder: "misal: Freelance desain grafis, konsultasi, menjual kerajinan tangan..."
+                    },
+                    ikigai: {
+                        title: "IKIGAI Anda",
+                        desc: "Tinjau semua yang telah Anda tulis. Apa benang merahnya? Apa yang berada di tengah keempat lingkaran tersebut?",
+                        placeholder: "Tulis pernyataan Ikigai Anda di sini..."
+                    }
+                }
+            },
+            en: {
+                appTitle: "Ikigai Brainstorm",
+                diagramHint: "Click circle to start filling",
+                defaultMsg: "Select a section on the diagram to add your thoughts.",
+                saveStatus: "Saved automatically",
+                btnClear: "Clear All",
+                btnCopyPrompt: "Copy AI Analysis Prompt",
+                circles: {
+                    love: "What you<br>LOVE",
+                    good: "What you are<br>GOOD AT",
+                    needs: "What the world<br>NEEDS",
+                    paid: "What you can be<br>PAID FOR"
+                },
+                intersections: {
+                    passion: "Passion",
+                    mission: "Mission",
+                    profession: "Profession",
+                    vocation: "Vocation"
+                },
+                inputs: {
+                    love: {
+                        title: "What you LOVE",
+                        desc: "List things that make you happy, activities you lose track of time doing, or topics you never get bored learning about.",
+                        placeholder: "e.g., Playing guitar, reading history books, cooking..."
+                    },
+                    good: {
+                        title: "What you are GOOD AT",
+                        desc: "Skills you have acquired, talents people compliment you on, or tasks that come naturally to you.",
+                        placeholder: "e.g., Public speaking, coding, organizing events..."
+                    },
+                    needs: {
+                        title: "What the world NEEDS",
+                        desc: "Problems in your community or the world that you care about solving, or things that are missing in your environment.",
+                        placeholder: "e.g., Environmental awareness, accessible education, mental health support..."
+                    },
+                    paid: {
+                        title: "What you can be PAID FOR",
+                        desc: "Services or products people are willing to buy from you, your current job, or potential career paths.",
+                        placeholder: "e.g., Graphic design freelance, consulting, selling handmade crafts..."
+                    },
+                    ikigai: {
+                        title: "Your IKIGAI",
+                        desc: "Review everything you've written. What is the common thread? What sits at the center of all four circles?",
+                        placeholder: "Write your Ikigai statement here..."
+                    }
+                }
+            }
+        };
+
+        function updateLanguage() {
+            const lang = isIndonesian ? 'id' : 'en';
+            const text = dict[lang];
+
+            document.getElementById('app-title').textContent = text.appTitle;
+            document.getElementById('diagram-hint').textContent = text.diagramHint;
+            document.getElementById('default-msg').textContent = text.defaultMsg;
+            DOM.saveStatus.textContent = text.saveStatus;
+            document.getElementById('btn-clear').textContent = text.btnClear;
+            document.getElementById('text-copy-prompt').textContent = text.btnCopyPrompt;
+
+            document.getElementById('circle-love-text').innerHTML = text.circles.love;
+            document.getElementById('circle-good-text').innerHTML = text.circles.good;
+            document.getElementById('circle-needs-text').innerHTML = text.circles.needs;
+            document.getElementById('circle-paid-text').innerHTML = text.circles.paid;
+
+            document.getElementById('int-passion').textContent = text.intersections.passion;
+            document.getElementById('int-mission').textContent = text.intersections.mission;
+            document.getElementById('int-profession').textContent = text.intersections.profession;
+            document.getElementById('int-vocation').textContent = text.intersections.vocation;
+
+            sections.forEach(sec => {
+                document.getElementById(`title-${sec}`).textContent = text.inputs[sec].title;
+                document.getElementById(`desc-${sec}`).textContent = text.inputs[sec].desc;
+                document.getElementById(`text-${sec}`).placeholder = text.inputs[sec].placeholder;
+            });
+
+            DOM.langToggle.textContent = isIndonesian ? 'ID / EN' : 'EN / ID';
+            if (DOM.langToggleMobile) {
+                DOM.langToggleMobile.textContent = isIndonesian ? 'ID / EN' : 'EN / ID';
+            }
+        }
+
+        const handleLangToggle = () => {
+            isIndonesian = !isIndonesian;
+            localStorage.setItem('lang', isIndonesian ? 'id' : 'en');
+            updateLanguage();
+        };
+
+        DOM.langToggle.addEventListener('click', handleLangToggle);
+        if (DOM.langToggleMobile) {
+            DOM.langToggleMobile.addEventListener('click', handleLangToggle);
+        }
+
+        const savedLang = localStorage.getItem('lang');
+        if (savedLang) {
+            isIndonesian = savedLang === 'id';
+        }
+        updateLanguage();
+
+        function showInput(sectionName) {
+            DOM.defaultState.style.display = 'none';
+            document.querySelectorAll('.input-section').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            const target = document.getElementById(`input-${sectionName}`);
+            if (target) {
+                target.classList.add('active');
+                setTimeout(() => {
+                    document.getElementById(`text-${sectionName}`).focus();
+                }, 100);
+            }
+        }
+
+        DOM.textareas.forEach(textarea => {
+            const id = textarea.id; 
+            const savedData = localStorage.getItem(`ikigai-${id}`);
+            if (savedData) {
+                textarea.value = savedData;
+            }
+
+            textarea.addEventListener('input', (e) => {
+                localStorage.setItem(`ikigai-${id}`, e.target.value);
+                DOM.saveStatus.style.opacity = '0.5';
+                setTimeout(() => { DOM.saveStatus.style.opacity = '1'; }, 200);
+            });
+        });
+
+        function clearData() {
+            DOM.textareas.forEach(textarea => {
+                textarea.value = '';
+                localStorage.removeItem(`ikigai-${textarea.id}`);
+            });
+
+            document.querySelectorAll('.input-section').forEach(el => el.classList.remove('active'));
+            DOM.defaultState.style.display = 'flex';
+
+            const btn = document.getElementById('btn-clear');
+            const originalText = btn.textContent;
+            btn.textContent = isIndonesian ? "Terhapus!" : "Cleared!";
+            setTimeout(() => { btn.textContent = originalText; }, 1500);
+        }
+
+        function generateAIPrompt() {
+            const love = document.getElementById('text-love').value || '(Belum diisi / Not filled)';
+            const good = document.getElementById('text-good').value || '(Belum diisi / Not filled)';
+            const needs = document.getElementById('text-needs').value || '(Belum diisi / Not filled)';
+            const paid = document.getElementById('text-paid').value || '(Belum diisi / Not filled)';
+            const ikigai = document.getElementById('text-ikigai').value || '(Belum diisi / Not filled)';
+
+            if (isIndonesian) {
+                return `Saya sedang mencari Ikigai (tujuan hidup dan karir) saya. Berikut adalah hasil brainstorm saya:
+
+1. Hal yang saya CINTAI (Love): 
+${love}
+
+2. Hal yang saya KUASAI (Good at): 
+${good}
+
+3. Hal yang DIBUTUHKAN dunia (Needs): 
+${needs}
+
+4. Hal yang bisa memberikan PENGHASILAN (Paid for): 
+${paid}
+
+5. Kesimpulan Ikigai sementara saya: 
+${ikigai}
+
+Berdasarkan data di atas, tolong bertindak sebagai penasihat karir dan psikolog. Analisa profil saya, temukan benang merah atau pola yang tersembunyi. Berikan saran berupa 3-5 opsi karir, aktivitas, atau fokus hidup yang selaras dengan Ikigai saya. Berikan penjelasan yang mendalam mengapa hal tersebut cocok, serta langkah praktis yang bisa saya ambil mulai sekarang.`;
+            } else {
+                return `I am trying to discover my Ikigai (life and career purpose). Here is my brainstorm:
+
+1. What I LOVE: 
+${love}
+
+2. What I am GOOD AT: 
+${good}
+
+3. What the world NEEDS: 
+${needs}
+
+4. What I can be PAID FOR: 
+${paid}
+
+5. My current Ikigai statement: 
+${ikigai}
+
+Based on this data, please act as a career advisor and psychologist. Analyze my profile and find the hidden connections or patterns. Suggest 3-5 potential career paths, activities, or life focuses that align with my Ikigai. Provide a deep explanation of why they are suitable, and suggest practical steps I can take starting now.`;
+            }
+        }
+
+        document.getElementById('btn-copy-prompt').addEventListener('click', function () {
+            const promptText = generateAIPrompt();
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = promptText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+
+            try {
+                document.execCommand('copy');
+                const span = document.getElementById('text-copy-prompt');
+                const originalText = span.textContent;
+                span.textContent = isIndonesian ? "Prompt Tersalin!" : "Prompt Copied!";
+
+                this.classList.remove('bg-charcoal', 'hover:bg-earth');
+                this.classList.add('bg-accent');
+
+                setTimeout(() => {
+                    span.textContent = originalText;
+                    this.classList.remove('bg-accent');
+                    this.classList.add('bg-charcoal', 'hover:bg-earth');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text', err);
+            }
+
+            document.body.removeChild(tempTextArea);
+        });
+    </script>
+</body>
+</html>

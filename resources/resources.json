@@ -4,7 +4,7 @@
     "title": "Timeblock Planner",
     "description": "A clean, dynamic daily timeblock planner to help you focus on deep work and organize your schedule.",
     "category": "Productivity",
-    "url": "/resources/timeblock.html",
+    "url": "/resources/timeblock",
     "icon": "⏱️",
     "pinned": false,
     "publish": true
@@ -14,7 +14,7 @@
     "title": "Play Personality Quiz",
     "description": "Temukan tipe bermain alami kamu berdasarkan riset Dr. Stuart Brown untuk memulihkan kreativitas.",
     "category": "Self-Discovery",
-    "url": "/resources/play-personality-quiz.html",
+    "url": "/resources/play-personality-quiz",
     "icon": "🎭",
     "pinned": true,
     "publish": true
@@ -24,7 +24,7 @@
     "title": "History of My Life",
     "description": "Lakukan audit hidup tahun demi tahun untuk menemukan pola berulang, siklus, dan blind spot.",
     "category": "Self-Discovery",
-    "url": "/resources/history-of-my-life.html",
+    "url": "/resources/history-of-my-life",
     "icon": "📜",
     "pinned": false,
     "publish": true
@@ -34,7 +34,7 @@
     "title": "Consciousness Map Quiz",
     "description": "Temukan level dominan kesadaran dan emosi Anda berdasarkan Map of Consciousness Dr. David Hawkins.",
     "category": "Self-Discovery",
-    "url": "/resources/consciousness-map-quiz.html",
+    "url": "/resources/consciousness-map-quiz",
     "icon": "🧠",
     "pinned": true,
     "publish": true
@@ -44,7 +44,7 @@
     "title": "RSVP Speed Reader",
     "description": "Increase your reading speed using Rapid Serial Visual Presentation (RSVP) technique.",
     "category": "Productivity",
-    "url": "/resources/rsvp-speedreading.html",
+    "url": "/resources/rsvp-speedreading",
     "icon": "📖",
     "pinned": true,
     "publish": true
@@ -54,7 +54,7 @@
     "title": "Jam Biologis Tubuh",
     "description": "Irama sirkadian & jam piket organ manusia selama 24 jam. Amati pola hidup Anda selaras dengan alam.",
     "category": "Self-Discovery",
-    "url": "/resources/jam-biologi-tubuh.html",
+    "url": "/resources/jam-biologi-tubuh",
     "icon": "⏰",
     "pinned": false,
     "publish": true
@@ -64,7 +64,7 @@
     "title": "Odyssey Plan Creator",
     "description": "Map out three alternative 5-year scenarios to prototype your future based on the Designing Your Life framework.",
     "category": "Self-Discovery",
-    "url": "/resources/odyssey-plan.html",
+    "url": "/resources/odyssey-plan",
     "icon": "🧭",
     "pinned": false,
     "publish": true
@@ -74,9 +74,19 @@
     "title": "Moslem Productivity Rhythm",
     "description": "Your daily timeline starts at Maghrib. Combining Ultradian Cycles with Sunnah Time Management.",
     "category": "Productivity",
-    "url": "/resources/moslem-productivity-rhythm.html",
+    "url": "/resources/moslem-productivity-rhythm",
     "icon": "🌙",
     "pinned": false,
+    "publish": true
+  },
+  {
+    "id": "ikigai",
+    "title": "Ikigai Brainstorm",
+    "description": "Temukan irisan antara apa yang Anda cintai, kuasai, dibutuhkan dunia, dan potensi penghasilan Anda.",
+    "category": "Self-Discovery",
+    "url": "/resources/ikigai",
+    "icon": "🎯",
+    "pinned": true,
     "publish": true
   }
 ]

@@ -118,6 +118,7 @@
         ::-webkit-scrollbar-thumb { background: var(--cream-dark); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--stone); }
     </style>
+    <script src="/resources/shared-ui.js"></script>
 </head>
 
 <body class="bg-cream text-charcoal font-sans">
@@ -364,16 +365,7 @@ Analisis menggunakan struktur:
 
             return (
                 <div className="min-h-screen bg-cream flex flex-col">
-                    <nav className="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
-                        <a href="/" className="text-charcoal serif font-bold text-lg tracking-tight hover:text-earth transition">History of My Life</a>
-                        <div className="flex items-center gap-2 sm:gap-4">
-                            <button onClick={() => setViewMode('editor')} className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition ${viewMode === 'editor' ? 'bg-charcoal text-cream shadow-sm' : 'text-stone hover:text-charcoal'}`}>Editor</button>
-                            <button onClick={() => setViewMode('summary')} className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition ${viewMode === 'summary' ? 'bg-charcoal text-cream shadow-sm' : 'text-stone hover:text-charcoal'}`}>Overview</button>
-                            <button onClick={() => setPromptModalOpen(true)} className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full bg-earth text-cream hover:bg-earth-dark transition shadow-sm flex items-center gap-2">
-                                Analisa <Star size={10} />
-                            </button>
-                        </div>
-                    </nav>
+                    <site-header></site-header>
 
                     <main className="max-w-6xl mx-auto px-6 py-12 flex-1 w-full flex flex-col lg:flex-row gap-12">
                         {viewMode === 'editor' && (
@@ -493,18 +485,7 @@ Analisis menggunakan struktur:
                     {promptModalOpen && <PromptModal />}
 
                     {/* FOOTER */}
-                    <footer>
-                        <p className="footer-name">Wahyu Teguh Arifianto</p>
-                        <ul className="footer-links">
-                            <li><a href="/#about">About</a></li>
-                            <li><a href="/#expertise">Expertise</a></li>
-                            <li><a href="/#writing">Writing</a></li>
-                            <li><a href="/#resources">Resources</a></li>
-                            <li><a href="/#youtube">YouTube</a></li>
-                            <li><a href="/#contact">Contact</a></li>
-                        </ul>
-                        <p className="footer-copy">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
-                    </footer>
+                    <site-footer></site-footer>
                 </div>
             );
         };

@@ -1,3 +1,33 @@
+// ── HERO HOVER SYNC ──
+const easterEgg = document.querySelector('.easter-egg');
+const heroPhoto = document.querySelector('.hero-photo');
+
+const syncHover = (add) => {
+    if (add) {
+        if(easterEgg) easterEgg.classList.add('hovered');
+        if(heroPhoto) heroPhoto.classList.add('hovered');
+    } else {
+        if(easterEgg) easterEgg.classList.remove('hovered');
+        if(heroPhoto) heroPhoto.classList.remove('hovered');
+    }
+};
+
+const syncToggle = () => {
+    if(!easterEgg) return;
+    const isHovered = easterEgg.classList.contains('hovered');
+    syncHover(!isHovered);
+};
+
+if (easterEgg && heroPhoto) {
+    easterEgg.addEventListener('mouseenter', () => syncHover(true));
+    easterEgg.addEventListener('mouseleave', () => syncHover(false));
+    easterEgg.addEventListener('click', syncToggle);
+
+    heroPhoto.addEventListener('mouseenter', () => syncHover(true));
+    heroPhoto.addEventListener('mouseleave', () => syncHover(false));
+    heroPhoto.addEventListener('click', syncToggle);
+}
+
 // ── FADE IN ON SCROLL ──
         const faders = document.querySelectorAll('.fade-in');
         const observer = new IntersectionObserver((entries) => {

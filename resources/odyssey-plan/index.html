@@ -94,39 +94,18 @@
             margin-top: 4rem;
         }
     </style>
+    <script src="/resources/shared-ui.js"></script>
 </head>
 <body class="bg-cream dark:bg-charcoal font-sans text-charcoal dark:text-cream min-h-screen flex flex-col transition-colors duration-300">
     
     <!-- Navigation -->
-    <nav class="nav-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between transition-colors duration-300 print:hidden">
-        <a href="../index.html" class="text-charcoal dark:text-cream serif font-bold text-lg tracking-tight hover:text-earth dark:hover:text-earth transition">Wahyu Teguh A.</a>
-        <div class="flex items-center gap-6">
-            <a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-stone hover:text-charcoal dark:hover:text-cream transition">Resources</a>
-            <button id="theme-toggle" class="text-stone hover:text-charcoal dark:hover:text-cream transition" aria-label="Toggle Dark Mode">
-                <!-- Sun Icon -->
-                <i class="ph ph-sun text-xl hidden dark:block"></i>
-                <!-- Moon Icon -->
-                <i class="ph ph-moon text-xl block dark:hidden"></i>
-            </button>
-        </div>
-    </nav>
+    <site-header></site-header>
 
     <!-- React will attach the app to this div -->
     <main id="root" class="flex-1"></main>
 
     <!-- Footer -->
-    <footer class="bg-cream dark:bg-charcoal border-t border-cream-dark dark:border-stone/20 transition-colors duration-300 print:hidden">
-        <p class="footer-name serif font-bold text-2xl text-charcoal dark:text-cream mb-6">Wahyu Teguh Arifianto</p>
-        <ul class="footer-links flex justify-center gap-8 mb-8 flex-wrap">
-            <li><a href="../index.html#about" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">About</a></li>
-            <li><a href="../index.html#expertise" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Expertise</a></li>
-            <li><a href="../index.html#writing" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Writing</a></li>
-            <li><a href="../index.html#resources" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Resources</a></li>
-            <li><a href="../index.html#youtube" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">YouTube</a></li>
-            <li><a href="../index.html#contact" class="text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream hover:text-earth dark:hover:text-earth transition">Contact</a></li>
-        </ul>
-        <p class="footer-copy text-[10px] text-stone uppercase tracking-widest">© 2025 Wahyu Teguh Arifianto · wahyuteguh.com</p>
-    </footer>
+    <site-footer></site-footer>
 
     <!-- Dark Mode Logic -->
     <script>

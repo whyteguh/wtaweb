@@ -291,12 +291,14 @@
             z-index: 2;
         }
 
-        .hero-photo:hover .photo-normal {
+        .hero-photo:hover .photo-normal,
+        .hero-photo.hovered .photo-normal {
             transform: scale(1.0) translateY(0%);
             opacity: 0;
         }
 
-        .hero-photo:hover .photo-doodle {
+        .hero-photo:hover .photo-doodle,
+        .hero-photo.hovered .photo-doodle {
             transform: scale(1.0) translateY(0%);
             opacity: 1;
         }
